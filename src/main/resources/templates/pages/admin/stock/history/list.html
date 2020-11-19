@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate}">>
+
+<th:block layout:fragment="pageContent">
+    <div class="card mb-4 mt-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Histórico do Estoque
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Produto do Estoque</th>
+                        <th>Quantidade da operação</th>
+                        <th>Data do registro</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Produto do Estoque</th>
+                        <th>Quantidade da operação</th>
+                        <th>Data do registro</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                        <tr th:each="stockHistory : ${stockHistories}">
+                            <td th:text="${stockHistory.stock.product.title}"></td>
+                            <td th:text="${stockHistory.amount}"></td>
+                            <td th:text="${#temporals.format(stockHistory.date, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</html>

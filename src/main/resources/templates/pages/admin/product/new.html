@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate}">>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="card mt-3 mb-3">
+        <div class="card-header">
+            <div class="d-flex flex-row justify-content-start">
+                <div class="mt-1">
+                    <h4 class="card-title">Cadastrar Produto</h4>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <th:block layout:insert="~{fragments/errorMessage}" />
+
+            <form id="registerProductForm" th:action="@{/admin/product/new}" method="POST" th:object="${product}">
+
+                <input type="hidden" name="operation" value="save">
+
+                <div class="form-row">
+
+                    <div class="form-group col-sm-5 col-md-5">
+                        <label for="inputTitle">Título/Nome<span class="text-danger text-bold">&nbsp;*</span></label>
+                        <input type="text" class="form-control" th:field="*{title}" name="title" id="inputTitle" aria-describedby="titleHelp" placeholder="Digite o nome ou título do produto" required>
+                    </div>
+
+                    <div class="form-group col-sm-4 col-md-4">
+                        <label for="inputImageUrl">URL/link da Imagem<span class="text-danger text-bold">&nbsp;*</span></label>
+                        <input type="text" class="form-control" th:field="*{imageUrl}" name="title" id="inputImageUrl" aria-describedby="imageUrlHelp" placeholder="Cole aqui a URL/link da imagem..." required>
+                    </div>
+
+                    <div class="form-group col-sm-3 col-md-3">
+                        <label for="inputPrice">Preço<span class="text-danger text-bold">&nbsp;*</span></label>
+                        <input inputmode="numeric"
+                               class="form-control"
+                               id="inputPrice"
+                               name="price"
+                               th:field="*{price}"
+                               required
+                        >
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="col-sm-6 col-md-6">
+                        <div class="form-group">
+                            <label for="textareaOperationMode">Modo de funcionamento<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <textarea class="form-control"
+                                      id="textareaOperationMode"
+                                      th:field="*{operationMode}"
+                                      aria-describedby="operationHelp"
+                                      placeholder="Descreva o modo de funcionamento do produto..."
+                                      rows="10"
+                                      style="resize: none;"
+                                      required
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6">
+                        <div class="form-group">
+                            <label for="textareaCharacteristics">Características<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <textarea class="form-control"
+                                      id="textareaCharacteristics"
+                                      th:field="*{characteristics}"
+                                      aria-describedby="characteristicsHelp"
+                                      placeholder="Descreva as características do produto..."
+                                      rows="10"
+                                      style="resize: none;"
+                                      required
+                            ></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            <label for="inputHeight">Altura (cm/m)<span class="text-muted">&nbsp(opcional)</span></label>
+                            <input type="text" class="form-control" id="inputHeight" th:field="*{height}" aria-describedby="heightHelp">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            <label for="inputWidth">Largura (cm/m)<span class="text-muted">&nbsp(opcional)</span></label>
+                            <input type="text" class="form-control" id="inputWidth" th:field="*{width}" aria-describedby="widthHelp">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            <label for="inputWeight">Peso (g/kg)<span class="text-muted">&nbsp(opcional)</span></label>
+                            <input type="text" class="form-control" id="inputWeight" th:field="*{weight}" aria-describedby="weightHelp">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-xs-12 col-sm-4 col-md-6">
+                        <div class="form-group">
+                            <label for="selectProvider">Fornecedor</label>
+                            <select class="form-control"
+                                    id="selectProvider"
+                                    th:field="*{provider}" required>
+                                <option value="" selected disabled>Selecione um forncedor...</option>
+                                <option th:each="provider : ${providers}"
+                                        th:value="${provider.id}"
+                                        th:text="${provider.name}"
+                                        th:field="*{provider}"
+                                ></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-xs-12 col-sm-4 col-md-6">
+                        <div class="form-group">
+                            <label for="selectProvider">Categoria</label>
+                            <select class="form-control custom-select"
+                                    id="selectCategory"
+                                    th:field="*{category}" required>
+                                <option value="" selected disabled>Selecione uma categoria...</option>
+                                <option th:each="category, itemStat : ${categories}"
+                                        th:value="${category.id}"
+                                        th:text="${category.name}"
+                                ></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row d-flex flex-row justify-content-end">
+                    <div class="col-md-4 offset-md-4 mt-4">
+                        <button type="submit" class="btn btn-success btn-md btn-block">Cadastrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="scripts">
+
+    <script th:src="@{/assets/node_modules/simple-mask-money/lib/simple-mask-money.js}"></script>
+    <script th:src="@{/assets/custom/pages/admin/product/js/register-form-mask-money.js}"></script>
+</th:block>
+
+</html>

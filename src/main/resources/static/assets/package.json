@@ -1,0 +1,21 @@
+{
+  "name": "assets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.14.0",
+    "bootstrap": "^4.5.2",
+    "jquery": "^1.9.1",
+    "jquery-validation": "^1.19.2",
+    "material-icons": "^0.3.1",
+    "popper.js": "^1.16.1",
+    "simple-mask-money": "^3.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hanseld28",
+  "license": "ISC"
+}

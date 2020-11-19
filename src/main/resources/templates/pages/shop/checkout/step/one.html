@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{simpleTemplate}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Cadastro | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container mt-4">
+
+        <div class="row flex-row">
+            <div class="col-10 offset-1 mb-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">Autenticação</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Seleção de endereço *
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            Seleção da forma de pagamento
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            Revisão do pedido
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            Finalizar
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row flex-row">
+            <div class="col-12 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-muted">Selecionar um endereço existente</h4>
+                    </div>
+                    <div class="card-body">
+                        <form class="form-inline" th:action="@{/shop/checkout/step/two}" method="POST">
+                            <div class="row flex-row w-100">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="selectAddress">Endereço</label>
+                                        <select class="form-control ml-3 w-75"
+                                                id="selectAddress"
+                                                name="addressId">
+                                            <option value="" selected>Selecione um endereço...</option>
+                                            <option th:each="customerAddress : ${customer.adresses}"
+                                                    th:value="${customerAddress.id}"
+                                                    th:text="${customerAddress.buildAddressShortName()}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row flex-row d-flex justify-content-end">
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-primary btn-block" id="nextStep1">Próximo</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row flex-row">
+            <div class="col-12 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-muted">Adicionar um novo endereço</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row flex-row">
+                            <div class="col-12">
+                                <form th:action="@{/shop/checkout/step/two}" method="POST">
+                                    <div class="row flex-row">
+                                        <div class="col-12">
+                                            <div class="form-row ml-4">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="inputCep">CEP<span class="text-danger text-bold"> *</span></label>
+                                                    <input type="text" class="form-control" id="inputCep" name="cep" placeholder="Insira seu CEP aqui" >
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="inputState">Estado<span class="text-danger text-bold"> *</span></label>
+                                                    <select class="form-control" id="inputState" name="state">
+                                                        <option value="" selected>Selecione um estado...</option>
+                                                        <option value="AC">Acre</option>
+                                                        <option value="AL">Alagoas</option>
+                                                        <option value="AP">Amapá</option>
+                                                        <option value="AM">Amazonas</option>
+                                                        <option value="BA">Bahia</option>
+                                                        <option value="CE">Ceará</option>
+                                                        <option value="DF">Distrito Federal</option>
+                                                        <option value="ES">Espírito Santo</option>
+                                                        <option value="GO">Goiás</option>
+                                                        <option value="MA">Maranhão</option>
+                                                        <option value="MT">Mato Grosso</option>
+                                                        <option value="MS">Mato Grosso do Sul</option>
+                                                        <option value="MG">Minas Gerais</option>
+                                                        <option value="PA">Pará</option>
+                                                        <option value="PB">Paraíba</option>
+                                                        <option value="PR">Paraná</option>
+                                                        <option value="PE">Pernambuco</option>
+                                                        <option value="PI">Piauí</option>
+                                                        <option value="RJ">Rio de Janeiro</option>
+                                                        <option value="RN">Rio Grande do Norte</option>
+                                                        <option value="RS">Rio Grande do Sul</option>
+                                                        <option value="RO">Rondônia</option>
+                                                        <option value="RR">Roraima</option>
+                                                        <option value="SC">Santa Catarina</option>
+                                                        <option value="SP">São Paulo</option>
+                                                        <option value="SE">Sergipe</option>
+                                                        <option value="TO">Tocantins</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <div class="form-group">
+                                                    <label for="inputCity">Cidade<span class="text-danger text-bold"> *</span></label>
+                                                    <select class="form-control" id="inputCity" name="city">
+                                                        <option value="" selected>Selecione uma cidade...</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-row ml-4">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label for="inputNeighbourhood">Bairro<span class="text-danger text-bold"> *</span></label>
+                                                        <input type="text" class="form-control" id="inputNeighbourhood" name="neighbourhood" placeholder="Digite o nome do bairro">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="inputPublicPlace">Logradouro<span class="text-danger text-bold"> *</span></label>
+                                                        <input type="text" class="form-control" id="inputPublicPlace" name="publicPlace" placeholder="Digite seu o logradouro">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label for="inputResidenceNumber">Número<span class="text-danger text-bold"> *</span></label>
+                                                        <input type="text" class="form-control" id="inputResidenceNumber" name="residenceNumber" placeholder="Número">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-row ml-4">
+                                                <div class="col-sm-7">
+                                                    <div class="form-group">
+                                                        <label for="inputResidenceComplement">Complemento<span class="text-muted ml-1">(opcional)</span></label>
+                                                        <input type="text" class="form-control" id="inputResidenceComplement" name="residenceComplement" placeholder="Digite o complemento da residência">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <div class="form-group">
+                                                        <label for="inputAddressType">Tipo de endereço<span class="text-danger text-bold"> *</span></label>
+                                                        <select class="form-control" id="inputAddressType" name="addressType">
+                                                            <option value="SHIPPING">Entrega</option>
+                                                            <option value="BILLING">Cobrança</option>
+                                                            <option value="SHIPPING_AND_BILLING" selected>Entrega e cobrança</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 mt-4">
+                                            <div class="row flex-row d-flex justify-content-end">
+                                                <div class="col-4">
+                                                    <button type="submit" class="btn btn-primary btn-lg btn-block">Adicinar e continuar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+</body>
+</html>

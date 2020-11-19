@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{simpleTemplate}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Cadastro | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container mt-4">
+
+        <div class="row flex-row">
+            <div class="col-10 offset-1 mb-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">Autenticação</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="#">Seleção de endereço</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            <a href="#">Seleção da forma de pagamento</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Revisão do pedido *
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            Finalizar
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row flex-row">
+            <div class="col-12 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-muted">Produtos</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Preço unitário</th>
+                                    <th>Quantidade</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="saleItem : ${sale.items}">
+                                    <td th:text="${saleItem.product.title}"></td>
+                                    <td th:text="${#strings.replace(#numbers.formatCurrency(saleItem.product.price), '$', 'R$')}"></td>
+                                    <td th:text="${#strings.concat(saleItem.quantity).concat(' un.')}"></td>
+                                    <td th:text="${#strings.replace(#numbers.formatCurrency(saleItem.subtotal), '$', 'R$')}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row flex-row">
+            <div class="col-12 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-muted">Endereço</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Endereço</th>
+                                    <th>Cidade</th>
+                                    <th>Estado</th>
+                                    <th>Número</th>
+                                    <th>Complemento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="saleAddress : ${sale.adresses}">
+                                    <td th:text="${saleAddress.address.buildOwnerIfSpecifiedAndAddressType()}"></td>
+                                    <td th:text="${saleAddress.address.city}"></td>
+                                    <td th:text="${saleAddress.address.state}"></td>
+                                    <td th:text="${saleAddress.address.number}"></td>
+                                    <td th:text="${saleAddress.address.complement}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row flex-row">
+            <div class="col-12 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-muted">Pagamento</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Forma de pagamento</th>
+                                <th>Valor</th>
+                                <th>Desconto</th>
+                                <th>Subtotal</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="saleCreditCard : ${sale.usedCreditCards}">
+                                    <td th:text="${saleCreditCard.creditCard.buildCreditCardShortName()}"></td>
+                                    <td th:text="${#strings.replace(#numbers.formatCurrency(saleCreditCard.value), '$', 'R$')}"></td>
+                                    <td>Não aplicável</td>
+                                    <td th:text="${#strings.replace(#numbers.formatCurrency(saleCreditCard.value), '$', 'R$')}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row flex-row justify-content-center">
+                                    <div class="col-2 justify-content-center" style="font-size: 25px">
+                                        <span class="font-weight-bold"
+                                              th:text="${#strings.replace(#numbers.formatCurrency(sale.recalculateTotalWithFreight()), '$', 'R$')}"
+                                        ></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row flex-row justify-content-end">
+            <div class="col-4">
+                <form id="finishSaleForm" th:action="@{/shop/checkout/finish}" method="POST" th:object="${sale}">
+                    <input type="hidden"
+                           name="sale[customer][0][id]"
+                           class="sale"
+                           th:value="${sale.customer.id}">
+
+                    <input th:each="saleAddress : ${sale.adresses}"
+                           type="hidden"
+                           class="sale"
+                           th:name="'sale[adresses][' + ${saleAddressStat.index} + '][id]'"
+                           th:value="${saleAddress.address.id}">
+
+                    <th:block th:each="saleItem : ${sale.items}">
+                        <input type="hidden"
+                               class="sale"
+                               th:name="'sale[items][' + ${saleItemStat.index} + '][id]'"
+                               th:value="${saleItem.product.id}">
+                        <input type="hidden"
+                               class="sale"
+                               th:name="'sale[items][' + ${saleItemStat.index} + '][quantity]'"
+                               th:value="${saleItem.quantity}">
+                        <input type="hidden"
+                               class="sale"
+                               th:name="'sale[items][' + ${saleItemStat.index} + '][subtotal]'"
+                               th:value="${saleItem.subtotal}">
+                    </th:block>
+
+                    <th:block th:each="saleCreditCard : ${sale.usedCreditCards}">
+                        <input type="hidden"
+                               class="sale"
+                               th:name="'sale[usedCreditCards][' + ${saleCreditCardStat.index} + '][id]'"
+                               th:value="${saleCreditCard.creditCard.id}">
+                        <input type="hidden"
+                               class="sale"
+                               th:name="'sale[usedCreditCards][' + ${saleCreditCardStat.index} + '][value]'"
+                               th:value="${saleCreditCard.value}">
+                    </th:block>
+
+                    <button type="submit" class="btn btn-success btn-block btn-lg">Finalizar compra</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="scripts">
+
+    <script th:src="@{/assets/custom/pages/shop/checkout/step/three.js}"></script>
+
+</th:block>
+
+</body>
+</html>

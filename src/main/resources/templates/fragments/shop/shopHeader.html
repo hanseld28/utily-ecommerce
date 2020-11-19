@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<th:block layout:fragment="header">
+    <header>
+        <div class="row mb-0 pb-0">
+            <nav class="navbar navbar-light bg-warning w-100">
+                <div class="col-2 mt-1 d-flex justify-content-start">
+                    <a class="navbar-brand" th:href="@{/shop/product/list}">
+                        <img th:src="@{/assets/app/utily-logo-gray-white-500x250.png}" width="120" height="60">
+                    </a>
+                </div>
+
+                <div class="col-5 mt-1 pt-2 d-flex justify-content-center">
+                    <form class="form-inline w-100">
+                        <div class="input-group mb-3 w-100">
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Pesquise um produto..."
+                                   aria-label="Search"
+                                   aria-describedby="search-addon">
+                            <div class="input-group-append">
+                                <button class="btn btn-info btn-block" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-5 mt-1 pt-2">
+                    <div class="navbar-nav-scroll">
+                        <ul class="list-inline d-flex justify-content-end flex-row font-weight-bold" style="font-size: 20px">
+
+                            <li th:if="${#authentication.getAuthorities()[0].getAuthority().equals('CUSTOMER')}" class="nav-item mr-2">
+                                <a class="nav-link text-white" th:href="@{/customer/order/list?operation=consult}">
+                                    Meus pedidos
+                                </a>
+                            </li>
+                            <li th:if="${#authentication.getAuthorities()[0].getAuthority().equals('CUSTOMER')}" class="nav-item mr-2">
+                                <a class="nav-link text-white" th:href="@{/customer/account?operation=consult}">
+                                    Minha conta
+                                </a>
+                            </li>
+
+                            <li th:if="${!#authentication.getAuthorities()[0].getAuthority().equals('ADMIN')} and ${shopCart}" class="nav-item">
+                                <a class="nav-link" th:href="@{/shop/cart}">
+                                <span>
+                                    <i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>
+                                    <span th:text="${shopCart.itemsAmount}"
+                                          class="badge badge-info badge-pill"></span>
+                                </span>
+                                </a>
+                            </li>
+
+                            <li th:if="${#authentication.getAuthorities()[0].getAuthority().equals('ADMIN')}" class="nav-item mr-2">
+                                <a class="nav-link text-white" th:href="@{/admin/dashboard}">
+                                    Ir para o painel administrativo
+                                </a>
+                            </li>
+
+                            <li sec:authorize="isAuthenticated()" class="nav-item">
+                                <a class="nav-link text-info" th:href="@{/logout}">
+                                    <i class="fas fa-power-off"></i> Sair
+                                </a>
+                            </li>
+                            <li sec:authorize="!isAuthenticated()" class="nav-item">
+                                <a class="nav-link text-info" th:href="@{/login}">
+                                    <i class="fas fa-sign-in-alt"></i> Entrar
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="row mb-4 bg-light">
+            <nav class="navbar navbar-expand-lg navbar-light col-8 offset-2 col-sm-10 offset-sm-1 col-md-8 offset-md-2" style="font-size: 20px">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav text-center font-weight-bold w-100">
+                    <div class="col-3 col-md-3 col-sm-3">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Cozinha
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="#">Gadgets de Cozinha</a>
+                                <a class="dropdown-item" href="#">Garrafas Térmicas</a>
+                                <a class="dropdown-item" href="#">Máquinas de Cozinha</a>
+                                <a class="dropdown-item" href="#">Moedores</a>
+                                <a class="dropdown-item" href="#">Utilidades</a>
+                                <a class="dropdown-item" href="#">Utilidades Aço Inox</a>
+                                <a class="dropdown-item" href="#">Utilidades de Silicone</a>
+                            </div>
+                        </li>
+                    </div>
+                    <div class="col-3 col-md-3 col-sm-3">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Limpeza <span class="sr-only">(current)</span></a>
+                        </li>
+                    </div>
+                    <div class="col-3 col-md-3 col-sm-3">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Organizadores</a>
+                        </li>
+                    </div>
+                    <div class="col-3 col-md-3 col-sm-3">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Utilidades para casa</a>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </nav>
+        </div>
+    </header>
+</th:block>
+
+</html>

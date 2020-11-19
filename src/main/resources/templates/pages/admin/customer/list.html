@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate}">>
+
+
+<th:block layout:fragment="pageContent">
+    <div th:if="${#bools.isFalse(edit)}"  class="card mb-4 mt-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Clientes
+        </div>
+        <div class="card-body">
+
+            <th:block layout:insert="~{fragments/successMessage}" />
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Telefone</th>
+                        <th>Gênero</th>
+                        <th>Status</th>
+                        <th>Editar</th>
+                        <th>Inativação/Ativação</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Telefone</th>
+                        <th>Gênero</th>
+                        <th>Status</th>
+                        <th>Editar</th>
+                        <th>Inativação/Ativação</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                        <tr th:each="customer : ${customers}">
+                            <td th:text="${customer.name}" data-toggle="modal" data-target="#editModal"></td>
+                            <td th:text="${customer.cpf}"></td>
+                            <td th:text="${customer.phone}"></td>
+                            <td th:text="${customer.gender.displayName}"></td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <span th:if="${#bools.isFalse(customer.inactivated)}"
+                                          class="badge badge-pill badge-success mt-1"
+                                    >Ativo</span>
+                                    <span th:if="${customer.inactivated}"
+                                          class="badge badge-pill badge-danger mt-1"
+                                    >Inativo</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <a th:href="@{/admin/customer/list?operation=consult&id=} + ${customer.id}">
+                                        <i class="fas fa-edit text-info text-lg"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="d-flex justify-content-center">
+                                <div class="d-flex justify-content-center">
+                                    <h5>
+                                        <!--/*@thymesVar id="customer" type="br.com.prism.utily.entity.domain.user.customer.Customer"*/-->
+                                        <a th:if="${#bools.isFalse(customer.inactivated)}"
+                                           th:href="@{/admin/inactivation?uri-refer=/admin/customer/list&name=customer&id=} + ${customer.id}"
+                                           class="badge badge-danger"
+                                        >Inativar</a>
+                                        <a th:if="${customer.inactivated}"
+                                           th:href="@{/admin/activation?uri-refer=/admin/customer/list&name=customer&id=} + ${customer.id}"
+                                           class="badge badge-success"
+                                        >Ativar</a>
+                                    </h5>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${edit}" class="card mt-3 mb-3">
+        <form th:action="@{/admin/customer/list}" method="POST" th:object="${customer}">
+            <div class="card-header">
+                <div class="d-flex flex-row justify-content-start">
+                    <div class="mr-4 mt-1">
+                        <a th:href="@{/admin/customer/list?operation=consult}">
+                            <i class="fas fa-arrow-left text-lg" style="font-size: x-large"></i>
+                        </a>
+                    </div>
+                    <div class="mt-1">
+                        <h5 class="card-title">Editar Cliente</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <th:block layout:insert="~{fragments/errorMessage}"></th:block>
+
+                <input type="hidden" name="operation" value="update">
+
+                <input type="hidden" name="id" th:field="*{id}">
+
+                <div class="form-row">
+
+                    <div class="form-group col-sm-7 col-md-9">
+                        <label for="inputName">Nome<span class="text-danger text-bold">&nbsp;*</span></label>
+                        <input type="text" class="form-control" th:field="*{name}" name="name" id="inputName" aria-describedby="nameHelp" placeholder="Digite seu nome" required>
+                    </div>
+
+                    <div class="form-group col-sm-5 col-md-3">
+                        <label for="inputCpf">CPF<span class="text-danger text-bold">&nbsp;*</span></label>
+                        <input type="text" class="form-control" th:field="*{cpf}" name="cpf" id="inputCpf" aria-describedby="cpfHelp" placeholder="Digite seu CPF" required>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="col-sm-6 col-md-4 pb-4">
+                        <legend class="col-form-label pt-0">Gênero<span class="text-danger text-bold">&nbsp;*</span></legend>
+
+                        <div class="form-check form-check-inline mt-1">
+                            <div th:each="genderOption : ${T(br.com.prism.utily.entity.domain.user.customer.Gender).values()}">
+                                <div class="ml-2 mr-2">
+                                    <input class="form-check-input" type="radio" th:field="*{gender}" name="gender" th:id="${#strings.concat('input', 'Gender', genderOption)}" th:value="${genderOption}" required>
+                                    <label class="form-check-label" th:for="${#strings.concat('input', 'Gender', genderOption)}" th:text="${genderOption.displayName}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-md-3">
+                        <div class="form-group">
+                            <label for="inputBirthday">Data de Nascimento<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input type="date" class="form-control" id="inputBirthday" th:field="*{birthday}" aria-describedby="birthdayHelp" required>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-md-3">
+                        <div class="form-group">
+                            <label for="inputPhoneNumber">Telefone<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input type="text" class="form-control" id="inputPhoneNumber" th:field="*{phone}" name="phone" aria-describedby="phoneHelp" placeholder="(DDD) XXXXX-XXXX" required>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="col-xs-12 col-sm-4 col-md-6">
+                        <div class="form-group">
+                            <label for="inputEmail">E-mail<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input type="email" class="form-control" id="inputEmail" th:field="*{user.username}" aria-describedby="emailHelp" placeholder="Digite seu e-mail" required>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-4 col-md-3">
+                        <div class="form-group">
+                            <label for="inputPassword">Senha<span class="text-black-50">&nbsp;(opcional)</span></label>
+                            <input type="password" class="form-control" id="inputPassword" th:field="*{user.password}" placeholder="Digite sua senha">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-4 col-md-3">
+                        <div class="form-group">
+                            <label for="inputConfirmPassword">Confirme sua senha<span class="text-black-50">&nbsp;(opcional)</span></label>
+                            <input type="password" class="form-control" id="inputConfirmPassword" th:field="*{user.confirmPassword}" placeholder="Digite sua senha">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row d-flex flex-row justify-content-end">
+                    <div class="col-md-8 mt-3">
+                        <div class="alert alert-info">
+                            <b class="text-black-50 text-uppercase">
+                                Observação:&nbsp;
+                            </b>
+                            <span class="text-black-50">
+                                caso o campo <i class="text-dark">Senha</i> não seja preenchido, a senha não será alterada.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-4">
+                        <button type="submit" class="btn btn-success btn-md btn-block">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</th:block>
+
+</html>

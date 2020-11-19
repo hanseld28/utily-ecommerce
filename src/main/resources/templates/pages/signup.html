@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{simpleTemplate}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Cadastro | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="text-muted">Crie sua conta</h4>
+
+                        <th:block layout:insert="~{fragments/errorMessage}"></th:block>
+
+                        <form th:action="@{/signup}" method="POST" th:object="${customer}">
+                            <input type="hidden" name="operation" value="save">
+                            <div class="form-row">
+                                <div class="form-group col-xs-12 col-sm-12 col-md-8">
+                                    <label for="inputName">Nome<span class="text-danger text-bold"> *</span></label>
+                                    <input type="text" class="form-control" th:field="*{name}" name="name" id="inputName" aria-describedby="nameHelp" placeholder="Digite seu nome" required>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-4">
+                                    <label for="inputCpf">CPF<span class="text-danger text-bold"> *</span></label>
+                                    <input type="text" class="form-control" th:field="*{cpf}" name="cpf" id="inputCpf" aria-describedby="cpfHelp" placeholder="Digite seu CPF" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="col-sm-3">
+                                    <legend class="col-form-label pt-0">Gênero<span class="text-danger text-bold"> *</span></legend>
+
+                                    <div th:each="genderOption : ${T(br.com.prism.utily.entity.domain.user.customer.Gender).values()}">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" th:field="*{gender}" name="gender" th:id="${#strings.concat('input', 'Gender', genderOption)}"  th:value="${genderOption}" required>
+                                            <label class="form-check-label" th:for="${#strings.concat('input', 'Gender', genderOption)}" th:text="${genderOption.displayName}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="inputBirthday">Data de Nascimento<span class="text-danger text-bold"> *</span></label>
+                                        <input type="date" class="form-control" id="inputBirthday" th:field="*{birthday}" aria-describedby="birthdayHelp" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-2 offset-sm-1">
+                                    <div class="form-group">
+                                        <label for="inputPhoneNumber">Telefone<span class="text-danger text-bold"> *</span></label>
+                                        <input type="text" class="form-control" id="inputPhoneNumber" th:field="*{phone}" name="phone" aria-describedby="phoneHelp" placeholder="(DDD) XXXXX-XXXX" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label for="inputEmail">E-mail<span class="text-danger text-bold"> *</span></label>
+                                        <input type="email" class="form-control" id="inputEmail" th:field="*{user.username}" autocomplete="username" aria-describedby="emailHelp" placeholder="Digite seu e-mail" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="inputPassword">Senha<span class="text-danger text-bold"> *</span></label>
+                                        <input type="password" class="form-control" id="inputPassword" th:field="*{user.password}" autocomplete="new-password" placeholder="Digite sua senha" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="inputConfirmPassword">Confirme sua senha<span class="text-danger text-bold"> *</span></label>
+                                        <input type="password" class="form-control" id="inputConfirmPassword" th:field="*{user.confirmPassword}" autocomplete="new-password" placeholder="Digite sua senha" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 offset-md-4 mt-4">
+                                <button type="submit" class="btn btn-success btn-lg btn-block">Criar conta</button>
+                            </div>
+                        </form>
+
+                        <div class="col-md-4 offset-md-4 mt-2">
+                            <a th:href="@{/login}" class="btn btn-primary btn-sm btn-block">Já tenho uma conta</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

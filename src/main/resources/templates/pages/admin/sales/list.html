@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate}">>
+
+
+<th:block layout:fragment="pageContent">
+    <div class="card mb-4 mt-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Vendas
+        </div>
+        <div class="card-body">
+
+            <th:block layout:insert="~{fragments/successMessage}" />
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Data da compra</th>
+                        <th>Cliente</th>
+                        <th>Status</th>
+                        <th>Detalhes</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Número</th>
+                        <th>Data da compra</th>
+                        <th>Cliente</th>
+                        <th>Status</th>
+                        <th>Detalhes</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                        <!--/*@thymesVar id="sale" type="br.com.prism.utily.entity.domain.shop.sale.Sale"*/-->
+                        <tr th:each="sale : ${sales}">
+                            <td>
+                                <a th:href="@{/admin/sales/list?operation=consult&id=} + ${sale.id}">
+                                    <span th:text="${sale.identifyNumber}"></span>
+                                </a>
+                            </td>
+                            <td th:text="${#temporals.format(sale.purchaseDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                            <td th:text="${sale.customer.name}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:text="${sale.status.getDisplayName()}"
+                                      th:classappend="${sale.computeStatusColorClass()}">
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <a th:href="@{/admin/sales/list?operation=consult&id=} + ${sale.id}">
+                                        <i class="fas fa-info-circle text-info text-lg"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</html>

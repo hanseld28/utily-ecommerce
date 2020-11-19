@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{simpleTemplate}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Login | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container mt-4">
+        <div class="row">
+
+            <div class="col-12 col-sm-12 col-md-10 col-xl-8 offset-md-1 offset-xl-2 mb-3">
+                <div class="card">
+                    <div class="card-body">
+
+                        <h5 class="text-muted">Entre na sua conta ou crie uma caso ainda não possua cadastro</h5>
+
+                        <th:block layout:insert="~{fragments/successMessage}"></th:block>
+
+                        <form th:action="@{/doLogin}" method="POST">
+                            <input type="hidden" name="operation" value="consult">
+                            <div class="form-group">
+                                <label for="inputEmail">E-mail</label>
+                                <input type="email" class="form-control" name="username" id="inputEmail" aria-describedby="emailHelp" placeholder="Digite seu e-mail">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword">Senha</label>
+                                <input type="password" class="form-control" name="password" id="inputPassword" placeholder="Digite sua senha">
+                            </div>
+                            <div class="col-md-6 offset-md-3">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block">Entrar</button>
+                            </div>
+                        </form>
+
+                        <div class="col-md-6 offset-md-3 mt-2">
+                            <a th:href="@{signup}" class="btn btn-success btn-md btn-block">Criar conta</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

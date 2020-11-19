@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate}">>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="card mt-3 mb-3">
+        <div class="card-header">
+            <div class="d-flex flex-row justify-content-start">
+                <div class="mr-4 mt-1">
+                    <a th:href="@{/admin/customer/list?operation=consult}">
+                        <i class="fas fa-arrow-left text-lg" style="font-size: x-large"></i>
+                    </a>
+                </div>
+                <div class="mt-1">
+                    <h4 class="card-title">Cadastro de Cliente</h4>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <th:block layout:insert="~{fragments/errorMessage}"></th:block>
+
+            <form class="ml-5 mr-5" th:action="@{/admin/customer/new}" method="POST" th:object="${customer}">
+                <input type="hidden" name="operation" value="save">
+                <div class="form-row">
+
+                    <div class="form-group col-sm-7 col-md-9">
+                        <label for="inputName">Nome<span class="text-danger text-bold">&nbsp;*</span></label>
+                        <input type="text" class="form-control" th:field="*{name}" name="name" id="inputName" aria-describedby="nameHelp" placeholder="Digite seu nome" required>
+                    </div>
+
+                    <div class="form-group col-sm-5 col-md-3">
+                        <label for="inputCpf">CPF<span class="text-danger text-bold">&nbsp;*</span></label>
+                        <input type="text" class="form-control" th:field="*{cpf}" name="cpf" id="inputCpf" aria-describedby="cpfHelp" placeholder="Digite seu CPF" required>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="col-sm-6 col-md-4 pb-4">
+                        <legend class="col-form-label pt-0">Gênero<span class="text-danger text-bold">&nbsp;*</span></legend>
+
+                        <div class="form-check form-check-inline mt-1">
+                            <div th:each="genderOption : ${T(br.com.prism.utily.entity.domain.user.customer.Gender).values()}">
+                                <div class="ml-2 mr-2">
+                                    <input class="form-check-input" type="radio" th:field="*{gender}" name="gender" th:id="${#strings.concat('input', 'Gender', genderOption)}" th:value="${genderOption}" required>
+                                    <label class="form-check-label" th:for="${#strings.concat('input', 'Gender', genderOption)}" th:text="${genderOption.displayName}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-md-3">
+                        <div class="form-group">
+                            <label for="inputBirthday">Data de Nascimento<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input type="date" class="form-control" id="inputBirthday" th:field="*{birthday}" aria-describedby="birthdayHelp" required>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-md-3">
+                        <div class="form-group">
+                            <label for="inputPhoneNumber">Telefone<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input type="text" class="form-control" id="inputPhoneNumber" th:field="*{phone}" name="phone" aria-describedby="phoneHelp" placeholder="(DDD) XXXXX-XXXX" required>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="col-xs-12 col-sm-4 col-md-6">
+                        <div class="form-group">
+                            <label for="inputEmail">E-mail<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input type="email" class="form-control" id="inputEmail" th:field="*{user.username}" aria-describedby="emailHelp" placeholder="Digite seu e-mail" required>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-4 col-md-3">
+                        <div class="form-group">
+                            <label for="inputPassword">Senha<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input type="password" class="form-control" id="inputPassword" th:field="*{user.password}" placeholder="Digite sua senha" required>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-4 col-md-3">
+                        <div class="form-group">
+                            <label for="inputConfirmPassword">Confirme sua senha<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input type="password" class="form-control" id="inputConfirmPassword" th:field="*{user.confirmPassword}" placeholder="Digite sua senha" required>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row d-flex flex-row justify-content-end">
+                    <div class="col-md-4 offset-md-4 mt-4">
+                        <button type="submit" class="btn btn-success btn-md btn-block">Cadastrar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</th:block>
+
+</html>

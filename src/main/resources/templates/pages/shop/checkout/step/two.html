@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{simpleTemplate}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Cadastro | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container mt-4">
+
+        <div class="row flex-row">
+            <div class="col-10 offset-1 mb-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">Autenticação</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="#">Seleção de endereço</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Seleção da forma de pagamento *
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            Revisão do pedido
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            Finalizar
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row flex-row">
+            <div class="col-12 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-muted">Valor da compra após o cálculo do frete</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-9">
+                                <h5>Valor da compra </h5>
+                            </div>
+                            <div class="col-3">
+                                <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.total), '$', 'R$')}">R$ 239,96</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <hr />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-9">
+                                <h5>Frete</h5>
+                            </div>
+                            <div class="col-3">
+                                <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.freightValue), '$', 'R$')}">R$ 10,00</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row flex-row">
+                            <div class="col-6 d-flex justify-content-start">
+                                <span>TOTAL: </span>
+                                <span th:text="${#strings.replace(#numbers.formatCurrency(sale.recalculateTotalWithFreight()), '$', 'R$')}"
+                                      class="ml-1 font-weight-bold"></span>
+                            </div>
+                            <div class="col-6 d-flex justify-content-end">
+                                <span>VALOR RESTANTE: </span>
+                                <span th:text="${#strings.replace(#numbers.formatCurrency(sale.calculateRemainingAmount()), '$', 'R$')}"
+                                      class="ml-1 font-weight-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row flex-row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h4 class="text-muted">
+                                Escolha o valor a ser utilizado em cada dos seus cartões cadastrados
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <form th:action="@{/shop/checkout/step/two?addCreditCard=true}"
+                                      method="POST"
+                                      id="formCreditCardPayment">
+                                    <div class="form-group">
+                                        <label for="selectCreditCard">Cartão de crédito</label>
+                                        <select class="form-control"
+                                                id="selectCreditCard"
+                                                name="creditCardId" required>
+                                            <option value="" selected disabled>Selecione um cartão de crédito...</option>
+                                            <option th:each="creditCard : ${customer.creditCards}"
+                                                    th:value="${creditCard.id}"
+                                                    th:text="${creditCard.buildCreditCardShortName()}"
+                                                    th:attr="disabled=${sale.creditCreditCardAlreadyAdded(creditCard)}"
+                                            ></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="valueUsedInput" class="text-bold">Valor a ser utilizado</label>
+                                        <input inputmode="numeric"
+                                               th:data-remainingamount="${sale.recalculateTotalWithFreight()}"
+                                               class="form-control"
+                                               id="valueUsedInput"
+                                               name="valueUsed"
+                                               required
+                                        >
+                                    </div>
+                                    <button type="submit"
+                                            class="btn btn-success"
+                                            id="addCreditCardButton"
+                                    >Adicionar</button>
+                                </form>
+                            </div>
+                            <div class="col-6">
+                                <div class="row flex row justify-content-start mb-1">
+                                    <div class="col">
+                                        <span class="text-muted font-weight-bold">Cartões adicionados</span>
+                                    </div>
+                                </div>
+                                <div class="row" style="font-size: medium">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <th>Valor</th>
+                                            <th>Cartão de Crédito</th>
+                                            <th>Remover</th>
+                                        </thead>
+                                        <tbody id="addedCreditCardsTBody">
+                                            <tr th:if="${!#arrays.isEmpty(sale.usedCreditCards)}"
+                                                th:each="saleCreditCard : ${sale.usedCreditCards}">
+                                                <td th:text="${#strings.replace(#numbers.formatCurrency(saleCreditCard.value), '$', 'R$')}"></td>
+                                                <td th:text="${saleCreditCard.creditCard.buildCreditCardShortName()}"></td>
+                                                <td>
+                                                    <form th:action="@{/shop/checkout/step/two}">
+                                                        <input type="hidden" name="removeCreditCard" value="true">
+                                                        <input type="hidden" name="creditCardId" th:value="${saleCreditCard.creditCard.id}">
+                                                        <button type="submit" class="btn btn-link btn-sm">Remover</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            <tr th:if="${#arrays.isEmpty(sale.usedCreditCards)}">
+                                                <td colspan="3" class="text-center">Nenhum cartão de crédito adicionado...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <form th:action="@{/shop/checkout/step/three}" method="GET" id="creditCardsAndValuesForm">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row flex-row d-flex justify-content-end">
+                                        <div class="col-6">
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-block"
+                                                    id="nextStepButton"
+                                                    th:attr="disabled=${!sale.isRemainingAmountFullyCovered()}"
+                                            >Próximo</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row flex-row mt-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h4 class="text-muted">
+                                Use cupons como forma de pagamento nessa compra
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-check" style="font-size: 18px">
+                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                    <label class="form-check-label" for="defaultCheck1">
+                                        Pagar com cupons
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputVoucher">Cupons disponíveis</label>
+                                    <select class="form-control" id="inputVoucher" name="voucher" disabled>
+                                        <option value="1">CPM-220 c/ 10% de desconto</option>
+                                        <option value="2">DPS-323 c/ 5% de desconto</option>
+                                        <option value="2">EXT-237 c/ 25% de desconto</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row flex row justify-content-start mb-1">
+                                    <div class="col">
+                                        <span class="text-muted font-weight-bold">Cupons adicionados</span>
+                                    </div>
+                                </div>
+                                <div class="row border rounded h-75 text-muted" style="font-size: medium">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <span>CPM-220</span>
+                                            </div>
+                                            <div class="col-4">
+                                                10% de desconto
+                                            </div>
+                                            <div class="col-4">
+                                                <a href="#"><span>Remover</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row flex-row d-flex justify-content-end">
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-primary btn-block" id="nextStepButton3" disabled>Próximo</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row flex-row mt-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h4 class="text-muted">
+                                Adicione um novo cartão de crédito para utilizar nessa compra
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            <div class="row">
+                                <div class="col col-4">
+                                    <div class="form-group">
+                                        <label for="cc-brand">Bandeira<span class="text-danger text-bold"> *</span></label>
+                                        <select class="form-control" id="cc-brand" name="cc-brand">
+                                            <option value="VISA">Visa</option>
+                                            <option value="MASTER_CARD">Master Card</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col col-8">
+                                    <div class="form-group">
+                                        <label for="inputCardNumber">Número do cartão<span class="text-danger text-bold"> *</span></label>
+                                        <input type="text" class="form-control" id="inputCardNumber" name="cardNumber" placeholder="Número do cartão" pattern="\d+" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-8">
+                                    <div class="form-group">
+                                        <label for="inputPrintedCardName">Nome impresso no cartão<span class="text-danger text-bold">*</span></label>
+                                        <input type="text" class="form-control" id="inputPrintedCardName" name="printedCardName" placeholder="Nome impresso no cartão" maxlength="100" required>
+                                    </div>
+                                </div>
+                                <div class="col col-4">
+                                    <div class="form-group">
+                                        <label for="inputCardSecurityCode">Código de segurança (CVV)<span class="text-danger text-bold">*</span></label>
+                                        <input type="password" class="form-control" id="inputCardSecurityCode" name="cardSecurityCode" placeholder="Código de segurança"
+                                               pattern="\d{3}" maxlength="3" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row flex-row d-flex justify-content-end">
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-primary btn-block" id="nextStepButtonFromNewCC">Adicionar cartão</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="scripts">
+
+    <script th:src="@{/assets/node_modules/simple-mask-money/lib/simple-mask-money.js}"></script>
+    <script th:src="@{/assets/custom/pages/shop/checkout/step/one.js}"></script>
+
+</th:block>
+
+</body>
+</html>

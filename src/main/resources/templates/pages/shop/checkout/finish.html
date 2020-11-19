@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{simpleTemplate}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Cadastro | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container mt-4">
+
+        <div class="row flex-row">
+            <div class="col-10 offset-1 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title d-flex justify-content-center">Compra realizada com sucesso!</h3>
+                    </div>
+                    <div class="card-body register-card-body text-center">
+                        <h4 class="mb-4">
+                            <small>Número do pedido: </small>
+                            <span class="font-weight-bold" th:text="${finishedSale.identifyNumber}">99999999999</span>
+                        </h4>
+                        <div>
+                            <span style="font-size: 17px">Acompanhe o pedido em </span><a th:href="@{/customer/order/details?operation=consult}" class="btn btn-warning btn-md font-weight-bold text-dark">Meus Pedidos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

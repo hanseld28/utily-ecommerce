@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Utily | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-9">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <img class="w-100 h-100" th:src="${product.imageUrl}">
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h2 th:text="${product.title}" class="card-title"></h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6>Preço:</h6>
+                                        <h3 th:text="${#strings.replace(#numbers.formatCurrency(product.price), '$', 'R$')}" class="mb-2 text-danger"></h3>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6>Dimensões:</h6>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <ul>
+                                                    <li>
+                                                        Altura:
+                                                        <span th:text="${product.height}"></span>
+                                                    </li>
+                                                    <li>
+                                                        Largura:
+                                                        <span th:text="${product.width}"></span>
+                                                    </li>
+                                                    <li>
+                                                        Peso:
+                                                        <span th:text="${product.weight}"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <h6>Funcionamento:</h6>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col" th:text="${product.operationMode}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer text-muted">
+                        <h4>Caracteristícas:</h4>
+                        <div th:each="characteristic : ${#strings.arraySplit(product.characteristics,';')}">
+                            <span th:text="${#strings.append('- ', characteristic)}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="#" class="btn btn-info btn-lg btn-block">Adicionar ao Carrinho</a>
+                    </div>
+                    <div class="card-footer">
+                        <form th:action="@{/shop/checkout/step/one}" method="post">
+                            <button type="submit" class="btn btn-warning btn-lg btn-block">Comprar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+</body>
+</html>

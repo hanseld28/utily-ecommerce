@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Minha conta | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2">
+                <th:block layout:insert="~{fragments/customer/verticalMenu}"></th:block>
+            </div>
+            <div class="col-10 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Novo Cartão</h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            <div class="row">
+                                <div class="col col-4">
+                                    <div class="form-group">
+                                        <label for="cc-brand">Bandeira<span class="text-danger text-bold"> *</span></label>
+                                        <select class="form-control" id="cc-brand" name="cc-brand">
+                                            <option value="VISA">Visa</option>
+                                            <option value="MASTER_CARD">Master Card</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col col-8">
+                                    <div class="form-group">
+                                        <label for="inputCardNumber">Número do cartão<span class="text-danger text-bold"> *</span></label>
+                                        <input type="text" class="form-control" id="inputCardNumber" name="cardNumber" placeholder="Número do cartão" pattern="\d+" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-8">
+                                    <div class="form-group">
+                                        <label for="inputPrintedCardName">Nome impresso no cartão<span class="text-danger text-bold">*</span></label>
+                                        <input type="text" class="form-control" id="inputPrintedCardName" name="printedCardName" placeholder="Nome impresso no cartão" maxlength="100" required>
+                                    </div>
+                                </div>
+                                <div class="col col-4">
+                                    <div class="form-group">
+                                        <label for="inputCardSecurityCode">Código de segurança (CVV)<span class="text-danger text-bold">*</span></label>
+                                        <input type="password" class="form-control" id="inputCardSecurityCode" name="cardSecurityCode" placeholder="Código de segurança"
+                                               pattern="\d{3}" maxlength="3" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row flex-row d-flex justify-content-end">
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-primary btn-block" id="nextStepButtonFromNewCC">Adicionar cartão</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

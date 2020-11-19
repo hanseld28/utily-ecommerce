@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block layout:fragment="simpleHeader">
+    <header class="text-center">
+        <div class="row mt-4">
+            <div class="col-4 offset-4">
+                <a class="" th:href="@{/shop/product/list}">
+                    <img th:src="@{/assets/app/utily-logo-yellow-gray-500x250.png}" width="200" height="100">
+                </a>
+            </div>
+        </div>
+    </header>
+</th:block>
+
+</html>

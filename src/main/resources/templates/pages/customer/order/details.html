@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Meus pedidos | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2">
+                <th:block layout:insert="~{fragments/customer/verticalMenu}"></th:block>
+            </div>
+            <div class="col-10 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row flex-row">
+                            <div class="col-6 d-flex justify-content-start">
+                                <h4>Pedido nº 72897610027981</h4>
+                            </div>
+                            <div class="col-6 d-flex justify-content-end">
+                                <span class="text-muted">Realizado em: </span>
+                                &nbsp;
+                                <span>03/09/2020 às 12h39</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row flex-row mt-4 pb-4">
+                            <div class="col-10 offset-1">
+                                <div class="row flex-row">
+                                    <div class="col-12">
+                                        <div class="row flex-row">
+                                            <div class="col-4 text-info">
+                                                <div class="row flex-row justify-content-center">
+                                                    <i class="fas fa-calendar-check fa-5x"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 text-warning">
+                                                <div class="row flex-row justify-content-center">
+                                                    <i class="fas fa-truck-loading fa-5x"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 text-muted">
+                                                <div class="row flex-row justify-content-center" style="opacity: .3;">
+                                                    <i class="fas fa-check-circle fa-5x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row flex-row mt-3">
+                                    <div class="col-4 pr-0">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 pl-0 pr-0">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 pl-0">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-secondary" role="progressbar" style="width: 100%; opacity: .2;" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row flex-row">
+                                    <div class="col-12">
+                                        <div class="row flex-row font-weight-bold">
+                                            <div class="col-4 text-info">
+                                                <div class="row flex-row justify-content-center">
+                                                    EM PROCESSAMENTO
+                                                </div>
+                                            </div>
+                                            <div class="col-4 text-warning">
+                                                <div class="row flex-row justify-content-center">
+                                                    EM TRÂNSITO
+                                                </div>
+                                            </div>
+                                            <div class="col-4 text-muted">
+                                                <div class="row flex-row justify-content-center" style="opacity: .3;">
+                                                    ENTREGUE
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row flex-row mt-4 ml-4 mr-4 pb-4">
+                            <div class="col-12">
+                                <div class="row flex-row">
+                                    <div class="col-6 d-flex justify-content-start">
+                                        <h4>Itens da compra & Valores</h4>
+                                    </div>
+                                </div>
+                                <div class="row flex-row">
+                                    <div class="col-12">
+                                        <div class="row flex-row">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Produto</th>
+                                                    <th>Preço unitário</th>
+                                                    <th>Quantidade</th>
+                                                    <th>Subtotal</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>Produto 1...</td>
+                                                    <td>R$ 50,00</td>
+                                                    <td>2</td>
+                                                    <td>R$ 100,00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Produto 2...</td>
+                                                    <td>R$ 50,00</td>
+                                                    <td>2</td>
+                                                    <td>R$ 100,00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Produto 3...</td>
+                                                    <td>R$ 50,00</td>
+                                                    <td>2</td>
+                                                    <td>R$ 100,00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Produto 4...</td>
+                                                    <td>R$ 50,00</td>
+                                                    <td>2</td>
+                                                    <td>R$ 100,00</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row flex-row border-top bg-light font-weight-bold">
+                                            <div class="col-6 d-flex justify-content-start" style="font-size: 18px">
+                                                <span>Valor total</span>
+                                            </div>
+                                            <div class="col-6 d-flex justify-content-end text-success" style="font-size: 20px">
+                                                <span>R$ 209,96</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row flex-row mt-4 ml-4 mr-4 pb-4">
+                            <div class="col-12">
+                                <div class="row flex-row">
+                                    <div class="col-6 d-flex justify-content-start">
+                                        <h4>Endereços de entrega/cobrança apontados da compra</h4>
+                                    </div>
+                                </div>
+                                <div class="row flex-row">
+                                    <div class="col-12">
+                                        <div class="row flex-row">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Endereço</th>
+                                                    <th>Cidade</th>
+                                                    <th>Estado</th>
+                                                    <th>Número</th>
+                                                    <th>Complemento</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>Endereço de entrega...</td>
+                                                    <td>São Paulo</td>
+                                                    <td>SP</td>
+                                                    <td>13</td>
+                                                    <td>Casa 2</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Endereço de cobrança...</td>
+                                                    <td>Mogi das Cruzes</td>
+                                                    <td>SP</td>
+                                                    <td>Apto. 214</td>
+                                                    <td>Bloco 3</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row flex-row mt-4 ml-4 mr-4 pb-4">
+                            <div class="col-12">
+                                <div class="row flex-row">
+                                    <div class="col-6 d-flex justify-content-start">
+                                        <h4>Formas de pagamento selecionadas nessa compra</h4>
+                                    </div>
+                                </div>
+                                <div class="row flex-row">
+                                    <div class="col-12">
+                                        <div class="row flex-row">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Forma de pagamento</th>
+                                                    <th>Valor</th>
+                                                    <th>Desconto</th>
+                                                    <th>Subtotal</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>Cartão 1</td>
+                                                    <td>R$ 100,00</td>
+                                                    <td>Cupom de 10%</td>
+                                                    <td>R$ 90,00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Cartão 2</td>
+                                                    <td>R$ 149,96</td>
+                                                    <td>Cupom de 20%</td>
+                                                    <td>R$ 119,96</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

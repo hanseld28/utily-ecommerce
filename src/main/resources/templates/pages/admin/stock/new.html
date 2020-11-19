@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate}">>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="card mt-3 mb-3">
+        <div class="card-header">
+            <div class="d-flex flex-row justify-content-start">
+                <div class="mt-1">
+                    <h4 class="card-title">Novo Estoque</h4>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <th:block layout:insert="~{fragments/errorMessage}" />
+            <!--/*@thymesVar id="stock" type="br.com.prism.utily.entity.domain.stock.Stock"*/-->
+            <form id="saveStockForm" th:action="@{/admin/stock/new}" method="POST" th:object="${stock}">
+
+                <input type="hidden" name="operation" value="save">
+
+                <div class="row">
+                    <div class="col-6 d-flex justify-content-center">
+                        <img th:src="@{/assets/icons/stock-512.webp}" class="img-fluid" style="width: 256px; height: 256px;">
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="selectProduct">Produto<span class="text-danger text-bold">&nbsp;*</span></label>
+                                <select class="form-control"
+                                        id="selectProduct"
+                                        th:field="*{product}" required>
+                                    <!--/*@thymesVar id="products" type="br.com.prism.utily.entity.domain.product.Product"*/-->
+                                    <option th:each="product : ${products}"
+                                            th:value="${product.id}"
+                                            th:text="${product.title}"
+                                            th:field="*{product}"
+                                    ></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="inputAmount">
+                                    Quantidade
+                                    <span class="text-danger text-bold">&nbsp;*</span>
+                                </label>
+                                <input type="number"
+                                       class="form-control"
+                                       th:field="*{amount}"
+                                       name="amount"
+                                       id="inputAmount"
+                                       aria-describedby="titleHelp"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col mt-4">
+                                <button type="submit"
+                                        class="btn btn-success btn-md btn-block"
+                                >Criar estoque do produto</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</th:block>
+
+</html>

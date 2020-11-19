@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <th:block layout:fragment="verticalMenu">
+        <div class="card">
+            <nav class="navbar bg-light">
+                <ul class="navbar-nav" style="font-size: 17px">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/customer/account?operation=consult}">Conta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/customer/order/list?operation=consult}">Pedidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/customer/trade/list?operation=consult}">Trocas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/customer/address/list?operation=consult}">Endereços</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/customer/card/list?operation=consult}">Cartões</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/customer/changePassword?operation=consult}">Alterar senha</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </th:block>
+</html>

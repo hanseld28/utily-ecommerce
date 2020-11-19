@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate}">>
+
+
+<th:block layout:fragment="pageContent">
+    <div th:if="${#bools.isFalse(edit)}"  class="card mb-4 mt-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Produtos
+        </div>
+        <div class="card-body">
+
+            <th:block layout:insert="~{fragments/successMessage}" />
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Status</th>
+                        <th>Editar</th>
+                        <th>Inativação/Ativação</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Status</th>
+                        <th>Editar</th>
+                        <th>Inativação/Ativação</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                        <tr th:each="product : ${products}">
+                            <td th:text="${product.title}" data-toggle="modal" data-target="#editModal"></td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <span th:if="${#bools.isFalse(product.inactivated)}"
+                                          class="badge badge-pill badge-success mt-1"
+                                    >Ativo</span>
+                                    <span th:if="${product.inactivated}"
+                                          class="badge badge-pill badge-danger mt-1"
+                                    >Inativo</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <i th:if="${product.inactivated}"
+                                        class="fas fa-lock text-danger text-lg">
+                                    </i>
+                                    <a th:if="${#bools.isFalse(product.inactivated)}"
+                                       th:href="@{/admin/product/list?operation=consult&id=} + ${product.id}">
+                                        <i class="fas fa-edit text-info text-lg"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="d-flex justify-content-center">
+                                <div class="d-flex justify-content-center">
+                                    <h5>
+                                        <!--/*@thymesVar id="product" type="br.com.prism.utily.entity.domain.product.Product"*/-->
+                                        <a th:if="${#bools.isFalse(product.inactivated)}"
+                                           th:href="@{/admin/inactivation?uri-refer=/admin/product/list&name=product&id=} + ${product.id}"
+                                           class="badge badge-danger"
+                                        >Inativar</a>
+                                        <a th:if="${product.inactivated}"
+                                           th:href="@{/admin/activation?uri-refer=/admin/product/list&name=product&id=} + ${product.id}"
+                                           class="badge badge-success"
+                                        >Ativar</a>
+                                    </h5>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${edit}">
+
+        <div class="card mt-3 mb-3">
+            <div class="card-header">
+                <div class="d-flex flex-row justify-content-start">
+                    <div class="mt-1">
+                        <h4 class="card-title">Editar Produto</h4>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+
+                <th:block layout:insert="~{fragments/errorMessage}" />
+
+                <!--/*@thymesVar id="product" type="br.com.prism.utily.entity.domain.product.Product"*/-->
+                <form id="saveProductForm" th:action="@{/admin/product/list}" method="POST" th:object="${product}">
+
+                    <input type="hidden" name="operation" value="update">
+                    <input type="hidden" th:field="*{id}" name="id">
+
+                    <div class="form-row">
+
+                        <div class="form-group col-sm-5 col-md-5">
+                            <label for="inputTitle">Título/Nome<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input type="text" class="form-control" th:field="*{title}" name="title" id="inputTitle" aria-describedby="titleHelp" placeholder="Digite o nome ou título do produto" required>
+                        </div>
+
+                        <div class="form-group col-sm-4 col-md-4">
+                            <label for="inputImageUrl">URL/link da Imagem<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input type="text" class="form-control" th:field="*{imageUrl}" name="title" id="inputImageUrl" aria-describedby="imageUrlHelp" placeholder="Cole aqui a URL/link da imagem..." required>
+                        </div>
+
+                        <div class="form-group col-sm-3 col-md-3">
+                            <label for="saveFormInputPrice">Preço<span class="text-danger text-bold">&nbsp;*</span></label>
+                            <input inputmode="numeric"
+                                   class="form-control"
+                                   id="saveFormInputPrice"
+                                   name="price"
+                                   th:field="*{price}"
+                                   required
+                            >
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="textareaOperationMode">Modo de funcionamento<span class="text-danger text-bold">&nbsp;*</span></label>
+                                <textarea class="form-control"
+                                          id="textareaOperationMode"
+                                          th:field="*{operationMode}"
+                                          aria-describedby="operationHelp"
+                                          placeholder="Descreva o modo de funcionamento do produto..."
+                                          rows="10"
+                                          style="resize: none;"
+                                          required
+                                ></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="textareaCharacteristics">Características<span class="text-danger text-bold">&nbsp;*</span></label>
+                                <textarea class="form-control"
+                                          id="textareaCharacteristics"
+                                          th:field="*{characteristics}"
+                                          aria-describedby="characteristicsHelp"
+                                          placeholder="Descreva as características do produto..."
+                                          rows="10"
+                                          style="resize: none;"
+                                          required
+                                ></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <div class="form-group">
+                                <label for="inputHeight">Altura (cm/m)<span class="text-muted">&nbsp(opcional)</span></label>
+                                <input type="text" class="form-control" id="inputHeight" th:field="*{height}" aria-describedby="heightHelp">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <div class="form-group">
+                                <label for="inputWidth">Largura (cm/m)<span class="text-muted">&nbsp(opcional)</span></label>
+                                <input type="text" class="form-control" id="inputWidth" th:field="*{width}" aria-describedby="widthHelp">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <div class="form-group">
+                                <label for="inputWeight">Peso (g/kg)<span class="text-muted">&nbsp(opcional)</span></label>
+                                <input type="text" class="form-control" id="inputWeight" th:field="*{weight}" aria-describedby="weightHelp">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-xs-12 col-sm-4 col-md-6">
+                            <div class="form-group">
+                                <label for="selectProvider">Fornecedor</label>
+                                <select class="form-control"
+                                        id="selectProvider"
+                                        th:field="*{provider}" required>
+                                    <option value="" selected disabled>Selecione um forncedor...</option>
+                                    <!--/*@thymesVar id="providers" type="br.com.prism.utily.entity.domain.product.provider.Provider"*/-->
+                                    <option th:each="provider : ${providers}"
+                                            th:value="${provider.id}"
+                                            th:text="${provider.name}"
+                                            th:field="*{provider}"
+                                    ></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-xs-12 col-sm-4 col-md-6">
+                            <div class="form-group">
+                                <label for="selectProvider">Categoria</label>
+                                <select class="form-control custom-select"
+                                        id="selectCategory"
+                                        th:field="*{category}" required>
+                                    <option value="" selected disabled>Selecione uma categoria...</option>
+                                    <!--/*@thymesVar id="categories" type="br.com.prism.utily.entity.domain.product.category.Category"*/-->
+                                    <option th:each="category, itemStat : ${categories}"
+                                            th:value="${category.id}"
+                                            th:text="${category.name}"
+                                    ></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row d-flex flex-row justify-content-end">
+                        <div class="col-md-4 offset-md-4 mt-4">
+                            <button type="submit" class="btn btn-success btn-md btn-block">Salvar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="scripts">
+
+    <script th:src="@{/assets/node_modules/simple-mask-money/lib/simple-mask-money.js}"></script>
+    <script th:src="@{/assets/custom/pages/admin/product/js/save-form-mask-money.js}"></script>
+    
+</th:block>
+
+</html>

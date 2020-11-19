@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Minha conta | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2">
+                <th:block layout:insert="~{fragments/customer/verticalMenu}"></th:block>
+            </div>
+            <div class="col-10 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Meus cartões</h4>
+                    </div>
+                    <div class="card-body">
+                        <a class="btn btn-success" th:href="@{/customer/card/new?operation=consult}">Novo Cartão</a>
+                        <table id="products-table" class="table table-borderless table-striped">
+                            <thead>
+                            <tr>
+                                <th>Bandeira</th>
+                                <th>Número</th>
+                                <th>Código de segurança</th>
+                                <th>Nome do titular</th>
+                                <th>#</th>
+                                <th>#</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>MASTERCARD</td>
+                                    <td>6493 7394 9374 9273</td>
+                                    <td>434</td>
+                                    <td>PEDRO CAMPOS D SILVA</td>
+                                    <td>
+                                        <a href="#">Editar</a>
+                                    </td>
+                                    <td>
+                                        <a href="#">Excluir</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>VISA</td>
+                                    <td>7892 1981 4018 1923</td>
+                                    <td>636</td>
+                                    <td>PEDRO CAMPOS D SILVA</td>
+                                    <td>
+                                        <a href="#">Editar</a>
+                                    </td>
+                                    <td>
+                                        <a href="#">Excluir</a>
+                                    </td>
+                                </tr>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

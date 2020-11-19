@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminTemplate}">>
+
+
+<th:block layout:fragment="pageContent">
+    <div th:if="${#bools.isFalse(edit)}"  class="card mb-4 mt-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Estoque de produtos
+        </div>
+        <div class="card-body">
+
+            <th:block layout:insert="~{fragments/successMessage}" />
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Entrada/Saída</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Entrada/Saída</th>
+                        <th>Status</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    <tr th:each="stock : ${stocks}">
+                        <td th:text="${stock.product.title}"></td>
+                        <td th:text="${stock.amount}"></td>
+                        <td>
+                            <div class="d-flex justify-content-center">
+                                <a th:href="@{/admin/stock/list?operation=consult&id=} + ${stock.id}">
+                                    <i class="fas fa-edit text-info text-lg"></i>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="d-flex justify-content-center">
+                            <div class="d-flex justify-content-center">
+                                <!--/*@thymesVar id="stock" type="br.com.prism.utily.entity.domain.stock.Stock"*/-->
+                                <span th:if="${stock.amount > 0}" class="badge badge-success">
+                                    Em estoque
+                                </span>
+                                <span th:if="${stock.amount == 0}" class="badge badge-danger">
+                                    Sem estoque
+                                </span>
+
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${edit}">
+
+        <div class="card mt-3 mb-3">
+            <div class="card-header">
+                <div class="d-flex flex-row justify-content-start">
+                    <div class="mt-1">
+                        <h4 class="card-title">Entrada/Saída no Estoque</h4>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+
+                <th:block layout:insert="~{fragments/errorMessage}" />
+
+                <!--/*@thymesVar id="stock" type="br.com.prism.utily.entity.domain.stock.Stock"*/-->
+                <form id="saveStockForm" th:action="@{/admin/stock/list}" method="POST" th:object="${stock}">
+
+                    <input type="hidden" name="operation" value="update">
+                    <input type="hidden" th:field="*{id}" name="id">
+
+                    <div class="row">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img th:src="${stock.product.imageUrl}" class="img-fluid" style="width: 256px; height: 256px;">
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="selectProduct">Produto<span class="text-danger text-bold">&nbsp;*</span></label>
+                                    <select class="form-control"
+                                            id="selectProduct"
+                                            th:field="*{product}" required>
+                                        <!--/*@thymesVar id="products" type="br.com.prism.utily.entity.domain.product.Product"*/-->
+                                        <option th:each="product : ${products}"
+                                                th:value="${product.id}"
+                                                th:text="${product.title}"
+                                                th:field="*{product}"
+                                        ></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="inputAmount">
+                                        Quantidade para entrada/saída
+                                        <span class="text-danger text-bold">&nbsp;*</span>
+                                    </label>
+                                    <input type="number"
+                                           class="form-control"
+                                           th:field="*{amount}"
+                                           name="amount"
+                                           id="inputAmount"
+                                           aria-describedby="amountHelp"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col mt-4">
+                                    <button type="submit"
+                                            class="btn btn-success btn-md btn-block"
+                                    >Confirmar operação no estoque</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</th:block>
+
+</html>
