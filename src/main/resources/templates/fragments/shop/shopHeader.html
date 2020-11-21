@@ -9,7 +9,7 @@
         <div class="row mb-0 pb-0">
             <nav class="navbar navbar-light bg-warning w-100">
                 <div class="col-2 mt-1 d-flex justify-content-start">
-                    <a class="navbar-brand" th:href="@{/shop/product/list}">
+                    <a class="navbar-brand" th:href="@{/shop/products}">
                         <img th:src="@{/assets/app/utily-logo-gray-white-500x250.png}" width="120" height="60">
                     </a>
                 </div>
@@ -68,7 +68,7 @@
                                 </a>
                             </li>
                             <li sec:authorize="!isAuthenticated()" class="nav-item">
-                                <a class="nav-link text-info" th:href="@{/login}">
+                                <a class="nav-link text-info" th:href="@{/auth/login}">
                                     <i class="fas fa-sign-in-alt"></i> Entrar
                                 </a>
                             </li>

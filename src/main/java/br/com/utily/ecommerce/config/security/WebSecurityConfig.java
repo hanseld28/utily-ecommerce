@@ -28,9 +28,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/", "/shop/product/list");
-        registry.addRedirectViewController("/shop", "/shop/product/list");
-        registry.addRedirectViewController("/shop/product", "/shop/product/list");
+        registry.addRedirectViewController("/", "/shop/products");
+        registry.addRedirectViewController("/shop", "/shop/products");
+        registry.addRedirectViewController("/shop/products", "/shop/products");
     }
 
     @Autowired
@@ -49,7 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors()
-                    .configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
+                    .configurationSource(request -> new CorsConfiguration()
+                            .applyPermitDefaultValues())
                     .and()
                 .headers()
                     .disable()
@@ -57,16 +58,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                         .antMatchers(
                                 "/assets/**",
 
-                                "/login",
+                                "/auth/login",
                                 "/doLogin",
                                 "/logout",
-                                "/signup",
+                                "/auth/sign-up",
 
                                 "/shop",
                                 "/shop/cart",
-                                "/shop/product/**",
-                                "/address/customer",
-                                "/creditcard/customer",
+                                "/shop/products/**",
                                 "/"
                         )
                             .permitAll()
@@ -79,16 +78,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                                 .authenticated()
                             .and()
                         .formLogin()
-                            .loginPage("/login")
+                            .loginPage("/auth/login")
                             .loginProcessingUrl("/doLogin")
                             .usernameParameter("username")
                             .passwordParameter("password")
-                            .failureUrl("/login?error=")
-                            .defaultSuccessUrl("/shop/product/list")
+                            .failureUrl("/auth/login?error=")
+                            .defaultSuccessUrl("/shop/products")
 
                         .and()
                             .logout()
-                                .logoutSuccessUrl("/login?logout=true")
+                                .logoutSuccessUrl("/auth/login?logout=true")
                                 .invalidateHttpSession(true)
                                 .deleteCookies("JSESSIONID");
     }

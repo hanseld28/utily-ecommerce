@@ -14,28 +14,29 @@ import javax.servlet.http.HttpServletResponse;
 @ControllerAdvice
 public class ApplicationExceptionHandler extends SimpleMappingExceptionResolver {
 
-    private final String UNAUTHORIZED_PAGE = "pages/error/401";
-    private final String ACCESS_DENIED_PAGE = "pages/error/403";
-    private final String NOT_FOUND_PAGE = "pages/error/404";
-    private final String INTERNAL_SERVER_ERROR_PAGE = "pages/error/500";
-
     @Override
     protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         ModelAndView modelAndView = new ModelAndView();
         String viewName = null;
 
         if (ex instanceof UnauthorizedException) {
-            viewName = UNAUTHORIZED_PAGE;
+            viewName = EErrorPage.UNAUTHORIZED.getPath();
         }
         if (ex instanceof AccessDeniedException) {
-            viewName = ACCESS_DENIED_PAGE;
+            viewName = EErrorPage.ACCESS_DENIED.getPath();
         }
         if (ex instanceof NotFoundException) {
-            viewName = NOT_FOUND_PAGE;
+            viewName = EErrorPage.NOT_FOUND.getPath();
         }
         if (ex instanceof InternalServerErrorException) {
-            viewName = INTERNAL_SERVER_ERROR_PAGE;
+            viewName = EErrorPage.INTERNAL_SERVER_ERROR.getPath();
         }
+
+        if (viewName == null) {
+            // TODO: make a default error page and create respective enum constant
+            viewName = EErrorPage.INTERNAL_SERVER_ERROR.getPath();
+        }
+
         modelAndView.setViewName(viewName);
 
         return modelAndView;

@@ -25,7 +25,7 @@
 
                         <th:block layout:insert="~{fragments/errorMessage}"></th:block>
 
-                        <form th:action="@{/signup}" method="POST" th:object="${customer}">
+                        <form th:action="@{/auth/signup}" method="POST" th:object="${customer}">
                             <input type="hidden" name="operation" value="save">
                             <div class="form-row">
                                 <div class="form-group col-xs-12 col-sm-12 col-md-8">
@@ -42,7 +42,7 @@
                                 <div class="col-sm-3">
                                     <legend class="col-form-label pt-0">Gênero<span class="text-danger text-bold"> *</span></legend>
 
-                                    <div th:each="genderOption : ${T(br.com.prism.utily.entity.domain.user.customer.Gender).values()}">
+                                    <div th:each="genderOption : ${T(br.com.utily.ecommerce.entity.domain.user.customer.Gender).values()}">
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" th:field="*{gender}" name="gender" th:id="${#strings.concat('input', 'Gender', genderOption)}"  th:value="${genderOption}" required>
                                             <label class="form-check-label" th:for="${#strings.concat('input', 'Gender', genderOption)}" th:text="${genderOption.displayName}"></label>
@@ -94,7 +94,7 @@
                         </form>
 
                         <div class="col-md-4 offset-md-4 mt-2">
-                            <a th:href="@{/login}" class="btn btn-primary btn-sm btn-block">Já tenho uma conta</a>
+                            <a th:href="@{/auth/login}" class="btn btn-primary btn-sm btn-block">Já tenho uma conta</a>
                         </div>
 
                     </div>

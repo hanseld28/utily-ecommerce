@@ -1,7 +1,6 @@
 package br.com.utily.ecommerce.controller.domain.shop.checkout;
 
 import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
-import br.com.utily.ecommerce.helper.ModelAndViewHelper;
 import br.com.utily.ecommerce.service.domain.IDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,9 +25,10 @@ public class CheckoutShopController {
 
     @GetMapping(path = "/step/one")
     public ModelAndView stepOne(HttpServletRequest httpServletRequest) {
-        ModelAndView modelAndView = ModelAndViewHelper.extractConfiguredFrom(httpServletRequest);
+       // TODO: ...
 
-        return modelAndView;
+
+        return null;
     }
 
 }
