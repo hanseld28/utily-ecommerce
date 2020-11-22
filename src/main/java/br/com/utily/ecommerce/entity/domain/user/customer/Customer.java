@@ -9,10 +9,13 @@ import br.com.utily.ecommerce.entity.domain.user.User;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
 import br.com.utily.ecommerce.entity.domain.user.customer.creditCard.CreditCard;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -49,8 +52,8 @@ public class Customer extends AlternativeDomainEntity {
 
     @JoinColumn(name = "cst_usr_id", foreignKey = @ForeignKey(name = "cst_usr_fk"))
     @OneToOne(
-            cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE },
-            fetch = FetchType.EAGER, orphanRemoval = true)
+            cascade = { CascadeType.ALL },
+            fetch = FetchType.EAGER)
     private User user;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.DETACH)

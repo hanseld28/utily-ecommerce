@@ -19,6 +19,7 @@ import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
 import br.com.utily.ecommerce.entity.domain.shop.sale.SaleAddress;
 import br.com.utily.ecommerce.entity.domain.shop.sale.SaleCreditCard;
 import br.com.utily.ecommerce.entity.domain.shop.sale.SaleItem;
+import br.com.utily.ecommerce.entity.domain.user.User;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
 import br.com.utily.ecommerce.entity.domain.user.customer.creditCard.CreditCard;
@@ -134,6 +135,20 @@ public class Facade<T extends Entity> implements IFacade<T> {
         if (daosMap.containsKey(entityName)) {
             optionalEntity = daosMap.get(entityName).findById(id);
         }
+
+        return optionalEntity;
+    }
+
+    @Override
+    public Optional<T> findBy(Entity targetEntity, T baseEntity) {
+        Optional<T> optionalEntity = Optional.empty();
+        String entityName = baseEntity.getClass().getName();
+
+        if (daosMap.containsKey(entityName)) {
+            IDAO<T> selectedDAO = daosMap.get(entityName);
+            optionalEntity = executeFindBy(targetEntity, selectedDAO);
+        }
+
         return optionalEntity;
     }
 
@@ -145,6 +160,22 @@ public class Facade<T extends Entity> implements IFacade<T> {
         if (daosMap.containsKey(entityName)) {
             entitiesCollection = daosMap.get(entityName).findAll();
         }
+
         return entitiesCollection;
+    }
+
+    private Optional<T> executeFindBy(Entity filterEntity, IDAO<T> dao) {
+        Optional<T> optionalEntity = Optional.empty();
+
+        if (filterEntity instanceof User) {
+            User user = (User) filterEntity;
+
+            if (dao instanceof ICustomerDAO) {
+                ICustomerDAO customerDAO = (ICustomerDAO) dao;
+                optionalEntity = (Optional<T>) customerDAO.findCustomerByUser(user);
+            }
+        }
+
+        return optionalEntity;
     }
 }

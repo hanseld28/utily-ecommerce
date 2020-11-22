@@ -21,8 +21,8 @@ public enum EPageFolder {
     CREDIT_CARD("credit-card/"),
     ORDER("/order"),
 
-
     SHOP("shop/"),
+    CART("cart/"),
     CHECKOUT("checkout/"),
     STEP("step/"),
 

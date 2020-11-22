@@ -41,13 +41,13 @@
                                 </a>
                             </li>
                             <li th:if="${#authentication.getAuthorities()[0].getAuthority().equals('CUSTOMER')}" class="nav-item mr-2">
-                                <a class="nav-link text-white" th:href="@{/customer/account?operation=consult}">
+                                <a class="nav-link text-white" th:href="@{/customer/account}">
                                     Minha conta
                                 </a>
                             </li>
 
                             <li th:if="${!#authentication.getAuthorities()[0].getAuthority().equals('ADMIN')} and ${shopCart}" class="nav-item">
-                                <a class="nav-link" th:href="@{/shop/cart}">
+                                <a class="nav-link" th:href="@{/shop/cart/items}">
                                 <span>
                                     <i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>
                                     <span th:text="${shopCart.itemsAmount}"

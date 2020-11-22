@@ -22,7 +22,7 @@
 
         </div>
         <div class="card-body">
-            <th:block layout:insert="~{fragments/errorMessage}"></th:block>
+            <th:block layout:insert="~{fragments/errorMessages}"></th:block>
 
             <form class="ml-5 mr-5" th:action="@{/admin/customer/new}" method="POST" th:object="${customer}">
                 <input type="hidden" name="operation" value="save">

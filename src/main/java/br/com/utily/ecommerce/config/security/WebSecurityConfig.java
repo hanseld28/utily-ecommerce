@@ -64,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                                 "/auth/sign-up",
 
                                 "/shop",
-                                "/shop/cart",
+                                "/shop/cart/**",
                                 "/shop/products/**",
                                 "/"
                         )

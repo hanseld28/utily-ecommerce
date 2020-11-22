@@ -2,8 +2,10 @@ package br.com.utily.ecommerce.helper.view;
 
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.util.constant.attribute.EModelAttribute;
+import br.com.utily.ecommerce.util.constant.endpoint.EEndpoint;
 import br.com.utily.ecommerce.util.constant.entity.EViewType;
 import br.com.utily.ecommerce.util.constant.folder.EPageFolder;
+import br.com.utily.ecommerce.util.constant.view.EView;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,6 +15,11 @@ import java.util.Collection;
 @Component
 public class ModelAndViewHelper<T extends Entity> {
 
+
+    public static ModelAndView configure(final EViewType eViewType) {
+        String view = computeViewByEntityType(eViewType);
+        return extractConfiguredFrom(view);
+    }
 
     public static ModelAndView configure(final EViewType eViewType, final Enum<?> eView) {
         String view = computeViewByEntityType(eViewType, eView);
@@ -27,14 +34,12 @@ public class ModelAndViewHelper<T extends Entity> {
     private static ModelAndView extractConfiguredFrom(String view) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName(view);
-
         return modelAndView;
     }
 
     private static ModelAndView extractConfiguredFrom(String view, Entity additionalObject, EModelAttribute eModelAttribute) {
         ModelAndView modelAndView = extractConfiguredFrom(view);
         addObjectTo(modelAndView, additionalObject, eModelAttribute);
-
         return modelAndView;
     }
 
@@ -46,9 +51,8 @@ public class ModelAndViewHelper<T extends Entity> {
         target.addObject(eModelAttribute.getName(), objects);
     }
 
-    private static String computeViewByEntityType(final EViewType eViewType, final Enum<?> eView) {
+    private static Collection<Enum<?>> identifyPaths(final EViewType eViewType) {
         Collection<Enum<?>> paths = new ArrayList<>();
-        paths.add(EPageFolder.PAGES);
 
         switch (eViewType) {
 
@@ -72,15 +76,53 @@ public class ModelAndViewHelper<T extends Entity> {
                 paths.add(EPageFolder.SHOP);
                 paths.add(EPageFolder.PRODUCT);
                 break;
+
             case PRODUCT_ADMIN:
                 paths.add(EPageFolder.ADMIN);
                 paths.add(EPageFolder.PRODUCT);
                 break;
+
+            case REDIRECT_PRODUCT_SHOP:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.SHOP);
+                paths.add(EEndpoint.PRODUCTS);
+                break;
+
+            case REDIRECT_LOGIN_APPLICATION:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.AUTH);
+                paths.add(EEndpoint.LOGIN);
+                break;
+
+            case REDIRECT_CUSTOMER_ACCOUNT_SHOP:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.CUSTOMER);
+                paths.add(EEndpoint.ACCOUNT);
+                break;
+
+            case CART_SHOP:
+                paths.add(EPageFolder.SHOP);
+                paths.add(EPageFolder.CART);
+                break;
+
             case AUTH_APPLICATION:
                 paths.add(EPageFolder.AUTH);
                 break;
         }
 
+        return paths;
+    }
+
+    private static String computeViewByEntityType(final EViewType eViewType) {
+        Collection<Enum<?>> paths = identifyPaths(eViewType);
+        return PathBuilderHelper.build(paths);
+    }
+
+    private static String computeViewByEntityType(final EViewType eViewType, final Enum<?> eView) {
+        Collection<Enum<?>> paths = new ArrayList<>();
+
+        paths.add(EPageFolder.PAGES);
+        paths.addAll(identifyPaths(eViewType));
         paths.add(eView);
 
         return PathBuilderHelper.build(paths);

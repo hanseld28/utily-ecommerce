@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 
@@ -35,16 +37,10 @@ public class ShopCart extends Entity {
         }
     }
 
-    public void removeItem(CartItem cartItem) {
-        if (existsItem(cartItem)) {
-            int i = items.size() - 1;
-
-            for (; i > -1; i--) {
-                if (areItemsTheSame(items.get(i), cartItem)) {
-                    items.remove(i);
-                    break;
-                }
-            }
+    public void removeItem(Long productId) {
+        CartItem existingCartItem = findItem(productId);
+        if (existingCartItem != null) {
+            items.remove(existingCartItem);
             updateProperties();
         }
     }
@@ -53,22 +49,29 @@ public class ShopCart extends Entity {
         return this.items
                 .stream()
                 .anyMatch(existingCartItem -> areItemsTheSame(existingCartItem, cartItem));
-
     }
 
     private Boolean areItemsTheSame(CartItem one, CartItem two) {
         return one.getProduct().getId().equals(two.getProduct().getId());
     }
 
-    public void updateItem(CartItem cartItem) {
-        int index = this.items.indexOf(cartItem);
+    public void updateItem(Long productId, Integer updatedAmount) {
+        CartItem existingCartItem = findItem(productId);
 
-        if (index != -1) {
-            CartItem existingCartItem = items.get(index);
-            cartItem.setProduct(existingCartItem.getProduct());
-            items.set(index, cartItem);
+        if (existingCartItem != null) {
+            int index = items.indexOf(existingCartItem);
+            existingCartItem.setAmount(updatedAmount);
+            items.set(index, existingCartItem);
             calculateTotal();
         }
+    }
+
+    private CartItem findItem(Long productId) {
+        return items.stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .limit(1)
+                .collect(Collectors.toList())
+                .get(0);
     }
 
     public void clear() {
@@ -93,4 +96,7 @@ public class ShopCart extends Entity {
         calculateTotal();
     }
 
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
 }

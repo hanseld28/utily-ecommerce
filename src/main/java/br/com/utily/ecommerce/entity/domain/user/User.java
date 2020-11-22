@@ -8,6 +8,10 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -28,12 +32,11 @@ public class User extends AlternativeDomainEntity {
     @Column(name = "usr_password", nullable = false)
     private String password;
 
-    @Transient
-    private String confirmPassword;
-
     @Basic
     @Enumerated(EnumType.STRING)
     @Column(name = "usr_role")
-    private UserRole role;
+    private EUserRole role;
 
+    @Transient
+    private String confirmPassword;
 }

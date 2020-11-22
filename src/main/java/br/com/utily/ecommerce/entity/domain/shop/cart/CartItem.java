@@ -9,28 +9,28 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Getter
-@Setter
-
-@Component
 public class CartItem extends Entity {
 
-    private Long id;
     private Product product;
     private Integer amount;
     private Double subtotal;
 
-    public CartItem() {
-        amount = 1;
+    private CartItem(Product product, Integer amount) {
+        setProduct(product);
+        setAmount(amount);
+    }
+
+    public static CartItem from(Product product, Integer amount) {
+        return new CartItem(product, amount);
     }
 
     public void setProduct(Product product) {
         this.product = product;
-        id = product.getId();
         calculateSubtotalIfPermitted();
     }
 
     public void setAmount(Integer amount) {
-        this.amount = amount;
+        this.amount = amount < 1 ? 1 : amount;
         calculateSubtotalIfPermitted();
     }
 
@@ -41,7 +41,7 @@ public class CartItem extends Entity {
     }
 
     private Boolean subtotalIsCalculable() {
-        return (product != null) && (product.getPrice() != null);
+        return (product != null && amount != null) && (product.getPrice() != null && amount > 0);
     }
 
     private void calculateSubtotal() {
@@ -53,11 +53,11 @@ public class CartItem extends Entity {
         if (this == o) return true;
         if (!(o instanceof CartItem)) return false;
         CartItem cartItem = (CartItem) o;
-        return Objects.equals(id, cartItem.getId());
+        return Objects.equals(product.getId(), cartItem.getProduct().getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(product.getId());
     }
 }

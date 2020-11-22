@@ -24,17 +24,26 @@
                     <div class="col-8 d-flex justify-content-start">
                         <h3>Carrinho de compras</h3>
                     </div>
-                    <div class="col-4 d-flex justify-content-end">
-                        <h5 class="text-muted pb-0 mb-0">Preço</h5>
-                    </div>
+                    <th:block th:if="${!shopCart.isEmpty()}">
+                        <div class="col-4 d-flex justify-content-end">
+                            <h5 class="text-muted pb-0 mb-0">Subtotal</h5>
+                        </div>
+                    </th:block>
                 </div>
                 <hr class="mt-0 mb-3"/>
 
                 <div class="container-fluid">
+                    <th:block th:if="${shopCart.isEmpty()}">
+                        <div class="alert alert-info">
+                            Você ainda não adicionou nenhum item no carrinho de compras.
+                        </div>
+                    </th:block>
 
-                    <!-- LIST ALL PRODUCTS OF SHOP CART -->
-                    <div th:each="item : ${shopCart.items}"
-                         class="row flex-row pl-4">
+                    <th:block th:if="${!shopCart.isEmpty()}">
+
+                        <!-- LIST ALL PRODUCTS OF SHOP CART -->
+                        <div th:each="item : ${shopCart.items}"
+                         class="row flex-row pl-4 mb-4">
 
                         <div class="col-12">
                             <div class="row flex-row">
@@ -45,83 +54,103 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <a th:text="${item.product.title}"
-                                               th:href="@{/shop/product/details?id=} + ${item.product.id}"
+                                               th:href="@{/shop/products/} + ${item.product.id}"
                                                class="btn btn-link pl-0"
                                                style="font-size: 20px">
                                             </a>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-3">
-                                            <form th:action="@{/shop/cart}" method="post" class="form-inline w-50">
-                                                <div class="form-group">
-                                                    <input type="hidden" name="operation" th:value="update">
-
-                                                    <input type="hidden"
-                                                           name="id"
-                                                           th:value="${item.id}">
-
-                                                    <label th:for="'inputItemAmount' + ${item.id}" class="mr-3">QTD.</label>
-                                                    <input type="number"
-                                                           class="form-control w-25"
-                                                           name="amount"
-                                                           min="1"
-                                                           th:id="'inputItemAmount' + ${item.id}"
-                                                           th:value="${item.amount}">
+                                        <div class="col-8 mr-0">
+                                            <form th:action="@{/shop/cart/items/} + ${item.product.id} + @{/update}" method="post" class="form-inline">
+                                                <div class="row">
+                                                    <div class="col-6 form-group">
+                                                        <label th:for="'inputItemAmount' + ${item.product.id}" class="mr-3">QTD.</label>
+                                                        <input type="number"
+                                                               class="form-control w-50"
+                                                               name="amount"
+                                                               min="1"
+                                                               th:id="'inputItemAmount' + ${item.product.id}"
+                                                               th:value="${item.amount}">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <button type="submit" class="btn btn-success ml-0">
+                                                            <i class="fa fa-save"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <button type="submit" class="btn btn-link">Atualizar</button>
                                             </form>
                                         </div>
-                                        <div class="col-3">
-                                            <form th:action="@{/shop/cart}" method="get" class="form-inline w-50">
-                                                <input type="hidden" name="operation" th:value="remove">
-                                                <input type="hidden" name="productId" th:value="${item.product.id}">
-                                                <button type="submit" class="btn btn-link pl-0">
-                                                    Excluir
+                                        <div class="col-4">
+                                            <form th:action="@{/shop/cart/items/} + ${item.product.id} + @{/remove}" method="get" class="form-inline w-50">
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="fa fa-trash"></i>
                                                 </button>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-3 d-flex justify-content-end">
-                                    <span th:text="${#strings.replace(#numbers.formatCurrency(item.subtotal), '$', 'R$')}"
-                                          class="font-weight-bold"
-                                          style="font-size: large"></span>
+                                    <div class="row">
+                                        <div class="col">
+                                        <span th:text="${#strings.replace(#numbers.formatCurrency(item.subtotal), '$', 'R$')}"
+                                              class="font-weight-bold"
+                                              style="font-size: large"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    </th:block>
                 </div>
                 <!-- END LIST PRODUCTS OF SHOP CART -->
 
-                <div class="row flex-row">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-end text-dark" style="font-size: 25px">
-                            <span>Total (<span th:text="${shopCart.itemsAmount}"></span> itens):</span>
-                            <span th:text="${#strings.replace(#numbers.formatCurrency(shopCart.total), '$', 'R$')}" class="ml-1 font-weight-bold"></span>
+                <th:block th:if="${!shopCart.isEmpty()}">
+                    <div class="row flex-row">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-end text-dark" style="font-size: 25px">
+                                <span>Total (<span th:text="${shopCart.itemsAmount}"></span> itens):</span>
+                                <span th:text="${#strings.replace(#numbers.formatCurrency(shopCart.total), '$', 'R$')}" class="ml-1 font-weight-bold"></span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </th:block>
 
             </div>
 
             <div class="col-4">
                 <div class="card">
                     <div class="card-body" style="font-size: 20px">
-                        <span>Total (<span th:text="${shopCart.itemsAmount}"></span> itens):</span>
-                        <span th:text="${#strings.replace(#numbers.formatCurrency(shopCart.total), '$', 'R$')}" class="ml-1 font-weight-bold"></span>
+                        <th:block th:if="${!shopCart.isEmpty()}">
+                            <span>Total (<span th:text="${shopCart.itemsAmount}"></span> itens):</span>
+                            <span th:text="${#strings.replace(#numbers.formatCurrency(shopCart.total), '$', 'R$')}" class="ml-1 font-weight-bold"></span>
+                        </th:block>
+                        <th:block th:if="${shopCart.isEmpty()}">
+                            <span class="text-muted">Navegue pela loja e adicione produtos ao carrinho</span>
+                        </th:block>
                     </div>
-                    <div class="card-footer">
-                        <a th:href="@{/shop/checkout/step/one}"
-                           class="btn btn-info btn-lg btn-block"
-                        >Fechar pedido</a>
-                    </div>
-                    <div class="card-footer">
-                        <a th:href="@{/shop/product/list}"
-                           class="btn btn-warning btn-lg btn-block text-dark"
-                        >Continuar comprando</a>
-                    </div>
+                    <th:block th:if="${!shopCart.isEmpty()}">
+                        <div class="card-footer">
+                            <a th:href="@{/shop/checkout/step/one}"
+                               class="btn btn-info btn-lg btn-block"
+                         >Fechar pedido</a>
+                        </div>
+
+                        <div class="card-footer">
+                            <a th:href="@{/shop/products}"
+                               class="btn btn-warning btn-lg btn-block text-dark"
+                            >Continuar comprando</a>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${shopCart.isEmpty()}">
+                        <div class="card-footer">
+                            <a th:href="@{/shop/products}"
+                               class="btn btn-info btn-lg btn-block text-white"
+                            >Navegar pela loja</a>
+                        </div>
+                    </th:block>
                 </div>
             </div>
         </div>

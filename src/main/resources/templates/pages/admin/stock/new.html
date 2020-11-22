@@ -17,7 +17,7 @@
 
         </div>
         <div class="card-body">
-            <th:block layout:insert="~{fragments/errorMessage}" />
+            <th:block layout:insert="~{fragments/errorMessages}" />
             <!--/*@thymesVar id="stock" type="br.com.prism.utily.entity.domain.stock.Stock"*/-->
             <form id="saveStockForm" th:action="@{/admin/stock/new}" method="POST" th:object="${stock}">
 

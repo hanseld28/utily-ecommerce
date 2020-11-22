@@ -2,7 +2,7 @@ package br.com.utily.ecommerce.controller.domain.shop.product;
 
 import br.com.utily.ecommerce.entity.domain.product.Product;
 import br.com.utily.ecommerce.entity.domain.shop.cart.ShopCart;
-import br.com.utily.ecommerce.handler.exception.NotFoundException;
+import br.com.utily.ecommerce.controller.handler.exception.NotFoundException;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
 import br.com.utily.ecommerce.service.domain.IDomainService;
 import br.com.utily.ecommerce.util.constant.attribute.EModelAttribute;

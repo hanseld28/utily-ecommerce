@@ -1,5 +1,6 @@
 package br.com.utily.ecommerce.service.domain.impl;
 
+import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.DomainEntity;
 import br.com.utily.ecommerce.facade.IFacade;
 import br.com.utily.ecommerce.service.domain.IDomainService;
@@ -32,5 +33,9 @@ public class DomainService<T extends DomainEntity> implements IDomainService<T> 
     @Override
     public Optional<T> findById(Long id, T mockEntity) {
         return facade.findById(id, mockEntity);
+    }
+    @Override
+    public Optional<T> findBy(Entity targetEntity, T mockBaseEntity) {
+        return facade.findBy(targetEntity, mockBaseEntity);
     }
 }

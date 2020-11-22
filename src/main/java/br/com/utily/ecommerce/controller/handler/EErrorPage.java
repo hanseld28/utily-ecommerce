@@ -1,4 +1,4 @@
-package br.com.utily.ecommerce.handler;
+package br.com.utily.ecommerce.controller.handler;
 
 import lombok.Getter;
 

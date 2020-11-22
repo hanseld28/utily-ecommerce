@@ -1,5 +1,6 @@
 package br.com.utily.ecommerce.util.constant;
 
+import br.com.utily.ecommerce.util.constant.endpoint.EEndpoint;
 import br.com.utily.ecommerce.util.constant.folder.EPageFolder;
 import br.com.utily.ecommerce.util.constant.view.EView;
 
@@ -9,6 +10,10 @@ public class EnumUtil {
         return to.cast(from);
     }
 
+    public static boolean isEndpointEnum(Enum target) {
+        return target instanceof EEndpoint;
+    }
+
     public static boolean isPageFolderEnum(Enum target) {
         return target instanceof EPageFolder;
     }
@@ -16,5 +21,4 @@ public class EnumUtil {
     public static boolean isViewEnum(Enum target) {
         return target instanceof EView;
     }
-
 }

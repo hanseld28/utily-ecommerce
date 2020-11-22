@@ -17,7 +17,7 @@
 
         </div>
         <div class="card-body">
-            <th:block layout:insert="~{fragments/errorMessage}" />
+            <th:block layout:insert="~{fragments/errorMessages}" />
 
             <form id="registerProductForm" th:action="@{/admin/product/new}" method="POST" th:object="${product}">
 

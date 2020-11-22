@@ -93,7 +93,7 @@
             </div>
             <div class="card-body">
 
-                <th:block layout:insert="~{fragments/errorMessage}" />
+                <th:block layout:insert="~{fragments/errorMessages}" />
 
                 <!--/*@thymesVar id="product" type="br.com.prism.utily.entity.domain.product.Product"*/-->
                 <form id="saveProductForm" th:action="@{/admin/product/list}" method="POST" th:object="${product}">

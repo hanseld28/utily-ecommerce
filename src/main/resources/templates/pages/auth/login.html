@@ -25,7 +25,7 @@
 
                         <h5 class="text-muted">Entre na sua conta ou crie uma caso ainda não possua cadastro</h5>
 
-                        <th:block layout:insert="~{fragments/successMessage}"></th:block>
+                        <th:block layout:insert="~{fragments/successMessage}" />
 
                         <form th:action="@{/doLogin}" method="POST">
                             <input type="hidden" name="operation" value="consult">
