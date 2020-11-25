@@ -11,7 +11,9 @@ public enum EModelAttribute {
     PRODUCTS("products"),
     PRODUCT("product"),
 
-    SHOP_CART("shopCart");
+    SHOP_CART("shopCart"),
+
+    NOT_ENOUGH_ADDRESS("notEnoughAddress");
 
     private final String name;
 

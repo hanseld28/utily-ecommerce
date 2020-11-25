@@ -19,7 +19,7 @@ import javax.persistence.*;
 
 @Entity
 @Component
-@IdClass(SaleAddressId.class) // TODO: VERIFICAR PORQUE O IDCLASS NÃO ESTÁ ENCONTRANDO AS PROPRIEDADES DE SALEADDRESSID
+//@IdClass(SaleAddressId.class) // TODO: VERIFICAR PORQUE O IDCLASS NÃO ESTÁ ENCONTRANDO AS PROPRIEDADES DE SALEADDRESSID
 @Table(name = "sales_adresses")
 public class SaleAddress extends AssociativeDomainEntity {
 
@@ -36,13 +36,13 @@ public class SaleAddress extends AssociativeDomainEntity {
     @JoinColumn(name = "ssa_sls_id", referencedColumnName = "id", nullable = false)
     private Sale sale;
 
-    public SaleAddress adapt(SaleAddressId saleAddressId, Address address) {
+    public SaleAddress adapt(SaleAddressId saleAddressId, Sale sale, Address address) {
         Long addressId = address.getId();
         saleAddressId.setAddressId(addressId);
 
         this.setId(saleAddressId);
         this.setAddress(address);
-
+        this.setSale(sale);
         return this;
     }
 }

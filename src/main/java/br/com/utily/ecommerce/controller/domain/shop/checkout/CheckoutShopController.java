@@ -6,7 +6,7 @@ import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
 import br.com.utily.ecommerce.entity.domain.shop.sale.progress.SaleInProgress;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
-import br.com.utily.ecommerce.helper.entity.SaleEntityHelper;
+import br.com.utily.ecommerce.helper.entity.CheckoutHelper;
 import br.com.utily.ecommerce.helper.security.LoggedUserHelper;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
 import br.com.utily.ecommerce.service.domain.IDomainService;
@@ -42,7 +42,7 @@ public class CheckoutShopController {
     private final SaleInProgress saleInProgress;
     private final ShopCart shopCart;
     private final LoggedUserHelper loggedUserHelper;
-    private final SaleEntityHelper saleEntityHelper;
+    private final CheckoutHelper checkoutHelper;
     private Customer loggedCustomer;
 
     private final ModelAndViewHelper<Customer> modelAndViewHelper;
@@ -55,14 +55,14 @@ public class CheckoutShopController {
                                   SaleInProgress saleInProgress,
                                   ShopCart shopCart,
                                   LoggedUserHelper loggedUserHelper,
-                                  SaleEntityHelper saleEntityHelper,
+                                  CheckoutHelper checkoutHelper,
                                   ModelAndViewHelper<Customer> modelAndViewHelper) {
         this.saleDomainService = saleDomainService;
         this.addressDomainService = addressDomainService;
         this.saleInProgress = saleInProgress;
         this.shopCart = shopCart;
         this.loggedUserHelper = loggedUserHelper;
-        this.saleEntityHelper = saleEntityHelper;
+        this.checkoutHelper = checkoutHelper;
         this.modelAndViewHelper = modelAndViewHelper;
     }
 
@@ -81,6 +81,12 @@ public class CheckoutShopController {
 
     @PostMapping(path = CHECKOUT_STEP_ONE_VALIDATION_URL)
     public ModelAndView validateStepOne(Address address) {
+        ModelAndView modelAndView = ModelAndViewHelper.configure(
+                EViewType.CHECKOUT_STEP_SHOP,
+                EView.CHECKOUT_STEP_ONE,
+                loggedCustomer,
+                EModelAttribute.CUSTOMER);
+
         Long addressId = address.getId();
         boolean isExistingAddress = addressId != null;
 
@@ -88,12 +94,19 @@ public class CheckoutShopController {
             Optional<Address> foundAddressOptional = addressDomainService.findById(addressId, address);
             Address addressToAdd = foundAddressOptional.orElseThrow(NotFoundException::new);
 
+            if (checkoutHelper.isItNeedsOneMoreAddress(address)) {
+                modelAndView.addObject(
+                        EModelAttribute.NOT_ENOUGH_ADDRESS.getName(),
+                        true);
+                return modelAndView;
+            }
+
             saleInProgress.addAddress(addressToAdd);
             saleInProgress.finish();
 
             Optional<SaleInProgress> saleInProgressOptional = ProxyHelper.recoveryEntityFromProxy(saleInProgress);
 
-            Sale sale = saleEntityHelper.adapt(
+            Sale sale = checkoutHelper.adapt(
                     saleInProgressOptional.orElseThrow(InternalError::new)
             );
 
@@ -110,15 +123,7 @@ public class CheckoutShopController {
             );
         }
 
-
-
-
-
-        return ModelAndViewHelper.configure(
-                EViewType.CHECKOUT_STEP_SHOP,
-                EView.CHECKOUT_STEP_ONE,
-                loggedCustomer,
-                EModelAttribute.CUSTOMER);
+        return modelAndView;
     }
 
     @GetMapping(path = CHECKOUT_STEP_TWO_URL)

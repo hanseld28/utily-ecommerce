@@ -21,10 +21,10 @@ import java.io.Serializable;
 public class SaleAddressId implements Serializable {
 
     @Column(name = "ssa_sls_id", nullable = false)
-    private Long saleId;
+    protected Long saleId;
 
     @Column(name = "ssa_adr_id", nullable = false)
-    private Long addressId;
+    protected Long addressId;
 
     // TODO: VERIFICAR MOTIVO DAS PRPOPRIEDADES NÃO ESTAREM SENDO RECONHECIDAS
 }

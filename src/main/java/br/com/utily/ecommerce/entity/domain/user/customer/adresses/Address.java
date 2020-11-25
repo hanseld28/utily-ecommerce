@@ -109,4 +109,16 @@ public class Address extends AlternativeDomainEntity {
 
         return addressShortName.toString();
     }
+
+    public boolean isBilling() {
+        return type.equals(AddressType.BILLING);
+    }
+
+    public boolean isShipping() {
+        return type.equals(AddressType.SHIPPING);
+    }
+
+    public boolean isShippingAndBilling() {
+        return type.equals(AddressType.SHIPPING_AND_BILLING);
+    }
 }
