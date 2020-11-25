@@ -49,14 +49,14 @@
                         <h4 class="text-muted">Selecionar um endereço existente</h4>
                     </div>
                     <div class="card-body">
-                        <form class="form-inline" th:action="@{/shop/checkout/step/two}" method="POST">
+                        <form class="form-inline" th:action="@{/shop/checkout/step/one/validation}" method="POST">
                             <div class="row flex-row w-100">
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="selectAddress">Endereço</label>
                                         <select class="form-control ml-3 w-75"
                                                 id="selectAddress"
-                                                name="addressId">
+                                                name="id">
                                             <option value="" selected>Selecione um endereço...</option>
                                             <option th:each="customerAddress : ${customer.adresses}"
                                                     th:value="${customerAddress.id}"

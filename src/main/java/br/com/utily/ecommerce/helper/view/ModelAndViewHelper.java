@@ -82,6 +82,17 @@ public class ModelAndViewHelper<T extends Entity> {
                 paths.add(EPageFolder.PRODUCT);
                 break;
 
+            case CART_SHOP:
+                paths.add(EPageFolder.SHOP);
+                paths.add(EPageFolder.CART);
+                break;
+
+            case CHECKOUT_STEP_SHOP:
+                paths.add(EPageFolder.SHOP);
+                paths.add(EPageFolder.CHECKOUT);
+                paths.add(EPageFolder.STEP);
+                break;
+
             case REDIRECT_PRODUCT_SHOP:
                 paths.add(EView.REDIRECT);
                 paths.add(EEndpoint.SHOP);
@@ -98,11 +109,6 @@ public class ModelAndViewHelper<T extends Entity> {
                 paths.add(EView.REDIRECT);
                 paths.add(EEndpoint.CUSTOMER);
                 paths.add(EEndpoint.ACCOUNT);
-                break;
-
-            case CART_SHOP:
-                paths.add(EPageFolder.SHOP);
-                paths.add(EPageFolder.CART);
                 break;
 
             case AUTH_APPLICATION:

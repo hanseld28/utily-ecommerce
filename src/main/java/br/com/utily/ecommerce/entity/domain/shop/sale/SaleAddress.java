@@ -1,10 +1,11 @@
 package br.com.utily.ecommerce.entity.domain.shop.sale;
 
+import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @ToString
 
@@ -17,38 +18,36 @@ import java.io.Serializable;
 @Setter
 
 @Entity
+@Component
+@IdClass(SaleAddressId.class) // TODO: VERIFICAR PORQUE O IDCLASS NÃO ESTÁ ENCONTRANDO AS PROPRIEDADES DE SALEADDRESSID
 @Table(name = "sales_adresses")
-public class SaleAddress extends br.com.utily.ecommerce.entity.Entity implements Serializable {
+public class SaleAddress extends AssociativeDomainEntity {
 
     @EmbeddedId
     private SaleAddressId id;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
     @MapsId("addressId")
-    @JoinColumn(name = "ssa_adr_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ssa_adr_id", referencedColumnName = "id", nullable = false)
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
     @MapsId("saleId")
-    @JoinColumn(name = "ssa_sls_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ssa_sls_id", referencedColumnName = "id", nullable = false)
     private Sale sale;
 
-    public static SaleAddress from(Address address) {
-        SaleAddress saleAddress = new SaleAddress();
+    public SaleAddress adapt(SaleAddressId saleAddressId, Address address) {
+        Long addressId = address.getId();
+        saleAddressId.setAddressId(addressId);
 
-        saleAddress.id = new SaleAddressId();
-        saleAddress.id.setAddressId(address.getId());
+        this.setId(saleAddressId);
+        this.setAddress(address);
 
-        saleAddress.address = address;
-
-        return saleAddress;
-    }
-
-    public void setAddress(Address address) {
-        SaleAddressId saleItemId = new SaleAddressId();
-        saleItemId.setAddressId(address.getId());
-
-        this.id = saleItemId;
-        this.address = address;
+        return this;
     }
 }
+
+// TODO: UTIL LINKS:
+//  https://www.objectdb.com/api/java/jpa/EmbeddedId
+//  https://www.guj.com.br/t/embeddedid-onetomany/206317/9
+//  https://www.google.com/search?q=Cascade+on+entity+with+embedded+id&oq=Cascade+on+entity+with+embedded+id&aqs=chrome..69i57.21230j0j7&sourceid=chrome&ie=UTF-8

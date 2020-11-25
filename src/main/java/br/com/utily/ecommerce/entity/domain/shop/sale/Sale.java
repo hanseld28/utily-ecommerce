@@ -4,11 +4,16 @@ import br.com.utily.ecommerce.entity.domain.DomainEntity;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,37 +43,6 @@ public class Sale extends DomainEntity {
     @ManyToOne(cascade = CascadeType.DETACH)
     private Customer customer;
 
-    private void generateIdentifyNumber() {
-        String millis = String.valueOf(System.currentTimeMillis());
-        StringBuilder invertedMillis = new StringBuilder();
-
-        String uniqueCode = (customer != null && customer.getId() != null)
-                ? customer.getId().toString()
-                : String.valueOf(this.hashCode());
-
-        invertedMillis.append(uniqueCode);
-
-        for (int i = millis.length() - 1; i >= 0; i--) {
-            invertedMillis.append(millis.charAt(i));
-        }
-
-        identifyNumber = invertedMillis.toString();
-    }
-
-    public void putStatusToProcessing() {
-        this.status = ESaleStatus.PROCESSING;
-    }
-
-    public void changeStatusToInTransit() {
-        this.status = ESaleStatus.IN_TRANSIT;
-    }
-
-    public void changeStatusToDelivered() {
-        this.status = ESaleStatus.DELIVERED;
-    }
-
-    public void finish() {
-        generateIdentifyNumber();
-        putStatusToProcessing();
-    }
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
+    private List<SaleAddress> adresses;
 }

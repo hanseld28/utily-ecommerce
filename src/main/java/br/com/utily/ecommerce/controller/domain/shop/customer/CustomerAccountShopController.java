@@ -92,6 +92,8 @@ public class CustomerAccountShopController {
                 loggedUserDTOUpdated.setPassword(updatedDTOUser.getPassword());
             }
 
+            // TODO: PLEASE, find error "Failed to convert value of type 'br.com.utily.ecommerce.dto.domain.user.customer.CustomerUpdateDTO' to required type 'java.lang.String'"
+
             customerUpdateDTO.setUser(loggedUserDTOUpdated);
             Customer customer = ModelMapperHelper.fromDTOToEntity(customerUpdateDTO, Customer.class);
             User user = customer.getUser();
