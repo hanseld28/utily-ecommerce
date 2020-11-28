@@ -19,7 +19,6 @@ import javax.persistence.*;
 
 @Entity
 @Component
-//@IdClass(SaleAddressId.class) // TODO: VERIFICAR PORQUE O IDCLASS NÃO ESTÁ ENCONTRANDO AS PROPRIEDADES DE SALEADDRESSID
 @Table(name = "sales_adresses")
 public class SaleAddress extends AssociativeDomainEntity {
 
@@ -46,8 +45,3 @@ public class SaleAddress extends AssociativeDomainEntity {
         return this;
     }
 }
-
-// TODO: UTIL LINKS:
-//  https://www.objectdb.com/api/java/jpa/EmbeddedId
-//  https://www.guj.com.br/t/embeddedid-onetomany/206317/9
-//  https://www.google.com/search?q=Cascade+on+entity+with+embedded+id&oq=Cascade+on+entity+with+embedded+id&aqs=chrome..69i57.21230j0j7&sourceid=chrome&ie=UTF-8

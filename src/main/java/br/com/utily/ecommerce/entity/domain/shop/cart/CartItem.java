@@ -3,8 +3,6 @@ package br.com.utily.ecommerce.entity.domain.shop.cart;
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.product.Product;
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 

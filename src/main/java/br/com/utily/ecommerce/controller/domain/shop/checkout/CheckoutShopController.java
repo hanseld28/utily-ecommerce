@@ -6,7 +6,9 @@ import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
 import br.com.utily.ecommerce.entity.domain.shop.sale.progress.SaleInProgress;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
-import br.com.utily.ecommerce.helper.entity.CheckoutHelper;
+import br.com.utily.ecommerce.entity.domain.user.customer.adresses.AddressType;
+import br.com.utily.ecommerce.helper.checkout.CheckoutHelper;
+import br.com.utily.ecommerce.helper.proxy.ProxyHelper;
 import br.com.utily.ecommerce.helper.security.LoggedUserHelper;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
 import br.com.utily.ecommerce.service.domain.IDomainService;
@@ -21,8 +23,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.utily.ecommerce.helper.proxy.ProxyHelper;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -57,6 +60,7 @@ public class CheckoutShopController {
                                   LoggedUserHelper loggedUserHelper,
                                   CheckoutHelper checkoutHelper,
                                   ModelAndViewHelper<Customer> modelAndViewHelper) {
+
         this.saleDomainService = saleDomainService;
         this.addressDomainService = addressDomainService;
         this.saleInProgress = saleInProgress;
@@ -69,14 +73,25 @@ public class CheckoutShopController {
     @GetMapping(path = CHECKOUT_STEP_ONE_URL)
     public ModelAndView initializeStepOne() {
         loggedCustomer = loggedUserHelper.getLoggedCustomerUser();
-
         saleInProgress.setCustomer(loggedCustomer);
 
-        return ModelAndViewHelper.configure(
+        Optional<ShopCart> shopCartOptional = ProxyHelper.recoveryEntityFromProxy(shopCart);
+        saleInProgress.setCartItems(
+                shopCartOptional.orElseThrow(NotFoundException::new)
+                        .getItems()
+        );
+
+        ModelAndView modelAndView = ModelAndViewHelper.configure(
                 EViewType.CHECKOUT_STEP_SHOP,
                 EView.CHECKOUT_STEP_ONE,
                 loggedCustomer,
                 EModelAttribute.CUSTOMER);
+
+        modelAndView.addObject(
+                EModelAttribute.NOT_ENOUGH_ADDRESS.getName(),
+                false);
+
+        return modelAndView;
     }
 
     @PostMapping(path = CHECKOUT_STEP_ONE_VALIDATION_URL)
@@ -94,33 +109,26 @@ public class CheckoutShopController {
             Optional<Address> foundAddressOptional = addressDomainService.findById(addressId, address);
             Address addressToAdd = foundAddressOptional.orElseThrow(NotFoundException::new);
 
-            if (checkoutHelper.isItNeedsOneMoreAddress(address)) {
-                modelAndView.addObject(
-                        EModelAttribute.NOT_ENOUGH_ADDRESS.getName(),
-                        true);
+            if (checkoutHelper.isItNeedsOneMoreAddress(addressToAdd)) {
+                AddressType missingAddressType = checkoutHelper.whichAddressTypeIsMissing(address);
+
+                List<Address> adressesWithMissingType = checkoutHelper
+                        .filterAdressesByType(
+                                loggedCustomer.getAdresses(),
+                                missingAddressType
+                        );
+
+                Map<String, Object> mvObjects = new HashMap<>();
+                mvObjects.put(EModelAttribute.NOT_ENOUGH_ADDRESS.getName(), true);
+                mvObjects.put(EModelAttribute.ADDRESS_TYPE.getName(), missingAddressType);
+                mvObjects.put(EModelAttribute.ADRESSES.getName(), adressesWithMissingType);
+
+                modelAndView.addAllObjects(mvObjects);
+
                 return modelAndView;
             }
 
             saleInProgress.addAddress(addressToAdd);
-            saleInProgress.finish();
-
-            Optional<SaleInProgress> saleInProgressOptional = ProxyHelper.recoveryEntityFromProxy(saleInProgress);
-
-            Sale sale = checkoutHelper.adapt(
-                    saleInProgressOptional.orElseThrow(InternalError::new)
-            );
-
-            Sale savedSale = saleDomainService.save(sale);
-
-            System.out.println(
-                    "Sale ID = " +
-                    savedSale.getId() +
-                    " and first Address Place = " +
-                            savedSale.getAdresses()
-                                .get(0)
-                                .getAddress()
-                                .getPublicPlace()
-            );
         }
 
         return modelAndView;
@@ -136,9 +144,16 @@ public class CheckoutShopController {
 
     @GetMapping(path = CHECKOUT_STEP_THREE_URL)
     public ModelAndView initializeStepThree() {
+        saleInProgress.finish();
+        Optional<SaleInProgress> saleInProgressOptional = ProxyHelper.recoveryEntityFromProxy(saleInProgress);
+        Sale sale = checkoutHelper.adapt(saleInProgressOptional.orElseThrow(InternalError::new));
+        Sale savedSale = saleDomainService.save(sale);
+
         return ModelAndViewHelper.configure(
                 EViewType.CHECKOUT_STEP_SHOP,
-                EView.CHECKOUT_STEP_THREE);
+                EView.CHECKOUT_STEP_THREE,
+                savedSale,
+                EModelAttribute.SALE);
     }
 
 

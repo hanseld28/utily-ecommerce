@@ -1,7 +1,6 @@
 package br.com.utily.ecommerce.controller.domain.shop.customer;
 
 import br.com.utily.ecommerce.dto.domain.user.UserUpdateDTO;
-import br.com.utily.ecommerce.dto.domain.user.customer.CustomerSignUpDTO;
 import br.com.utily.ecommerce.dto.domain.user.customer.CustomerUpdateDTO;
 import br.com.utily.ecommerce.entity.domain.shop.cart.ShopCart;
 import br.com.utily.ecommerce.entity.domain.user.EUserRole;
@@ -14,7 +13,6 @@ import br.com.utily.ecommerce.service.domain.IDomainService;
 import br.com.utily.ecommerce.util.constant.attribute.EModelAttribute;
 import br.com.utily.ecommerce.util.constant.entity.EViewType;
 import br.com.utily.ecommerce.util.constant.view.EView;
-import br.com.utily.ecommerce.util.mapper.DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;

@@ -54,15 +54,30 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="selectAddress">Endereço</label>
-                                        <select class="form-control ml-3 w-75"
-                                                id="selectAddress"
-                                                name="id">
-                                            <option value="" selected>Selecione um endereço...</option>
-                                            <option th:each="customerAddress : ${customer.adresses}"
-                                                    th:value="${customerAddress.id}"
-                                                    th:text="${customerAddress.buildAddressShortName()}">
-                                            </option>
-                                        </select>
+
+                                        <th:block th:if="${!notEnoughAddress}">
+                                            <select class="form-control ml-3 w-50"
+                                                    id="selectAddress"
+                                                    name="id">
+                                                <option value="" selected>Selecione um endereço...</option>
+                                                <option th:each="customerAddress : ${customer.adresses}"
+                                                        th:value="${customerAddress.id}"
+                                                        th:text="${customerAddress.buildAddressShortName()}">
+                                                </option>
+                                            </select>
+                                        </th:block>
+
+                                        <th:block th:if="${notEnoughAddress}">
+                                            <select class="form-control ml-3 w-50"
+                                                    id="selectAddress2"
+                                                    name="id">
+                                                <option value="" selected>Selecione um endereço...</option>
+                                                <option th:each="address : ${adresses}"
+                                                        th:value="${address.id}"
+                                                        th:text="${address.buildAddressShortName()}">
+                                                </option>
+                                            </select>
+                                        </th:block>
                                     </div>
                                 </div>
                                 <div class="col-6">

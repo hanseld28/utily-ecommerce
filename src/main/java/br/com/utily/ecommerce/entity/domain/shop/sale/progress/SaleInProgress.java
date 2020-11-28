@@ -1,11 +1,10 @@
 package br.com.utily.ecommerce.entity.domain.shop.sale.progress;
 
 import br.com.utily.ecommerce.entity.Entity;
+import br.com.utily.ecommerce.entity.domain.shop.cart.CartItem;
 import br.com.utily.ecommerce.entity.domain.shop.sale.ESaleStatus;
-import br.com.utily.ecommerce.entity.domain.shop.sale.SaleAddress;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.annotation.Scope;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -31,6 +29,7 @@ public class SaleInProgress extends Entity {
     private ESaleStatus status;
     private Customer customer;
     private List<Address> adresses = new ArrayList<>();
+    private List<CartItem> cartItems = new ArrayList<>();
 
     public void addAddress(Address address) {
         adresses.add(address);

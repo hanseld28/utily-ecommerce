@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.IdClass;
 import java.io.Serializable;
 
 @NoArgsConstructor
@@ -25,6 +24,4 @@ public class SaleAddressId implements Serializable {
 
     @Column(name = "ssa_adr_id", nullable = false)
     protected Long addressId;
-
-    // TODO: VERIFICAR MOTIVO DAS PRPOPRIEDADES NÃO ESTAREM SENDO RECONHECIDAS
 }

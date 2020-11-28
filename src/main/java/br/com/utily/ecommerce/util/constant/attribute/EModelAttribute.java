@@ -13,6 +13,13 @@ public enum EModelAttribute {
 
     SHOP_CART("shopCart"),
 
+    SALE("sale"),
+    SALES("sales"),
+
+    ADRESSES("adresses"),
+    ADDRESS("address"),
+    ADDRESS_TYPE("addressType"),
+
     NOT_ENOUGH_ADDRESS("notEnoughAddress");
 
     private final String name;

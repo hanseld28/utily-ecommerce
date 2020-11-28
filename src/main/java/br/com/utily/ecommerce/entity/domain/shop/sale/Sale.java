@@ -44,5 +44,8 @@ public class Sale extends DomainEntity {
     private Customer customer;
 
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
+    private List<SaleItem> items;
+
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleAddress> adresses;
 }

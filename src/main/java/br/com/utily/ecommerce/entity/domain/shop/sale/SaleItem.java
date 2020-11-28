@@ -1,11 +1,10 @@
 package br.com.utily.ecommerce.entity.domain.shop.sale;
 
+import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
 import br.com.utily.ecommerce.entity.domain.product.Product;
-import br.com.utily.ecommerce.entity.domain.shop.cart.CartItem;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @ToString
 
@@ -17,52 +16,41 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "sales_products")
-public class SaleItem extends br.com.utily.ecommerce.entity.Entity implements Serializable {
+public class SaleItem extends AssociativeDomainEntity {
 
     @EmbeddedId
     private SaleItemId id;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("itemId")
-    @JoinColumn(name = "slp_prt_id")
+    @JoinColumn(name = "slp_prt_id", referencedColumnName = "id", nullable = false)
     private Product product;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("saleId")
-    @JoinColumn(name = "slp_sls_id")
+    @JoinColumn(name = "slp_sls_id", referencedColumnName = "id", nullable = false)
     private Sale sale;
 
     @Basic
-    @Column(name = "slp_quantity")
+    @Column(name = "slp_quantity", nullable = false)
     private Integer quantity;
 
     @Basic
-    @Column(name = "slp_subtotal")
+    @Column(name = "slp_subtotal", nullable = false)
     private Double subtotal;
 
-    public SaleItem(SaleItemId saleItemId, Product product, Integer quantity, Double subtotal) {
-        id = saleItemId;
-        this.product = product;
-        this.quantity = quantity;
-        this.subtotal = subtotal;
-    }
+    public SaleItem adapt(SaleItemId saleItemId, Sale sale, Product product,
+                          Integer quantity, Double subtotal) {
 
-    public static SaleItem from(CartItem cartItem) {
-        Product product = cartItem.getProduct();
-        Integer quantity = cartItem.getAmount();
-        Double subtotal = cartItem.getSubtotal();
+        Long productId = product.getId();
+        saleItemId.setItemId(productId);
 
-        SaleItemId partOfsaleItemId = new SaleItemId();
-        partOfsaleItemId.setItemId(product.getId());
+        this.setId(saleItemId);
+        this.setSale(sale);
+        this.setProduct(product);
+        this.setQuantity(quantity);
+        this.setSubtotal(subtotal);
 
-        return new SaleItem(partOfsaleItemId, product, quantity, subtotal);
-    }
-
-    public void setProduct(Product product) {
-        SaleItemId saleItemId = new SaleItemId();
-        saleItemId.setItemId(product.getId());
-
-        this.id = saleItemId;
-        this.product = product;
+        return this;
     }
 }
