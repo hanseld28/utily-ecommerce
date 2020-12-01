@@ -1,5 +1,7 @@
 package br.com.utily.ecommerce.entity.domain.shop.sale;
 
+import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
+import br.com.utily.ecommerce.entity.domain.shop.sale.progress.CreditCardValue;
 import br.com.utily.ecommerce.entity.domain.user.customer.creditCard.CreditCard;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -7,7 +9,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @ToString
 
@@ -18,17 +19,17 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "sales_credit_cards")
-public class SaleCreditCard extends br.com.utily.ecommerce.entity.Entity implements Serializable {
+public class SaleCreditCard extends AssociativeDomainEntity {
 
     @EmbeddedId
     private SaleCreditCardId id;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("creditCardId")
     @JoinColumn(name = "scc_crd_id")
     private CreditCard creditCard;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("saleId")
     @JoinColumn(name = "scc_sls_id")
     private Sale sale;
@@ -37,23 +38,15 @@ public class SaleCreditCard extends br.com.utily.ecommerce.entity.Entity impleme
     @Column(name = "scc_value")
     private Double value;
 
-    public static SaleCreditCard from(CreditCard creditCard, Double valueUsed) {
-        SaleCreditCardId saleCreditCardId = new SaleCreditCardId();
-        saleCreditCardId.setCreditCardId(creditCard.getId());
+    public SaleCreditCard adapt(SaleCreditCardId saleCreditCardId, Sale sale, CreditCardValue creditCardValue) {
+        Long creditCardId = creditCardValue.getCreditCard().getId();
+        saleCreditCardId.setCreditCardId(creditCardId);
 
-        SaleCreditCard saleCreditCard = new SaleCreditCard();
-        saleCreditCard.setId(saleCreditCardId);
-        saleCreditCard.setCreditCard(creditCard);
-        saleCreditCard.setValue(valueUsed);
-
-        return saleCreditCard;
+        this.setId(saleCreditCardId);
+        this.setCreditCard(creditCardValue.getCreditCard());
+        this.setValue(creditCardValue.getValue());
+        this.setSale(sale);
+        return this;
     }
 
-    public void setCreditCard(CreditCard creditCard) {
-        SaleCreditCardId saleCreditCardId = new SaleCreditCardId();
-        saleCreditCardId.setCreditCardId(creditCard.getId());
-
-        this.id = saleCreditCardId;
-        this.creditCard = creditCard;
-    }
 }

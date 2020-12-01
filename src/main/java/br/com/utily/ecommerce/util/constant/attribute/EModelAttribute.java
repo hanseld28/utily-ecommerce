@@ -20,7 +20,11 @@ public enum EModelAttribute {
     ADDRESS("address"),
     ADDRESS_TYPE("addressType"),
 
-    NOT_ENOUGH_ADDRESS("notEnoughAddress");
+    CREDIT_CARDS("creditCards"),
+    CREDIT_CARD("creditCard"),
+
+    NOT_ENOUGH_ADDRESS("notEnoughAddress"),
+    HASH("hash");
 
     private final String name;
 

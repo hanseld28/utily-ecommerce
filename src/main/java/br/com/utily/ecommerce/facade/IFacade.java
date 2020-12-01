@@ -19,4 +19,6 @@ public interface IFacade<T> {
 
     List<T> findAll(T entity);
 
+    List<T> findAllBy(Entity targetEntity, T baseEntity);
+
 }

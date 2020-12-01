@@ -164,6 +164,19 @@ public class Facade<T extends Entity> implements IFacade<T> {
         return entitiesCollection;
     }
 
+    @Override
+    public List<T> findAllBy(Entity targetEntity, T baseEntity) {
+        List<T> entitiesCollection = Collections.EMPTY_LIST;
+        String entityName = baseEntity.getClass().getName();
+
+        if (daosMap.containsKey(entityName)) {
+            IDAO<T> selectedDAO = daosMap.get(entityName);
+            entitiesCollection = executeFindAllBy(targetEntity, selectedDAO);
+        }
+
+        return entitiesCollection;
+    }
+
     private Optional<T> executeFindBy(Entity filterEntity, IDAO<T> dao) {
         Optional<T> optionalEntity = Optional.empty();
 
@@ -177,5 +190,20 @@ public class Facade<T extends Entity> implements IFacade<T> {
         }
 
         return optionalEntity;
+    }
+
+    private List<T> executeFindAllBy(Entity filterEntity, IDAO<T> dao) {
+        List<T> entities = Collections.EMPTY_LIST;
+
+        if (filterEntity instanceof Customer) {
+            Customer customer = (Customer) filterEntity;
+
+            if (dao instanceof ICreditCardDAO) {
+                ICreditCardDAO creditCardDAO = (ICreditCardDAO) dao;
+                entities = (List<T>) creditCardDAO.findAllByCustomer(customer);
+            }
+        }
+
+        return entities;
     }
 }

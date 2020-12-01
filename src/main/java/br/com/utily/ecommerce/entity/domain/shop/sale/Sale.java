@@ -2,17 +2,15 @@ package br.com.utily.ecommerce.entity.domain.shop.sale;
 
 import br.com.utily.ecommerce.entity.domain.DomainEntity;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.*;
-
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 @AllArgsConstructor
@@ -48,4 +46,7 @@ public class Sale extends DomainEntity {
 
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleAddress> adresses;
+
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
+    private List<SaleCreditCard> usedCreditCards;
 }

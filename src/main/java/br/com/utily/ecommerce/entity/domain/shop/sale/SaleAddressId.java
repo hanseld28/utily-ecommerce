@@ -1,7 +1,6 @@
 package br.com.utily.ecommerce.entity.domain.shop.sale;
 
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -15,7 +14,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 
-@Component
 @Embeddable
 public class SaleAddressId implements Serializable {
 

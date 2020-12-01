@@ -9,7 +9,6 @@ import br.com.utily.ecommerce.entity.domain.user.customer.adresses.AddressType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,18 +17,20 @@ public class CheckoutHelper {
 
     private final Sale mockSale;
 
-    private final SaleAddress mockSaleAddress;
-    private final SaleAddressId mockSaleAddressId;
-
     private final SaleItemHelper saleItemHelper;
+    private final SaleAddressHelper saleAddressHelper;
+    private final SaleCreditCardHelper saleCreditCardHelper;
+
 
     @Autowired
-    public CheckoutHelper(Sale mockSale, SaleAddress mockSaleAddress,
-                          SaleAddressId mockSaleAddressId, SaleItemHelper saleItemHelper) {
+    public CheckoutHelper(Sale mockSale,
+                          SaleItemHelper saleItemHelper,
+                          SaleAddressHelper saleAddressHelper,
+                          SaleCreditCardHelper saleCreditCardHelper) {
         this.mockSale = mockSale;
-        this.mockSaleAddress = mockSaleAddress;
-        this.mockSaleAddressId = mockSaleAddressId;
         this.saleItemHelper = saleItemHelper;
+        this.saleAddressHelper = saleAddressHelper;
+        this.saleCreditCardHelper = saleCreditCardHelper;
     }
 
     public Sale adapt(SaleInProgress saleInProgress) {
@@ -42,26 +43,22 @@ public class CheckoutHelper {
                 .map(cartItem -> saleItemHelper.adapt(cartItem, mockSale))
                 .collect(Collectors.toList());
 
-        Address address = saleInProgress.getAdresses().get(0);
+        List<SaleAddress> saleAdresses = saleInProgress.getAdresses().stream()
+                .map(address -> saleAddressHelper.adapt(address, mockSale))
+                .collect(Collectors.toList());
 
-        SaleAddress saleAddress = mockSaleAddress.adapt(mockSaleAddressId, mockSale, address);
-        List<SaleAddress> saleAdresses = Collections.singletonList(saleAddress);
+        List<SaleCreditCard> saleCreditCards = saleInProgress.getUsedCreditCards().stream()
+                .map(creditCardValue -> saleCreditCardHelper.adapt(creditCardValue, mockSale))
+                .collect(Collectors.toList());
 
         mockSale.setIdentifyNumber(identifyNumber);
         mockSale.setStatus(status);
         mockSale.setCustomer(customer);
         mockSale.setItems(saleItems);
         mockSale.setAdresses(saleAdresses);
+        mockSale.setUsedCreditCards(saleCreditCards);
 
         return mockSale;
-    }
-
-    public boolean isItNeedsOneMoreAddress(Address address) {
-        return !address.isShippingAndBilling();
-    }
-
-    public AddressType whichAddressTypeIsMissing(Address address) {
-        return address.isShipping() ? AddressType.BILLING : AddressType.SHIPPING;
     }
 
     public List<Address> filterAdressesByType(List<Address> adresses, AddressType filterType) {

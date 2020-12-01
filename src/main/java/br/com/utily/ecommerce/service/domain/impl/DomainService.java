@@ -7,7 +7,7 @@ import br.com.utily.ecommerce.service.domain.IDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,8 +26,13 @@ public class DomainService<T extends DomainEntity> implements IDomainService<T> 
     }
 
     @Override
-    public Collection<T> findAll(T mockEntity) {
+    public List<T> findAll(T mockEntity) {
         return facade.findAll(mockEntity);
+    }
+
+    @Override
+    public List<T> findAllBy(Entity targetEntity, T mockBaseEntity) {
+        return facade.findAllBy(targetEntity, mockBaseEntity);
     }
 
     @Override

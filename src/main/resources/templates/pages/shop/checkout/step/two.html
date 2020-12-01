@@ -102,7 +102,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6">
-                                <form th:action="@{/shop/checkout/step/two?addCreditCard=true}"
+                                <form th:action="@{/shop/checkout/step/two/payment/credit-cards}"
                                       method="POST"
                                       id="formCreditCardPayment">
                                     <div class="form-group">
@@ -111,7 +111,7 @@
                                                 id="selectCreditCard"
                                                 name="creditCardId" required>
                                             <option value="" selected disabled>Selecione um cartão de crédito...</option>
-                                            <option th:each="creditCard : ${customer.creditCards}"
+                                            <option th:each="creditCard : ${creditCards}"
                                                     th:value="${creditCard.id}"
                                                     th:text="${creditCard.buildCreditCardShortName()}"
                                                     th:attr="disabled=${sale.creditCreditCardAlreadyAdded(creditCard)}"
@@ -119,12 +119,12 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="valueUsedInput" class="text-bold">Valor a ser utilizado</label>
+                                        <label for="valueInput" class="text-bold">Valor a ser utilizado</label>
                                         <input inputmode="numeric"
                                                th:data-remainingamount="${sale.recalculateTotalWithFreight()}"
                                                class="form-control"
-                                               id="valueUsedInput"
-                                               name="valueUsed"
+                                               id="valueInput"
+                                               name="value"
                                                required
                                         >
                                     </div>

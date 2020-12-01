@@ -27,7 +27,7 @@
                     <div class="card-body register-card-body text-center">
                         <h4 class="mb-4">
                             <small>Número do pedido: </small>
-                            <span class="font-weight-bold" th:text="${finishedSale.identifyNumber}">99999999999</span>
+                            <span class="font-weight-bold" th:text="${sale.identifyNumber}">99999999999</span>
                         </h4>
                         <div>
                             <span style="font-size: 17px">Acompanhe o pedido em </span><a th:href="@{/customer/order/details?operation=consult}" class="btn btn-warning btn-md font-weight-bold text-dark">Meus Pedidos</a>

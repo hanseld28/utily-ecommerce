@@ -32,7 +32,7 @@ public class AuthController {
 
     private final IDomainService<Customer> customerDomainService;
 
-    private final ModelAndViewHelper<Customer> modelAndViewHelper;
+    private final ModelAndViewHelper modelAndViewHelper;
     private final Customer mockCustomer;
     private final CustomerSignUpDTO mockCustomerSignUpDTO;
 
@@ -40,7 +40,7 @@ public class AuthController {
     public AuthController(@Qualifier("domainService") IDomainService<Customer> customerDomainService,
                           Customer mockCustomer,
                           CustomerSignUpDTO mockCustomerSignUpDTO,
-                          ModelAndViewHelper<Customer> modelAndViewHelper) {
+                          ModelAndViewHelper modelAndViewHelper) {
         this.customerDomainService = customerDomainService;
         this.mockCustomer = mockCustomer;
         this.mockCustomerSignUpDTO = mockCustomerSignUpDTO;

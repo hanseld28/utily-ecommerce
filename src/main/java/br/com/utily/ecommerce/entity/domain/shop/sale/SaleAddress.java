@@ -3,7 +3,6 @@ package br.com.utily.ecommerce.entity.domain.shop.sale;
 import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 
@@ -18,7 +17,6 @@ import javax.persistence.*;
 @Setter
 
 @Entity
-@Component
 @Table(name = "sales_adresses")
 public class SaleAddress extends AssociativeDomainEntity {
 

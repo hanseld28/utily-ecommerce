@@ -34,8 +34,8 @@ public class CreditCard extends AlternativeDomainEntity {
     @Column(name = "crd_security_code")
     private String securityCode;
 
-    @ManyToOne
     @JoinColumn(name = "crd_cst_id", foreignKey = @ForeignKey(name = "crd_cst_fk"))
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Customer customer;
 
     @Column(name = "crd_flag")

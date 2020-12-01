@@ -59,10 +59,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="saleItem : ${sale.items}">
+                                <tr th:each="saleItem : ${sale.cartItems}">
                                     <td th:text="${saleItem.product.title}"></td>
                                     <td th:text="${#strings.replace(#numbers.formatCurrency(saleItem.product.price), '$', 'R$')}"></td>
-                                    <td th:text="${#strings.concat(saleItem.quantity).concat(' un.')}"></td>
+                                    <td th:text="${#strings.concat(saleItem.amount).concat(' un.')}"></td>
                                     <td th:text="${#strings.replace(#numbers.formatCurrency(saleItem.subtotal), '$', 'R$')}"></td>
                                 </tr>
                             </tbody>
@@ -90,12 +90,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="saleAddress : ${sale.adresses}">
-                                    <td th:text="${saleAddress.address.buildOwnerIfSpecifiedAndAddressType()}"></td>
-                                    <td th:text="${saleAddress.address.city}"></td>
-                                    <td th:text="${saleAddress.address.state}"></td>
-                                    <td th:text="${saleAddress.address.number}"></td>
-                                    <td th:text="${saleAddress.address.complement}"></td>
+                                <tr th:each="address : ${sale.adresses}">
+                                    <td th:text="${address.buildOwnerIfSpecifiedAndAddressType()}"></td>
+                                    <td th:text="${address.city}"></td>
+                                    <td th:text="${address.state}"></td>
+                                    <td th:text="${address.number}"></td>
+                                    <td th:text="${address.complement}"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -150,55 +150,16 @@
 
         <div class="row flex-row justify-content-end">
             <div class="col-4">
-                <form id="finishSaleForm" th:action="@{/shop/checkout/finish}" method="POST" th:object="${sale}">
+                <form id="finishSaleForm" th:action="@{/shop/checkout/finish}" method="POST">
+                    <!--/*@thymesVar id="sale" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
                     <input type="hidden"
-                           name="sale[customer][0][id]"
-                           class="sale"
-                           th:value="${sale.customer.id}">
-
-                    <input th:each="saleAddress : ${sale.adresses}"
-                           type="hidden"
-                           class="sale"
-                           th:name="'sale[adresses][' + ${saleAddressStat.index} + '][id]'"
-                           th:value="${saleAddress.address.id}">
-
-                    <th:block th:each="saleItem : ${sale.items}">
-                        <input type="hidden"
-                               class="sale"
-                               th:name="'sale[items][' + ${saleItemStat.index} + '][id]'"
-                               th:value="${saleItem.product.id}">
-                        <input type="hidden"
-                               class="sale"
-                               th:name="'sale[items][' + ${saleItemStat.index} + '][quantity]'"
-                               th:value="${saleItem.quantity}">
-                        <input type="hidden"
-                               class="sale"
-                               th:name="'sale[items][' + ${saleItemStat.index} + '][subtotal]'"
-                               th:value="${saleItem.subtotal}">
-                    </th:block>
-
-                    <th:block th:each="saleCreditCard : ${sale.usedCreditCards}">
-                        <input type="hidden"
-                               class="sale"
-                               th:name="'sale[usedCreditCards][' + ${saleCreditCardStat.index} + '][id]'"
-                               th:value="${saleCreditCard.creditCard.id}">
-                        <input type="hidden"
-                               class="sale"
-                               th:name="'sale[usedCreditCards][' + ${saleCreditCardStat.index} + '][value]'"
-                               th:value="${saleCreditCard.value}">
-                    </th:block>
-
+                           name="hash"
+                           th:value="${hash}">
                     <button type="submit" class="btn btn-success btn-block btn-lg">Finalizar compra</button>
                 </form>
             </div>
         </div>
     </div>
-
-</th:block>
-
-<th:block layout:fragment="scripts">
-
-    <script th:src="@{/assets/custom/pages/shop/checkout/step/three.js}"></script>
 
 </th:block>
 

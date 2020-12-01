@@ -28,6 +28,9 @@ public enum EEndpoint {
     ITEMS("/items"),
     CHECKOUT("/checkout"),
     STEP("/step"),
+    STEP_ONE("/one"),
+    STEP_TWO("/two"),
+    STEP_THREE("/three"),
 
     ERROR("/error");
 

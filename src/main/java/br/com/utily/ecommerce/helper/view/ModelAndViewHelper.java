@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Component
-public class ModelAndViewHelper<T extends Entity> {
+public class ModelAndViewHelper {
 
 
     public static ModelAndView configure(final EViewType eViewType) {
@@ -43,11 +43,11 @@ public class ModelAndViewHelper<T extends Entity> {
         return modelAndView;
     }
 
-    public static void addObjectTo(ModelAndView target, Entity object, EModelAttribute eModelAttribute) {
+    public static void addObjectTo(ModelAndView target, Object object, EModelAttribute eModelAttribute) {
         target.addObject(eModelAttribute.getName(), object);
     }
 
-    public void addObjectTo(ModelAndView target, Collection<T> objects, EModelAttribute eModelAttribute) {
+    public static void addObjectTo(ModelAndView target, Collection<?> objects, EModelAttribute eModelAttribute) {
         target.addObject(eModelAttribute.getName(), objects);
     }
 
@@ -93,10 +93,39 @@ public class ModelAndViewHelper<T extends Entity> {
                 paths.add(EPageFolder.STEP);
                 break;
 
+            case CHECKOUT_FINISH_SHOP:
+                paths.add(EPageFolder.SHOP);
+                paths.add(EPageFolder.CHECKOUT);
+                break;
+
             case REDIRECT_PRODUCT_SHOP:
                 paths.add(EView.REDIRECT);
                 paths.add(EEndpoint.SHOP);
                 paths.add(EEndpoint.PRODUCTS);
+                break;
+
+            case REDIRECT_CHECKOUT_STEP_ONE:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.SHOP);
+                paths.add(EEndpoint.CHECKOUT);
+                paths.add(EEndpoint.STEP);
+                paths.add(EEndpoint.STEP_ONE);
+                break;
+
+            case REDIRECT_CHECKOUT_STEP_TWO:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.SHOP);
+                paths.add(EEndpoint.CHECKOUT);
+                paths.add(EEndpoint.STEP);
+                paths.add(EEndpoint.STEP_TWO);
+                break;
+
+            case REDIRECT_CHECKOUT_STEP_THREE:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.SHOP);
+                paths.add(EEndpoint.CHECKOUT);
+                paths.add(EEndpoint.STEP);
+                paths.add(EEndpoint.STEP_THREE);
                 break;
 
             case REDIRECT_LOGIN_APPLICATION:

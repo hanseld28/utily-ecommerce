@@ -29,13 +29,13 @@ public class ProductShopController {
     private final ShopCart shopCart;
     private final Product mockProduct;
 
-    private final ModelAndViewHelper<Product> modelAndViewHelper;
+    private final ModelAndViewHelper modelAndViewHelper;
 
     @Autowired
     public ProductShopController(@Qualifier("domainService") IDomainService<Product> domainService,
                                  ShopCart shopCart,
                                  Product mockProduct,
-                                 ModelAndViewHelper<Product> modelAndViewHelper) {
+                                 ModelAndViewHelper modelAndViewHelper) {
         this.domainService = domainService;
         this.shopCart = shopCart;
         this.mockProduct = mockProduct;

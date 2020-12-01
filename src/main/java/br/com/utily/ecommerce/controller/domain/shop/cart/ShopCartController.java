@@ -34,8 +34,7 @@ public class ShopCartController {
     public ShopCartController(ShopCart shopCart,
                               Product mockProduct,
                               @Qualifier("domainService")
-                              IDomainService<Product> domainService,
-                              ModelAndViewHelper<Product> modelAndViewHelper) {
+                              IDomainService<Product> domainService) {
         this.shopCart = shopCart;
         this.mockProduct = mockProduct;
         this.domainService = domainService;

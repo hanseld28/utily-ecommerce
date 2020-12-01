@@ -3,6 +3,7 @@ package br.com.utily.ecommerce.helper.view;
 import br.com.utily.ecommerce.dto.DTOEntity;
 import br.com.utily.ecommerce.entity.Entity;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 
 import java.lang.reflect.Type;
 
@@ -10,7 +11,9 @@ public class ModelMapperHelper {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
-    private ModelMapperHelper() { }
+    private ModelMapperHelper() {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+    }
 
     public static <T extends Entity, R extends DTOEntity> R fromEntityToDTO(T entity, Type type) {
         return modelMapper.map(entity, type);

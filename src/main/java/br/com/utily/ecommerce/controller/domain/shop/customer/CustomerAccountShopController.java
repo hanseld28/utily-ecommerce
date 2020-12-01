@@ -35,7 +35,7 @@ public class CustomerAccountShopController {
     private final Customer mockCustomer;
     private final CustomerUpdateDTO mockCustomerUpdateDTO;
 
-    private final ModelAndViewHelper<Customer> modelAndViewHelper;
+    private final ModelAndViewHelper modelAndViewHelper;
 
     private final LoggedUserHelper loggedUserHelper;
 
@@ -44,7 +44,7 @@ public class CustomerAccountShopController {
                                          ShopCart shopCart,
                                          Customer mockCustomer,
                                          CustomerUpdateDTO mockCustomerUpdateDTO,
-                                         ModelAndViewHelper<Customer> modelAndViewHelper,
+                                         ModelAndViewHelper modelAndViewHelper,
                                          LoggedUserHelper loggedUserHelper) {
         this.domainService = domainService;
         this.shopCart = shopCart;

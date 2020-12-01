@@ -1,21 +1,20 @@
 package br.com.utily.ecommerce.entity.domain.user.customer;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import br.com.utily.ecommerce.entity.domain.AlternativeDomainEntity;
 import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
 import br.com.utily.ecommerce.entity.domain.user.User;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
 import br.com.utily.ecommerce.entity.domain.user.customer.creditCard.CreditCard;
-import lombok.*;
-import org.hibernate.validator.constraints.Length;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -56,10 +55,10 @@ public class Customer extends AlternativeDomainEntity {
             fetch = FetchType.EAGER)
     private User user;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Address> adresses;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<CreditCard> creditCards;
 
     @OneToMany(mappedBy = "customer")

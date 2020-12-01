@@ -94,11 +94,9 @@ public class Address extends AlternativeDomainEntity {
 
         if (ownerDescription != null) {
             addressShortName.append(ownerDescription);
-            addressShortName.append(" - (");
-            addressShortName.append(type.getDisplayName());
-            addressShortName.append(")");
         }
-        if (ownerDescription == null && type != null) {
+        if (type != null) {
+            addressShortName.append(" - ");
             addressShortName.append("Endereço de ");
             addressShortName.append(type.getDisplayName());
         }
