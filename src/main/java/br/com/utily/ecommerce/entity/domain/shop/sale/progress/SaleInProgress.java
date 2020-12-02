@@ -64,14 +64,6 @@ public class SaleInProgress extends Entity {
         this.status = ESaleStatus.PROCESSING;
     }
 
-    public void changeStatusToInTransit() {
-        this.status = ESaleStatus.IN_TRANSIT;
-    }
-
-    public void changeStatusToDelivered() {
-        this.status = ESaleStatus.DELIVERED;
-    }
-
     public void finish() {
         generateIdentifyNumber();
         putStatusToProcessing();

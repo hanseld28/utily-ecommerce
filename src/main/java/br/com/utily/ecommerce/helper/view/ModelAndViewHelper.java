@@ -1,6 +1,6 @@
 package br.com.utily.ecommerce.helper.view;
 
-import br.com.utily.ecommerce.entity.Entity;
+import br.com.utily.ecommerce.controller.handler.exception.NotFoundException;
 import br.com.utily.ecommerce.util.constant.attribute.EModelAttribute;
 import br.com.utily.ecommerce.util.constant.endpoint.EEndpoint;
 import br.com.utily.ecommerce.util.constant.entity.EViewType;
@@ -26,7 +26,7 @@ public class ModelAndViewHelper {
         return extractConfiguredFrom(view);
     }
 
-    public static ModelAndView configure(final EViewType eViewType, final Enum<?> eView, Entity additionalObject, EModelAttribute eModelAttribute) {
+    public static ModelAndView configure(final EViewType eViewType, final Enum<?> eView, Object additionalObject, EModelAttribute eModelAttribute) {
         String view = computeViewByEntityType(eViewType, eView);
         return extractConfiguredFrom(view, additionalObject, eModelAttribute);
     }
@@ -37,7 +37,7 @@ public class ModelAndViewHelper {
         return modelAndView;
     }
 
-    private static ModelAndView extractConfiguredFrom(String view, Entity additionalObject, EModelAttribute eModelAttribute) {
+    private static ModelAndView extractConfiguredFrom(String view, Object additionalObject, EModelAttribute eModelAttribute) {
         ModelAndView modelAndView = extractConfiguredFrom(view);
         addObjectTo(modelAndView, additionalObject, eModelAttribute);
         return modelAndView;
@@ -72,6 +72,12 @@ public class ModelAndViewHelper {
                 paths.add(EPageFolder.CREDIT_CARD);
                 break;
 
+            case CUSTOMER_ORDER_SHOP:
+                paths.add(EPageFolder.SHOP);
+                paths.add(EPageFolder.CUSTOMER);
+                paths.add(EPageFolder.ORDER);
+                break;
+
             case PRODUCT_SHOP:
                 paths.add(EPageFolder.SHOP);
                 paths.add(EPageFolder.PRODUCT);
@@ -96,6 +102,17 @@ public class ModelAndViewHelper {
             case CHECKOUT_FINISH_SHOP:
                 paths.add(EPageFolder.SHOP);
                 paths.add(EPageFolder.CHECKOUT);
+                break;
+
+            case SALE_ADMIN:
+                paths.add(EPageFolder.ADMIN);
+                paths.add(EPageFolder.SALE);
+                break;
+
+            case REDIRECT_SALES_ADMIN:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.ADMIN);
+                paths.add(EEndpoint.SALES);
                 break;
 
             case REDIRECT_PRODUCT_SHOP:
@@ -143,6 +160,13 @@ public class ModelAndViewHelper {
             case AUTH_APPLICATION:
                 paths.add(EPageFolder.AUTH);
                 break;
+
+            case DASHBOARD_ADMIN:
+                paths.add(EPageFolder.ADMIN);
+                break;
+
+            default:
+                throw new NotFoundException();
         }
 
         return paths;

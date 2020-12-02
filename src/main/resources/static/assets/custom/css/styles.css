@@ -1,0 +1,49 @@
+.opacity-0 {
+    opacity:0!important;
+}
+.opacity-1 {
+    opacity:.1!important;
+}
+.opacity-2 {
+    opacity:.2!important;
+}
+.opacity-3 {
+    opacity:.3!important;
+}
+.opacity-4 {
+    opacity:.4!important;
+}
+.opacity-5 {
+    opacity:.5!important;
+}
+.opacity-6 {
+    opacity:.6!important;
+}
+.opacity-7 {
+    opacity:.7!important;
+}
+.opacity-8 {
+    opacity:.8!important;
+}
+.opacity-9 {
+    opacity:.9!important;
+}
+.opacity-10 {
+    opacity:1!important;
+}
+/* Maybe even support hover opacity shifts */
+.opacity-0h5 {
+    opacity:0!important;
+    transition: opacity .25s ease-in-out!important;
+    -moz-transition: opacity .25s ease-in-out!important;
+    -webkit-transition: opacity .25s ease-in-out!important;
+}
+.opacity-0h5:hover {
+    opacity:1!important;
+}
+
+.resize-thumbnail {
+    width: 8rem;
+    height: 6.5rem;
+    border-radius: 1.5rem;
+}

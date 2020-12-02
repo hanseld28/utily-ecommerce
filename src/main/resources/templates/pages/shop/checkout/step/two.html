@@ -178,7 +178,7 @@
                                             <button type="submit"
                                                     class="btn btn-primary btn-block"
                                                     id="nextStepButton"
-                                                    th:attr="disabled=${!sale.isRemainingAmountFullyCovered()}"
+                                                    th:disabled="${!enableNextStep}"
                                             >Próximo</button>
                                         </div>
                                     </div>

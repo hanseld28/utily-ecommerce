@@ -15,6 +15,8 @@ public enum EModelAttribute {
 
     SALE("sale"),
     SALES("sales"),
+    ORDER("order"),
+    ORDERS("orders"),
 
     ADRESSES("adresses"),
     ADDRESS("address"),
@@ -24,7 +26,9 @@ public enum EModelAttribute {
     CREDIT_CARD("creditCard"),
 
     NOT_ENOUGH_ADDRESS("notEnoughAddress"),
-    HASH("hash");
+    ENABLE_NEXT_STEP("enableNextStep"),
+    HASH("hash"),
+    THERE_ARE_ORDERS("thereAreOrders");
 
     private final String name;
 

@@ -27,7 +27,22 @@
                         <h4>Meus pedidos</h4>
                     </div>
                     <div class="card-body">
-                        <table id="products-table" class="table table-borderless table-striped">
+
+                        <th:block th:if="${!thereAreOrders}">
+
+                            <div class="alert alert-info">
+                                Você ainda não fez nenhum pedido. Vá até a
+                                <a th:href="@{/shop/products}" class="btn btn-outline-secondary btn-sm">
+                                    loja
+                                </a>
+                                para comprar itens.
+                            </div>
+
+                        </th:block>
+
+                        <th:block th:if="${thereAreOrders}">
+
+                            <table id="products-table" class="table table-borderless table-striped">
                             <thead>
                             <tr>
                                 <th>Número do Pedido</th>
@@ -38,7 +53,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <!--/*@thymesVar id="order" type="br.com.prism.utily.entity.domain.shop.sale.Sale"*/-->
+                                <!--/*@thymesVar id="order" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
                                 <tr th:each="order : ${orders}">
                                     <td>
                                         <a href="#" th:text="${order.identifyNumber}"></a>
@@ -48,14 +63,17 @@
 <!--                                        <span th:text="${#strings.replace(#numbers.formatCurrency(), '$', 'R$')}">R$ 192,00</span>-->
 <!--                                    </td>-->
                                     <td>
-                                        <span class="badge" th:text="${order.status.getDisplayName()}" th:classappend="${order.computeStatusColorClass()}"></span>
+                                        <span class="badge badge-pill" th:text="${order.status.getDisplayName()}" th:classappend="${order.computeStatusColorClass('badge')}"></span>
                                     </td>
                                     <td>
-                                        <a th:href="@{/customer/order/details?operation=consult&orderId=} + ${order.id}" class="btn btn-info btn-sm">Ver mais detalhes</a>
+                                        <a th:href="@{/orders/} + ${order.id}" class="btn btn-secondary btn-sm">Ver mais detalhes</a>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+
+                        </th:block>
+
                     </div>
                 </div>
             </div>

@@ -202,6 +202,10 @@ public class Facade<T extends Entity> implements IFacade<T> {
                 ICreditCardDAO creditCardDAO = (ICreditCardDAO) dao;
                 entities = (List<T>) creditCardDAO.findAllByCustomer(customer);
             }
+            if (dao instanceof ISaleDAO) {
+                ISaleDAO saleDAO = (ISaleDAO) dao;
+                entities = (List<T>) saleDAO.findAllByCustomer(customer);
+            }
         }
 
         return entities;

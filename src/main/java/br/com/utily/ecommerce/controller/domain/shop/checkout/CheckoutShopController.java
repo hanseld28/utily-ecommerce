@@ -13,6 +13,7 @@ import br.com.utily.ecommerce.entity.domain.user.customer.creditCard.CreditCard;
 import br.com.utily.ecommerce.helper.checkout.CheckoutHelper;
 import br.com.utily.ecommerce.helper.proxy.ProxyHelper;
 import br.com.utily.ecommerce.helper.security.LoggedUserHelper;
+import br.com.utily.ecommerce.helper.session.SessionHelper;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
 import br.com.utily.ecommerce.helper.view.ModelMapperHelper;
 import br.com.utily.ecommerce.service.domain.IDomainService;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 
@@ -92,7 +94,9 @@ public class CheckoutShopController {
     }
 
     @GetMapping(path = CHECKOUT_STEP_ONE_URL)
-    public ModelAndView initializeStepOne() {
+    public ModelAndView initializeStepOne(HttpSession httpSession) {
+        SessionHelper.initialize(httpSession);
+
         loggedCustomer = loggedUserHelper.getLoggedCustomerUser();
         saleInProgress.setCustomer(loggedCustomer);
 
@@ -173,6 +177,9 @@ public class CheckoutShopController {
 
         List<CreditCard> customerCreditCards = creditCardDomainService.findAllBy(loggedCustomer, mockCreditCard);
 
+        Boolean enableNextStep = saleInProgress.isRemainingAmountFullyCovered();
+
+        ModelAndViewHelper.addObjectTo(modelAndView, enableNextStep, EModelAttribute.ENABLE_NEXT_STEP);
         ModelAndViewHelper.addObjectTo(modelAndView, customerCreditCards, EModelAttribute.CREDIT_CARDS);
 
         return modelAndView;
@@ -220,11 +227,18 @@ public class CheckoutShopController {
 
             Sale savedSale = saleDomainService.save(sale);
 
-            return ModelAndViewHelper.configure(
-                    EViewType.CHECKOUT_FINISH_SHOP,
-                    EView.CHECKOUT_FINISH,
-                    savedSale,
-                    EModelAttribute.SALE);
+            if (savedSale.getId() != null) {
+                SessionHelper.removeAttributesForSaleFinished(
+                        shopCart,
+                        saleInProgress
+                );
+
+                return ModelAndViewHelper.configure(
+                        EViewType.CHECKOUT_FINISH_SHOP,
+                        EView.CHECKOUT_FINISH,
+                        savedSale,
+                        EModelAttribute.SALE);
+            }
         }
         
         return ModelAndViewHelper.configure(EViewType.REDIRECT_CHECKOUT_STEP_THREE);

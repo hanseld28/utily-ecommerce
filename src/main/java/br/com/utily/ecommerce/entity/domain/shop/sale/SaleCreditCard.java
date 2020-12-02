@@ -26,12 +26,12 @@ public class SaleCreditCard extends AssociativeDomainEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("creditCardId")
-    @JoinColumn(name = "scc_crd_id")
+    @JoinColumn(name = "scc_crd_id", referencedColumnName = "id", nullable = false)
     private CreditCard creditCard;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("saleId")
-    @JoinColumn(name = "scc_sls_id")
+    @JoinColumn(name = "scc_sls_id", referencedColumnName = "id", nullable = false)
     private Sale sale;
 
     @Basic

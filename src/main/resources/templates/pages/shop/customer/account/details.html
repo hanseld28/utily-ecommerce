@@ -30,7 +30,7 @@
                         <th:block layout:insert="~{fragments/successMessage}" />
                         <th:block layout:insert="~{fragments/errorMessages}" />
 
-                        <form th:action="@{/customer/account}" method="POST">
+                        <form th:action="@{/account}" method="POST">
                             <input type="hidden" th:field="*{id}">
                             <input type="hidden" th:field="*{user.id}">
                             <h3>Meus Dados</h3>

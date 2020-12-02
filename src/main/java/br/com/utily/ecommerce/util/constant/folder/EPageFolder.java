@@ -19,7 +19,7 @@ public enum EPageFolder {
     ACCOUNT("account/"),
     ADDRESS("address/"),
     CREDIT_CARD("credit-card/"),
-    ORDER("/order"),
+    ORDER("order/"),
 
     SHOP("shop/"),
     CART("cart/"),

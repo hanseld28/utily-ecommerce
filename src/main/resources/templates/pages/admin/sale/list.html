@@ -25,6 +25,7 @@
                         <th>Cliente</th>
                         <th>Status</th>
                         <th>Detalhes</th>
+                        <th class="text-center">Ação rápida</th>
                     </tr>
                     </thead>
                     <tfoot>
@@ -34,29 +35,59 @@
                         <th>Cliente</th>
                         <th>Status</th>
                         <th>Detalhes</th>
+                        <th class="text-center">Ação rápida</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                        <!--/*@thymesVar id="sale" type="br.com.prism.utily.entity.domain.shop.sale.Sale"*/-->
+                        <!--/*@thymesVar id="sale" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
                         <tr th:each="sale : ${sales}">
                             <td>
-                                <a th:href="@{/admin/sales/list?operation=consult&id=} + ${sale.id}">
+                                <a th:href="@{/admin/sales/} + ${sale.id}">
                                     <span th:text="${sale.identifyNumber}"></span>
                                 </a>
                             </td>
                             <td th:text="${#temporals.format(sale.purchaseDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
                             <td th:text="${sale.customer.name}"></td>
                             <td>
-                                <span class="badge"
+                                <span class="badge badge-pill"
                                       th:text="${sale.status.getDisplayName()}"
-                                      th:classappend="${sale.computeStatusColorClass()}">
-                                </span>
+                                      th:classappend="${sale.computeStatusColorClass('badge')}"
+                                ></span>
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <a th:href="@{/admin/sales/list?operation=consult&id=} + ${sale.id}">
+                                    <a th:href="@{/admin/sales/} + ${sale.id}">
                                         <i class="fas fa-info-circle text-info text-lg"></i>
                                     </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="col ml-0 mr-0 pl-0 pr-0">
+                                        <form class="form-inline" th:action="@{/admin/sales/} + ${sale.id} + @{/update-status}" method="post">
+                                            <div class="col-7 offset-1 form-group">
+                                                <select class="form-control sm"
+                                                        id="saleStatus"
+                                                        name="newStatus"
+                                                        th:disabled="${sale.delivered()}"
+                                                >
+                                                    <option th:each="saleStatus : ${T(br.com.utily.ecommerce.entity.domain.shop.sale.ESaleStatus).values()}"
+                                                            th:value="${saleStatus.name()}"
+                                                            th:text="${saleStatus.displayName}"
+                                                            th:selected="${sale.status == saleStatus}"
+                                                    ></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-3">
+                                                <button type="submit"
+                                                        class="btn btn-success sm"
+                                                        th:disabled="${sale.delivered()}"
+                                                >
+                                                    <i class="fa fa-check-circle text-white"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </td>
                         </tr>

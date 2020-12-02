@@ -36,12 +36,12 @@
                         <ul class="list-inline d-flex justify-content-end flex-row font-weight-bold" style="font-size: 20px">
 
                             <li th:if="${#authentication.getAuthorities()[0].getAuthority().equals('CUSTOMER')}" class="nav-item mr-2">
-                                <a class="nav-link text-white" th:href="@{/customer/order/list?operation=consult}">
+                                <a class="nav-link text-white" th:href="@{/orders}">
                                     Meus pedidos
                                 </a>
                             </li>
                             <li th:if="${#authentication.getAuthorities()[0].getAuthority().equals('CUSTOMER')}" class="nav-item mr-2">
-                                <a class="nav-link text-white" th:href="@{/customer/account}">
+                                <a class="nav-link text-white" th:href="@{/account}">
                                     Minha conta
                                 </a>
                             </li>

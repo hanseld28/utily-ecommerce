@@ -49,4 +49,68 @@ public class Sale extends DomainEntity {
 
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleCreditCard> usedCreditCards;
+
+    @Transient
+    private final Double freightValue = 10.0;
+
+    public void putStatusToProcessing() {
+        this.status = ESaleStatus.PROCESSING;
+    }
+
+    public void changeStatusToInTransit() {
+        this.status = ESaleStatus.IN_TRANSIT;
+    }
+
+    public void changeStatusToDelivered() {
+        this.status = ESaleStatus.DELIVERED;
+    }
+
+    public String computeStatusColorClass(String prefix) {
+        StringBuilder statusColor = new StringBuilder(prefix);
+        statusColor.append("-");
+
+        if (status.equals(ESaleStatus.PROCESSING)) {
+            statusColor.append("info");
+        }
+        if (status.equals(ESaleStatus.IN_TRANSIT)) {
+            statusColor.append("warning");
+        }
+        if (status.equals(ESaleStatus.DELIVERED)) {
+            statusColor.append("success");
+        }
+
+        return statusColor.toString();
+    }
+
+    public boolean inProcessing() {
+        return status.equals(ESaleStatus.PROCESSING);
+    }
+
+    public boolean inTransit() {
+        return status.equals(ESaleStatus.IN_TRANSIT);
+    }
+
+    public boolean delivered() {
+        return status.equals(ESaleStatus.DELIVERED);
+    }
+
+    public boolean wasOrIsInProcessing() {
+        return inProcessing() || inTransit() || delivered();
+    }
+
+    public boolean wasOrIsInTransit() {
+        return inTransit() || delivered();
+    }
+
+    public Double calculateTotal() {
+        return items.stream()
+                .map(SaleItem::getSubtotal)
+                .reduce(.0, Double::sum);
+
+    }
+
+    public Double calculateTotalWithFreight() {
+        return calculateTotal() + freightValue;
+
+    }
 }

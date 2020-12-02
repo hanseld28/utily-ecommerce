@@ -5,8 +5,10 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <th:block th:fragment="successMessage">
-    <div class="alert alert-success" th:if="${!#strings.isEmpty(message)}">
-        <span th:text="${message}"></span>
+    <div class="alert"
+         th:classappend="${isError ? 'alert-danger' : 'alert-success'}"
+         th:if="${!#strings.isEmpty(message)}"
+    ><span th:text="${message}"></span>
     </div>
 </th:block>
 
