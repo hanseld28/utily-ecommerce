@@ -5,6 +5,7 @@ import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
 import br.com.utily.ecommerce.entity.domain.user.User;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
 import br.com.utily.ecommerce.entity.domain.user.customer.creditCard.CreditCard;
+import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucher;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,10 +50,10 @@ public class Customer extends AlternativeDomainEntity {
     @Column(name = "cst_phone")
     private String phone;
 
-    @JoinColumn(name = "cst_usr_id", foreignKey = @ForeignKey(name = "cst_usr_fk"))
     @OneToOne(
             cascade = { CascadeType.ALL },
             fetch = FetchType.EAGER)
+    @JoinColumn(name = "cst_usr_id", foreignKey = @ForeignKey(name = "cst_usr_fk"))
     private User user;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
@@ -63,4 +64,7 @@ public class Customer extends AlternativeDomainEntity {
 
     @OneToMany(mappedBy = "customer")
     private List<Sale> orders;
+
+    @OneToMany(mappedBy = "customer")
+    private List<CustomerVoucher> vouchers;
 }

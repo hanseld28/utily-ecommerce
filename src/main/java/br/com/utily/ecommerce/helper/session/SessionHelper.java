@@ -27,17 +27,17 @@ public class SessionHelper {
         object = null;
     }
 
-    public static void removeAttributesForSaleFinished(ShopCart shopCart, SaleInProgress saleInProgress) {
-        removeShopCart(shopCart);
-        removeSaleInProgress(saleInProgress);
-        httpSession.invalidate();
+    public static void removeAttributesForSaleFinished(ShopCart shopCart,
+                                                       SaleInProgress saleInProgress) {
+        remove(shopCart);
+        remove(saleInProgress);
     }
 
-    public static void removeShopCart(ShopCart shopCart) {
+    public static void remove(ShopCart shopCart) {
         remove("scopedTarget.shopCart", shopCart);
     }
 
-    public static void removeSaleInProgress(SaleInProgress saleInProgress) {
+    public static void remove(SaleInProgress saleInProgress) {
         remove("scopedTarget.saleInProgress", saleInProgress);
     }
 

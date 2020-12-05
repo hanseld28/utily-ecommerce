@@ -1,9 +1,9 @@
-package br.com.utily.ecommerce.service.domain.impl;
+package br.com.utily.ecommerce.service.alternative.impl;
 
 import br.com.utily.ecommerce.entity.Entity;
-import br.com.utily.ecommerce.entity.domain.DomainEntity;
+import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
 import br.com.utily.ecommerce.facade.IFacade;
-import br.com.utily.ecommerce.service.domain.IDomainService;
+import br.com.utily.ecommerce.service.alternative.IAlternativeDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,23 +11,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DomainService<T extends DomainEntity> implements IDomainService<T> {
+public class AlternativeDomainService<T extends AssociativeDomainEntity> implements IAlternativeDomainService<T> {
 
     private IFacade<T> facade;
 
     @Autowired
     private void setFacade(IFacade<T> facade) {
         this.facade = facade;
-    }
-
-    @Override
-    public T save(T domainEntity) {
-        return facade.save(domainEntity);
-    }
-
-    @Override
-    public T saveAndFlush(T domainEntity) {
-        return facade.saveAndFlush(domainEntity);
     }
 
     @Override

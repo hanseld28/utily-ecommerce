@@ -4,10 +4,10 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-<th:block th:fragment="successMessage">
+<th:block th:fragment="redirectMessage" th:if="${!#strings.isEmpty(message)}">
     <div class="alert alert-dismissible fade show"
          role="alert"
-         th:classappend="${!#fields.hasErrors() ? 'alert-success' : 'alert-danger' }"
+         th:classappend="${isSuccess ? 'alert-success' : 'alert-danger' }"
          th:if="${!#strings.isEmpty(message)}"
     >
         <span th:text="${message}"></span>

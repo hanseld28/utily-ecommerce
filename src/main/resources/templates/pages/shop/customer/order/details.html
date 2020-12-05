@@ -156,7 +156,7 @@
                                                     <tr th:each="item : ${order.items}">
                                                         <td>
                                                             <a th:href="@{/shop/products/} + ${item.product.id}"
-                                                               class="btn btn-outline-secondary"
+                                                               class="btn btn-link text-uppercase"
                                                                th:text="${item.product.title}"
                                                             ></a>
                                                         </td>

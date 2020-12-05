@@ -1,6 +1,7 @@
 package br.com.utily.ecommerce.entity.domain.shop.sale;
 
 import br.com.utily.ecommerce.entity.domain.DomainEntity;
+import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,18 +38,22 @@ public class Sale extends DomainEntity {
     @Column(name = "sls_status")
     private ESaleStatus status;
 
-    @JoinColumn(name = "sls_cst_id", foreignKey = @ForeignKey(name = "sls_cst_fk"))
     @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "sls_cst_id", foreignKey = @ForeignKey(name = "sls_cst_fk"))
     private Customer customer;
 
-    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sale", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH })
     private List<SaleItem> items;
 
-    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sale", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH })
     private List<SaleAddress> adresses;
 
-    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sale", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH })
     private List<SaleCreditCard> usedCreditCards;
+
+    @ManyToOne
+    @JoinColumn(name = "sls_vch_id", foreignKey = @ForeignKey(name = "sls_vch_id"))
+    private Voucher voucher;
 
     @Transient
     private final Double freightValue = 10.0;

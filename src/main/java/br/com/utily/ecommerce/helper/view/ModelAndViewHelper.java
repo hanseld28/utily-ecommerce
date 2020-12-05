@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 @Component
 public class ModelAndViewHelper {
@@ -49,6 +50,10 @@ public class ModelAndViewHelper {
 
     public static void addObjectTo(ModelAndView target, Collection<?> objects, EModelAttribute eModelAttribute) {
         target.addObject(eModelAttribute.getName(), objects);
+    }
+
+    public static void addModelMapTo(ModelAndView target, Map<String, ?> modelMap) {
+        target.addAllObjects(modelMap);
     }
 
     private static Collection<Enum<?>> identifyPaths(final EViewType eViewType) {

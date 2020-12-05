@@ -1,7 +1,7 @@
-package br.com.utily.ecommerce.service.domain;
+package br.com.utily.ecommerce.service.alternative;
 
 import br.com.utily.ecommerce.entity.Entity;
-import br.com.utily.ecommerce.entity.domain.DomainEntity;
+import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
 import br.com.utily.ecommerce.service.IService;
 import org.springframework.stereotype.Component;
 
@@ -9,11 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public interface IDomainService<T extends DomainEntity> extends IService<T> {
-
-    T save(T domainEntity);
-
-    T saveAndFlush(T domainEntity);
+public interface IAlternativeDomainService<T extends AssociativeDomainEntity>
+        extends IService<T> {
 
     List<T> findAll(T mockEntity);
 

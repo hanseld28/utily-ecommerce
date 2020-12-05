@@ -24,7 +24,12 @@ public enum EModelAttribute {
 
     CREDIT_CARDS("creditCards"),
     CREDIT_CARD("creditCard"),
+    CREDIT_CARD_AND_VALUE("creditCardAndValue"),
 
+    VOUCHERS("vouchers"),
+    VOUCHER("voucher"),
+
+    MESSAGE("message"),
     NOT_ENOUGH_ADDRESS("notEnoughAddress"),
     ENABLE_NEXT_STEP("enableNextStep"),
     HASH("hash"),

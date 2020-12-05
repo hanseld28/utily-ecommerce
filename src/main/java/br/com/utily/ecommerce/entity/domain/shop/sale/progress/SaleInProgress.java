@@ -3,6 +3,7 @@ package br.com.utily.ecommerce.entity.domain.shop.sale.progress;
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.shop.cart.CartItem;
 import br.com.utily.ecommerce.entity.domain.shop.sale.ESaleStatus;
+import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
 import br.com.utily.ecommerce.entity.domain.user.customer.creditCard.CreditCard;
@@ -32,6 +33,7 @@ public class SaleInProgress extends Entity {
     private List<Address> adresses = new ArrayList<>();
     private List<CartItem> cartItems = new ArrayList<>();
     private List<CreditCardValue> usedCreditCards = new ArrayList<>();
+    private Voucher voucher;
     private Double total;
     private final Double freightValue = 10.0;
 
@@ -94,5 +96,14 @@ public class SaleInProgress extends Entity {
 
     public Boolean isRemainingAmountFullyCovered() {
         return calculateRemainingAmount() == 0.0;
+    }
+
+    public void applyVoucher(Voucher voucher) {
+        this.voucher = voucher;
+        total -= (total * voucher.getMultiplicationFactor());
+    }
+
+    public Boolean isVoucherAlreadyApplied() {
+        return voucher != null && voucher.getId() != null;
     }
 }

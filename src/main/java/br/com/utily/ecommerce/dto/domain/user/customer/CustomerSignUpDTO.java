@@ -5,7 +5,6 @@ import br.com.utily.ecommerce.dto.domain.user.UserSignUpDTO;
 import br.com.utily.ecommerce.entity.domain.user.customer.Gender;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 

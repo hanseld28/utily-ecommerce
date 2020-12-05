@@ -19,13 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,7 +88,7 @@ public class CustomerController {
     }
 
     @PostMapping(path = ACCOUNT_URI)
-    public ModelAndView saveAccount(@Validated CustomerUpdateDTO customerUpdateDTO,
+    public ModelAndView saveAccount(@Valid CustomerUpdateDTO customerUpdateDTO,
                                     Errors errors,
                                     RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {

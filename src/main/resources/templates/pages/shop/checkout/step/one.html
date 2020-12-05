@@ -58,7 +58,8 @@
                                         <th:block th:if="${!notEnoughAddress}">
                                             <select class="form-control ml-3 w-50"
                                                     id="selectAddress"
-                                                    name="id">
+                                                    name="id"
+                                                    required>
                                                 <option value="" selected>Selecione um endereço...</option>
                                                 <option th:each="customerAddress : ${customer.adresses}"
                                                         th:value="${customerAddress.id}"
@@ -70,7 +71,8 @@
                                         <th:block th:if="${notEnoughAddress}">
                                             <select class="form-control ml-3 w-50"
                                                     id="selectAddress2"
-                                                    name="id">
+                                                    name="id"
+                                                    required>
                                                 <option value="" selected>Selecione um endereço...</option>
                                                 <option th:each="address : ${adresses}"
                                                         th:value="${address.id}"
@@ -83,7 +85,10 @@
                                 <div class="col-6">
                                     <div class="row flex-row d-flex justify-content-end">
                                         <div class="col-6">
-                                            <button type="submit" class="btn btn-primary btn-block" id="nextStep1">Próximo</button>
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-block"
+                                                    id="nextStep1"
+                                            >Próximo</button>
                                         </div>
                                     </div>
                                 </div>

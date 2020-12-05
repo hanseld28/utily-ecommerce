@@ -11,6 +11,8 @@ public interface IFacade<T> {
 
     T save(T entity);
 
+    T saveAndFlush(T entity);
+
     void remove(T entity);
 
     Optional<T> findById(Long id, T entity);

@@ -24,7 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping(path = AuthController.AUTH_URL)
-public class AuthController {
+public class                                                                                                                                                                                AuthController {
 
     public static final String AUTH_URL = "/auth";
     public static final String LOGIN_URL = "/login";

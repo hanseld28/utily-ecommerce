@@ -1,6 +1,8 @@
 package br.com.utily.ecommerce.config.bean;
 
 import br.com.utily.ecommerce.entity.domain.shop.sale.*;
+import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucher;
+import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucherId;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +45,18 @@ public class PrototypeBeansConfiguration {
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     public SaleCreditCardId createPrototypeForSaleCreditCardId() {
         return new SaleCreditCardId();
+    }
+
+    @Bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public CustomerVoucher createPrototypeForCustomerVoucher() {
+        return new CustomerVoucher();
+    }
+
+    @Bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public CustomerVoucherId createPrototypeForCustomerVoucherId() {
+        return new CustomerVoucherId();
     }
 
 }
