@@ -18,6 +18,8 @@
 
     <div class="container mt-4">
 
+        <!--/*@thymesVar id="sale" type="br.com.utily.ecommerce.entity.domain.shop.sale.progress.SaleInProgress"*/-->
+
         <div class="row flex-row">
             <div class="col-10 offset-1 mb-3">
                 <nav aria-label="breadcrumb">
@@ -54,7 +56,13 @@
                                 <h5>Valor da compra </h5>
                             </div>
                             <div class="col-3">
-                                <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.total), '$', 'R$')}">R$ 239,96</h6>
+                                <th:block th:unless="${sale.voucherAlreadyApplied}">
+                                    <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.total), '$', 'R$')}"></h6>
+                                </th:block>
+
+                                <th:block th:if="${sale.voucherAlreadyApplied}">
+                                    <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.calculateTotalWithoutVoucher()), '$', 'R$')}"></h6>
+                                </th:block>
                             </div>
                         </div>
                         <div class="row">
@@ -67,21 +75,62 @@
                                 <h5>Frete</h5>
                             </div>
                             <div class="col-3">
-                                <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.freightValue), '$', 'R$')}">R$ 10,00</h6>
+                                <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.freightValue), '$', 'R$')}"></h6>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <div class="row flex-row">
-                            <div class="col-6 d-flex justify-content-start">
-                                <span>TOTAL: </span>
-                                <span th:text="${#strings.replace(#numbers.formatCurrency(sale.recalculateTotalWithFreight()), '$', 'R$')}"
-                                      class="ml-1 font-weight-bold"></span>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="col-2 d-flex justify-content-start pr-0">
+                                        <h4 class="pt-2">TOTAL:</h4>
+                                    </div>
+                                    <div class="col-10 pl-0">
+                                        <th:block th:if="${sale.voucherAlreadyApplied}">
+                                            <div class="row pb-0 mb-0">
+                                                <div class="col">
+                                                    <span class="ml-1 font-weight-normal text-muted"
+                                                          style="font-size: medium; text-decoration: line-through;"
+                                                          th:text="${#strings.replace(#numbers.formatCurrency(sale.calculateTotalWithFreightBeforeVoucherApplied()), '$', 'R$')}">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </th:block>
+                                        <div class="row">
+                                            <div class="col">
+                                                <span th:text="${#strings.replace(#numbers.formatCurrency(sale.recalculateTotalWithFreight()), '$', 'R$')}"
+                                                      class="ml-1 font-weight-bold text-success"
+                                                      style="font-size: large;"
+                                                ></span>
+                                                <th:block th:if="${sale.voucherAlreadyApplied}">
+                                                    <span class="ml-3">
+                                                        <span class="badge badge-info badge-pill"
+                                                              th:text="${#strings.toLowerCase(sale.voucher.formatToText())}"
+                                                        ></span>
+                                                        <span class="badge badge-success badge-pill">
+                                                            <i class="fa fa-check"></i>
+                                                            aplicado
+                                                        </span>
+                                                    </span>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-6 d-flex justify-content-end">
-                                <span>VALOR RESTANTE: </span>
-                                <span th:text="${#strings.replace(#numbers.formatCurrency(sale.calculateRemainingAmount()), '$', 'R$')}"
-                                      class="ml-1 font-weight-bold"></span>
+                            <div class="col-4 d-flex justify-content-end">
+                                <div class="row w-100">
+                                    <div class="col-8 d-flex justify-content-end pr-0">
+                                        <h5 class="pt-2">VALOR RESTANTE:</h5>
+                                    </div>
+                                    <div class="col-4 d-flex justify-content-start pr-0">
+                                        <span th:text="${#strings.replace(#numbers.formatCurrency(sale.calculateRemainingAmount()), '$', 'R$')}"
+                                              class="pt-2 ml-1 font-weight-bold text-danger"
+                                              style="font-size: large;"
+                                        ></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -118,6 +167,7 @@
                                                 th:field="*{creditCardId}"
                                                 required>
                                             <option value="" selected disabled>Selecione um cartão de crédito...</option>
+                                            <!--/*@thymesVar id="creditCard" type="br.com.utily.ecommerce.entity.domain.user.customer.creditCard.CreditCard"*/-->
                                             <option th:each="creditCard : ${creditCards}"
                                                     th:value="${creditCard.id}"
                                                     th:text="${creditCard.buildCreditCardShortName()}"
@@ -210,34 +260,46 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form class="form-inline" th:action="@{/shop/checkout/step/one/validation}" method="POST" th:object="${voucher}">
-                            <div class="row">
-                                <div class="col-5">
+                        <div class="row w-100">
+                            <div class="col-8">
+                                <!--/*@thymesVar id="voucher" type="br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher"*/-->
+                                <form th:unless="${sale.voucherAlreadyApplied}"
+                                      class="form-inline"
+                                      th:action="@{/shop/checkout/step/two/payment/voucher}"
+                                      method="POST"
+                                      th:object="${voucher}">
                                     <div class="form-group">
-                                        <label>Cupons disponíveis</label>
-                                        <select class="form-control"
+                                        <label class="mr-3">Cupons disponíveis</label>
+                                        <select class="form-control mr-3"
                                                 th:field="*{id}">
                                             <option value="" selected disabled>Selecione um cupom...</option>
-                                            <!--/*@thymesVar id="voucher" type="br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher"*/-->
                                             <option th:each="voucher : ${vouchers}"
                                                     th:value="${voucher.id}"
                                                     th:text="${voucher.name}"
                                             ></option>
                                         </select>
+                                        <button type="submit" class="btn btn-primary" id="applyVoucher">
+                                            Aplicar cupom
+                                        </button>
                                     </div>
-                                </div>
-                                <div class="col-6">
-                                    <button type="submit" class="btn btn-primary btn-block" id="applyVoucher">Aplicar cupom</button>
+                                </form>
+                                <div th:if="${sale.voucherAlreadyApplied}"
+                                     class="alert alert-success">
+                                    <span>
+                                        <span class="badge badge-success badge-pill"
+                                              th:text="${sale.voucher.formatToText()}"
+                                              style="font-size: medium">
+                                        </span>
+                                        aplicado com sucesso!
+                                    </span>
                                 </div>
                             </div>
-                        </form>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="row flex-row d-flex justify-content-end">
-                                    <div class="col-6">
-                                        <a th:href="@{/shop/checkout/step/three}" class="btn btn-primary btn-block" id="nextStepButton3" disabled>Próximo</a>
-                                    </div>
-                                </div>
+                            <div class="col-4">
+                                <a th:href="@{/shop/checkout/step/three}"
+                                   class="btn btn-primary btn-block"
+                                   id="nextStepButton3"
+                                   disabled
+                                >Próximo</a>
                             </div>
                         </div>
                     </div>

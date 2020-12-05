@@ -1,4 +1,4 @@
-package br.com.utily.ecommerce.service.alternative;
+package br.com.utily.ecommerce.service.associative;
 
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public interface IAlternativeDomainService<T extends AssociativeDomainEntity>
+public interface IAssociativeDomainService<T extends AssociativeDomainEntity>
         extends IService<T> {
+
+    T save(T entity);
 
     List<T> findAll(T mockEntity);
 

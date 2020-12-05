@@ -30,6 +30,7 @@ public enum EModelAttribute {
     VOUCHER("voucher"),
 
     MESSAGE("message"),
+    IS_SUCCESS_MESSAGE("isSuccess"),
     NOT_ENOUGH_ADDRESS("notEnoughAddress"),
     ENABLE_NEXT_STEP("enableNextStep"),
     HASH("hash"),

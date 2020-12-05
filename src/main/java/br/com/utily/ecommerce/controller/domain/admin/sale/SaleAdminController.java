@@ -62,16 +62,16 @@ public class SaleAdminController {
         sale.setStatus(newStatus);
         Sale updatedSale = saleDomainService.save(sale);
 
-        boolean success = updatedSale.getStatus() == newStatus;
+        boolean isSuccess = updatedSale.getStatus() == newStatus;
 
         String successMessage = "O status da venda foi alterado com sucesso de \""
                 + oldStatus.getDisplayName() + "\" para \"" + newStatus.getDisplayName() + "\".";
         String errorMessage = "Ocorreu um erro ao tentar alterar o status da venda \""
                 + oldStatus.getDisplayName() + "\" para \"" + newStatus.getDisplayName() + "\".";
 
-        String message = success ? successMessage : errorMessage;
-        redirectAttributes.addFlashAttribute("message", message);
-        redirectAttributes.addFlashAttribute("isError", !success);
+        String message = isSuccess ? successMessage : errorMessage;
+        redirectAttributes.addFlashAttribute(EModelAttribute.MESSAGE.getName(), message);
+        redirectAttributes.addFlashAttribute(EModelAttribute.IS_SUCCESS_MESSAGE.getName(), isSuccess);
 
         return ModelAndViewHelper.configure(EViewType.REDIRECT_SALES_ADMIN);
     }

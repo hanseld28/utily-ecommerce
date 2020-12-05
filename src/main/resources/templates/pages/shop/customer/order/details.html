@@ -11,12 +11,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <title>Meus pedidos | Loja de Utilidades Domésticas</title>
+    <style>
+        .text-scratched {
+            text-decoration: line-through;
+        }
+    </style>
 </head>
 <body>
 
 <th:block layout:fragment="pageContent">
 
     <div class="container-fluid">
+        <!--/*@thymesVar id="order" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
         <div class="row">
             <div class="col-2">
                 <th:block layout:insert="~{fragments/customer/verticalMenu}"></th:block>
@@ -68,7 +74,6 @@
                                 <div class="row flex-row mt-3">
                                     <div class="col-4 pr-0">
                                         <div class="progress">
-                                            <!--/*@thymesVar id="order" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
                                             <div class="progress-bar"
                                                  th:classappend="${order.wasOrIsInProcessing() ? 'bg-info' : 'bg-secondary opacity-2'}"
                                                  role="progressbar"
@@ -80,7 +85,6 @@
                                     </div>
                                     <div class="col-4 pl-0 pr-0">
                                         <div class="progress">
-                                            <!--/*@thymesVar id="order" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
                                             <div class="progress-bar"
                                                  th:classappend="${order.wasOrIsInTransit() ? 'bg-warning' : 'bg-secondary opacity-2'}"
                                                  role="progressbar"
@@ -92,7 +96,6 @@
                                     </div>
                                     <div class="col-4 pl-0">
                                         <div class="progress">
-                                            <!--/*@thymesVar id="order" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
                                             <div class="progress-bar"
                                                  th:classappend="${order.delivered() ? 'bg-success' : 'bg-secondary opacity-2'}"
                                                  role="progressbar"
@@ -152,7 +155,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <!--/*@thymesVar id="order" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
+                                                    <!--/*@thymesVar id="order" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
                                                     <tr th:each="item : ${order.items}">
                                                         <td>
                                                             <a th:href="@{/shop/products/} + ${item.product.id}"
@@ -169,23 +172,46 @@
                                         </div>
                                         <div class="row flex-row border-top bg-light font-weight-bold">
                                             <div class="col d-flex justify-content-start" style="font-size: 18px">
-                                                <span>Valor total</span>
+                                                <span>VALOR TOTAL</span>
                                             </div>
                                         </div>
                                         <div class="row flex-row border-top bg-light font-weight-bold">
                                             <div class="col-6 d-flex justify-content-start pt-2 pb-2">
-                                                &nbsp;&nbsp;<h6 class="badge badge-info badge-pill ml-3">sem frete</h6>
+                                                &nbsp;&nbsp;<h6 class="badge badge-secondary badge-pill ml-3">sem frete</h6>
                                             </div>
-                                            <div class="col-6 d-flex justify-content-end text-info" style="font-size: 20px">
-                                                <span th:text="${#strings.replace(#numbers.formatCurrency(order.calculateTotal()), '$', 'R$')}"></span>
+                                            <div class="col-6 d-flex justify-content-end text-secondary" style="font-size: 20px">
+                                                <span th:classappend="${order.hasAnyVoucherApplied() ? 'text-scratched' : ''}"
+                                                      th:text="${#strings.replace(#numbers.formatCurrency(order.calculateTotal()), '$', 'R$')}"></span>
                                             </div>
                                         </div>
                                         <div class="row flex-row border-top bg-light font-weight-bold">
                                             <div class="col-6 d-flex justify-content-start pt-2 pb-2">
-                                                &nbsp;&nbsp;<h6 class="badge badge-success badge-pill ml-3">com frete</h6>
+                                                &nbsp;&nbsp;<h6 class="badge badge-info badge-pill ml-3">com frete</h6>
+                                            </div>
+                                            <div class="col-6 d-flex justify-content-end text-info"
+                                                 style="font-size: 20px">
+                                                <span th:classappend="${order.hasAnyVoucherApplied() ? 'text-scratched' : ''}"
+                                                      th:text="${#strings.replace(#numbers.formatCurrency(order.calculateTotalWithFreight()), '$', 'R$')}"></span>
+                                            </div>
+                                        </div>
+                                        <div th:if="${order.hasAnyVoucherApplied()}" class="row flex-row border-top bg-light font-weight-bold">
+                                            <div class="col-6 d-flex justify-content-start pt-2 pb-2">
+                                                &nbsp;&nbsp;
+                                                <h6 class="badge badge-success badge-pill ml-3">
+                                                    com
+                                                </h6>
+                                                &nbsp;
+                                                <h6 class="badge badge-success badge-pill"
+                                                    th:text="${#strings.toLowerCase(order.voucher.formatToText())}">
+                                                </h6>
+                                                &nbsp;
+                                                <h6 class="badge badge-success badge-pill">
+                                                    <i class="fa fa-check"></i>
+                                                    aplicado
+                                                </h6>
                                             </div>
                                             <div class="col-6 d-flex justify-content-end text-success" style="font-size: 20px">
-                                                <h3 th:text="${#strings.replace(#numbers.formatCurrency(order.calculateTotalWithFreight()), '$', 'R$')}"></h3>
+                                                <h3 th:text="${#strings.replace(#numbers.formatCurrency(order.calculateTotalWithAppliedVoucher()), '$', 'R$')}"></h3>
                                             </div>
                                         </div>
                                     </div>

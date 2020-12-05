@@ -36,6 +36,7 @@ public class SaleInProgress extends Entity {
     private Voucher voucher;
     private Double total;
     private final Double freightValue = 10.0;
+    private Boolean voucherAlreadyApplied = false;
 
     public void addAddress(Address address) {
         adresses.add(address);
@@ -98,12 +99,19 @@ public class SaleInProgress extends Entity {
         return calculateRemainingAmount() == 0.0;
     }
 
-    public void applyVoucher(Voucher voucher) {
-        this.voucher = voucher;
-        total -= (total * voucher.getMultiplicationFactor());
+    public Double calculateTotalWithoutVoucher() {
+        return total / (1 - voucher.getMultiplicationFactor());
     }
 
-    public Boolean isVoucherAlreadyApplied() {
-        return voucher != null && voucher.getId() != null;
+    public Double calculateTotalWithFreightBeforeVoucherApplied() {
+        return (total / (1 - voucher.getMultiplicationFactor())) + freightValue;
+    }
+
+    public void applyVoucher(Voucher voucher) {
+        if (!voucherAlreadyApplied) {
+            this.voucher = voucher;
+            total -= (total * voucher.getMultiplicationFactor());
+            voucherAlreadyApplied = true;
+        }
     }
 }

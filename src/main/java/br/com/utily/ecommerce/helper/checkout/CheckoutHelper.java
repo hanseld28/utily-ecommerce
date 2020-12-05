@@ -3,6 +3,7 @@ package br.com.utily.ecommerce.helper.checkout;
 import br.com.utily.ecommerce.entity.domain.shop.cart.CartItem;
 import br.com.utily.ecommerce.entity.domain.shop.sale.*;
 import br.com.utily.ecommerce.entity.domain.shop.sale.progress.SaleInProgress;
+import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.AddressType;
@@ -21,7 +22,6 @@ public class CheckoutHelper {
     private final SaleAddressHelper saleAddressHelper;
     private final SaleCreditCardHelper saleCreditCardHelper;
 
-
     @Autowired
     public CheckoutHelper(Sale mockSale,
                           SaleItemHelper saleItemHelper,
@@ -38,6 +38,7 @@ public class CheckoutHelper {
         ESaleStatus status = saleInProgress.getStatus();
         Customer customer = saleInProgress.getCustomer();
         List<CartItem> cartItems = saleInProgress.getCartItems();
+        Voucher voucher = saleInProgress.getVoucher();
 
         List<SaleItem> saleItems = cartItems.stream()
                 .map(cartItem -> saleItemHelper.adapt(cartItem, mockSale))
@@ -57,6 +58,7 @@ public class CheckoutHelper {
         mockSale.setItems(saleItems);
         mockSale.setAdresses(saleAdresses);
         mockSale.setUsedCreditCards(saleCreditCards);
+        mockSale.setVoucher(voucher);
 
         return mockSale;
     }

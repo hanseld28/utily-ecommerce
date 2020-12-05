@@ -14,12 +14,13 @@ import br.com.utily.ecommerce.entity.domain.user.customer.adresses.AddressType;
 import br.com.utily.ecommerce.entity.domain.user.customer.creditCard.CreditCard;
 import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucher;
 import br.com.utily.ecommerce.helper.checkout.CheckoutHelper;
+import br.com.utily.ecommerce.helper.checkout.CustomerVoucherHelper;
 import br.com.utily.ecommerce.helper.proxy.ProxyHelper;
 import br.com.utily.ecommerce.helper.security.LoggedUserHelper;
 import br.com.utily.ecommerce.helper.session.SessionHelper;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
 import br.com.utily.ecommerce.helper.view.ModelMapperHelper;
-import br.com.utily.ecommerce.service.alternative.IAlternativeDomainService;
+import br.com.utily.ecommerce.service.associative.IAssociativeDomainService;
 import br.com.utily.ecommerce.service.domain.IDomainService;
 import br.com.utily.ecommerce.util.constant.attribute.EModelAttribute;
 import br.com.utily.ecommerce.util.constant.entity.EViewType;
@@ -58,7 +59,7 @@ public class CheckoutShopController {
     private final IDomainService<Address> addressDomainService;
     private final IDomainService<CreditCard> creditCardDomainService;
     private final IDomainService<Voucher> voucherDomainService;
-    private final IAlternativeDomainService<CustomerVoucher> customerVoucherAlternativeDomainService;
+    private final IAssociativeDomainService<CustomerVoucher> customerVoucherAlternativeDomainService;
 
     private CreditCard mockCreditCard;
     private CustomerVoucher mockCustomerVoucher;
@@ -66,13 +67,14 @@ public class CheckoutShopController {
 
     private SaleInProgress saleInProgress;
     private ShopCart shopCart;
-    private LoggedUserHelper loggedUserHelper;
-    private CheckoutHelper checkoutHelper;
     private Customer loggedCustomer;
 
     private CreditCardIdAndValueDTO mockCreditCardAndValueDTO;
     private VoucherIdDTO mockVoucherIdDTO;
 
+    private LoggedUserHelper loggedUserHelper;
+    private CheckoutHelper checkoutHelper;
+    private CustomerVoucherHelper customerVoucherHelper;
     private ModelAndViewHelper modelAndViewHelper;
 
     private final UUID hash;
@@ -82,7 +84,7 @@ public class CheckoutShopController {
                                   @Qualifier("domainService") final IDomainService<Address> addressDomainService,
                                   @Qualifier("domainService") final IDomainService<CreditCard> creditCardDomainService,
                                   @Qualifier("domainService") final IDomainService<Voucher> voucherDomainService,
-                                  @Qualifier("alternativeDomainService") final IAlternativeDomainService<CustomerVoucher> customerVoucherAlternativeDomainService) {
+                                  @Qualifier("associativeDomainService") final IAssociativeDomainService<CustomerVoucher> customerVoucherAlternativeDomainService) {
         this.saleDomainService = saleDomainService;
         this.addressDomainService = addressDomainService;
         this.creditCardDomainService = creditCardDomainService;
@@ -115,9 +117,11 @@ public class CheckoutShopController {
     @Autowired
     private void setDependencyHelpers(final LoggedUserHelper loggedUserHelper,
                                       final CheckoutHelper checkoutHelper,
+                                      final CustomerVoucherHelper customerVoucherHelper,
                                       final ModelAndViewHelper modelAndViewHelper) {
         this.loggedUserHelper = loggedUserHelper;
         this.checkoutHelper = checkoutHelper;
+        this.customerVoucherHelper = customerVoucherHelper;
         this.modelAndViewHelper = modelAndViewHelper;
     }
 
@@ -240,7 +244,7 @@ public class CheckoutShopController {
             FieldError valueFieldError = errors.getFieldError("value");
             String message = valueFieldError != null ? valueFieldError.getDefaultMessage() : "Valor inválido";
 
-            redirectAttributes.addFlashAttribute("isSuccess", false);
+            redirectAttributes.addFlashAttribute(EModelAttribute.IS_SUCCESS_MESSAGE.getName(), false);
             redirectAttributes.addFlashAttribute(EModelAttribute.MESSAGE.getName(), message);
 
             return modelAndView;
@@ -260,7 +264,7 @@ public class CheckoutShopController {
 
         saleInProgress.addCreditCardValue(creditCardValue);
 
-        redirectAttributes.addFlashAttribute("isSuccess", true);
+        redirectAttributes.addFlashAttribute(EModelAttribute.IS_SUCCESS_MESSAGE.getName(), true);
         redirectAttributes.addFlashAttribute(EModelAttribute.MESSAGE.getName(), "Forma de pagamento e valor adicionado.");
 
         return modelAndView;
@@ -268,18 +272,17 @@ public class CheckoutShopController {
 
     @PostMapping(path = CHECKOUT_STEP_TWO_PAYMENT_VOUCHER_URL)
     public ModelAndView addVoucherForPaymentStepTwo(@Valid VoucherIdDTO voucherIdDTO) {
-        Long voucherId = voucherIdDTO.getId();
+        if (!saleInProgress.getVoucherAlreadyApplied()) {
+            Long voucherId = voucherIdDTO.getId();
+            Optional<Voucher> voucherOptional = voucherDomainService.findById(voucherId, mockVoucher);
+            Voucher voucher = voucherOptional.orElseThrow(NotFoundException::new);
 
-        // TODO: Fix exception Not found voucher
-        Optional<Voucher> voucherOptional = voucherDomainService.findById(voucherId, mockVoucher);
-        Voucher voucher = voucherOptional.orElseThrow(NotFoundException::new);
-
-        saleInProgress.applyVoucher(voucher);
-
+            saleInProgress.applyVoucher(voucher);
+        }
         return ModelAndViewHelper.configure(EViewType.REDIRECT_CHECKOUT_STEP_TWO);
     }
 
-        @GetMapping(path = CHECKOUT_STEP_THREE_URL)
+    @GetMapping(path = CHECKOUT_STEP_THREE_URL)
     public ModelAndView initializeStepThree() {
         ModelAndView modelAndView = ModelAndViewHelper.configure(
                 EViewType.CHECKOUT_STEP_SHOP,
@@ -298,11 +301,18 @@ public class CheckoutShopController {
             saleInProgress.finish();
 
             Optional<SaleInProgress> saleInProgressOptional = ProxyHelper.recoveryEntityFromProxy(saleInProgress);
-            Sale sale = checkoutHelper.adapt(saleInProgressOptional.orElseThrow(InternalError::new));
-
+            Sale sale = checkoutHelper.adapt(
+                    saleInProgressOptional.orElseThrow(InternalError::new)
+            );
             Sale savedSale = saleDomainService.save(sale);
 
-            if (savedSale != null && savedSale.getId() != null) {
+            CustomerVoucher savedCustomerVoucher = customerVoucherHelper.adapt(
+                    savedSale.getVoucher(),
+                    savedSale.getCustomer()
+            );
+            customerVoucherAlternativeDomainService.save(savedCustomerVoucher);
+
+            if (savedSale.getId() != null) {
                 SessionHelper.removeAttributesForSaleFinished(
                         shopCart,
                         saleInProgress

@@ -34,13 +34,20 @@ public class CustomerVoucher extends AssociativeDomainEntity {
     @JoinColumn(name = "cvh_cst_id", referencedColumnName = "id", nullable = false)
     private Customer customer;
 
-    public CustomerVoucher adapt(CustomerVoucherId customerVoucherId, Customer customer, Voucher voucher) {
+    public CustomerVoucher adapt(CustomerVoucherId customerVoucherId,
+                                 Customer customer,
+                                 Voucher voucher) {
         Long voucherId = voucher.getId();
-        customerVoucherId.setVoucherId(voucherId);
+        Long customerId = customer.getId();
 
+        customerVoucherId.setVoucherId(voucherId);
+        customerVoucherId.setCustomerId(customerId);
+        customerVoucherId.setUsed(true);
+        
         this.setId(customerVoucherId);
         this.setVoucher(voucher);
         this.setCustomer(customer);
+
         return this;
     }
 }

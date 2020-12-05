@@ -18,6 +18,8 @@
 
     <div class="container mt-4">
 
+        <!--/*@thymesVar id="sale" type="br.com.utily.ecommerce.entity.domain.shop.sale.progress.SaleInProgress"*/-->
+
         <div class="row flex-row">
             <div class="col-10 offset-1 mb-3">
                 <nav aria-label="breadcrumb">
@@ -116,7 +118,6 @@
                             <tr>
                                 <th>Forma de pagamento</th>
                                 <th>Valor</th>
-                                <th>Desconto</th>
                                 <th>Subtotal</th>
                             </tr>
                             </thead>
@@ -124,12 +125,27 @@
                                 <tr th:each="saleCreditCard : ${sale.usedCreditCards}">
                                     <td th:text="${saleCreditCard.creditCard.buildCreditCardShortName()}"></td>
                                     <td th:text="${#strings.replace(#numbers.formatCurrency(saleCreditCard.value), '$', 'R$')}"></td>
-                                    <td>Não aplicável</td>
                                     <td th:text="${#strings.replace(#numbers.formatCurrency(saleCreditCard.value), '$', 'R$')}"></td>
                                 </tr>
                             </tbody>
                         </table>
 
+                        <table class="table table-striped" th:if="${sale.voucherAlreadyApplied}">
+                            <thead>
+                            <tr>
+                                <th>Cupom utilizado</th>
+                                <th>Tipo</th>
+                                <th>Cobertura</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td th:text="${sale.voucher.formatToText()}"></td>
+                                    <td th:text="${sale.voucher.type.displayName}"></td>
+                                    <td th:text="${sale.voucher.format()}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="card-footer">
                         <div class="row">

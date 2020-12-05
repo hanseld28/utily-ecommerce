@@ -114,8 +114,18 @@ public class Sale extends DomainEntity {
 
     }
 
+    public Boolean hasAnyVoucherApplied() {
+        return voucher != null && voucher.getId() != null
+                && (voucher.getMultiplicationFactor() != null || voucher.getValue() != null);
+    }
+
     public Double calculateTotalWithFreight() {
         return calculateTotal() + freightValue;
+    }
 
+    public Double calculateTotalWithAppliedVoucher() {
+        return hasAnyVoucherApplied()
+                ? calculateTotal() - (calculateTotal() * voucher.getMultiplicationFactor())
+                : calculateTotal();
     }
 }
