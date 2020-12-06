@@ -1,4 +1,4 @@
-package br.com.utily.ecommerce.service.domain;
+package br.com.utily.ecommerce.service.alternative;
 
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.DomainEntity;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public interface IDomainService<T extends DomainEntity> extends IService<T> {
+public interface IAlternativeDomainService<T extends DomainEntity> extends IService<T> {
 
     T save(T domainEntity);
 
@@ -22,13 +22,5 @@ public interface IDomainService<T extends DomainEntity> extends IService<T> {
     Optional<T> findById(Long id, T mockEntity);
 
     Optional<T> findBy(Entity targetEntity, T mockBaseEntity);
-
-    Optional<T> findActivatedById(Long id, Entity entity);
-
-    Optional<T> findInactivatedById(Long id, Entity entity);
-
-    List<T> findAllActivatedBy(T entity);
-
-    List<T> findAllInactivatedBy(T entity);
 
 }

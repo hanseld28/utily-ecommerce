@@ -11,6 +11,11 @@ public enum EModelAttribute {
     PRODUCTS("products"),
     PRODUCT("product"),
 
+    STOCKS("stocks"),
+    STOCK("stock"),
+
+    STOCK_HISTORY("stockHistory"),
+
     SHOP_CART("shopCart"),
 
     SALE("sale"),

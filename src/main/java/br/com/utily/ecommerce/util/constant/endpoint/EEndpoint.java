@@ -5,6 +5,9 @@ import lombok.Getter;
 @Getter
 public enum EEndpoint {
 
+    NEW("/new"),
+    EDIT("/edit"),
+
     ADMIN("/admin"),
     AUTH("/auth"),
     LOGIN("/login"),
@@ -14,7 +17,7 @@ public enum EEndpoint {
 
     PRODUCTS("/products"),
     STOCKS("/stocks"),
-    STOCK_HISTORIES("/histories"),
+    STOCK_HISTORIES("/history"),
     SALES("/sales"),
 
     CUSTOMERS("/customers"),

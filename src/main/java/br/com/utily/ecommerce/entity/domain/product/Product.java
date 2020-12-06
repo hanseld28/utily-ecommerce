@@ -4,6 +4,7 @@ import br.com.utily.ecommerce.entity.domain.AlternativeDomainEntity;
 import br.com.utily.ecommerce.entity.domain.product.category.Category;
 import br.com.utily.ecommerce.entity.domain.product.provider.Provider;
 import br.com.utily.ecommerce.entity.domain.shop.sale.SaleItem;
+import br.com.utily.ecommerce.entity.domain.stock.Stock;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -68,4 +69,18 @@ public class Product extends AlternativeDomainEntity {
     @OneToMany(mappedBy = "product")
     private List<SaleItem> relatedSales = new ArrayList<>();
 
+    @OneToOne(mappedBy = "product")
+    private Stock stock;
+
+    public Boolean hasStock() {
+        return stock != null;
+    }
+
+    public Boolean hasNotStock() {
+        return !hasStock();
+    }
+
+    public Boolean hasOnStock() {
+        return hasStock() && stock.getAmount() > 0;
+    }
 }

@@ -23,4 +23,12 @@ public interface IFacade<T> {
 
     List<T> findAllBy(Entity targetEntity, T baseEntity);
 
+    Optional<T> findActivatedById(Long id, Entity entity);
+
+    Optional<T> findInactivatedById(Long id, Entity entity);
+
+    List<T> findAllActivatedBy(T entity);
+
+    List<T> findAllInactivatedBy(T entity);
+
 }

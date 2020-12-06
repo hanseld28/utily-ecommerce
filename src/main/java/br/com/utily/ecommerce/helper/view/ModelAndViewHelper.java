@@ -16,7 +16,6 @@ import java.util.Map;
 @Component
 public class ModelAndViewHelper {
 
-
     public static ModelAndView configure(final EViewType eViewType) {
         String view = computeViewByEntityType(eViewType);
         return extractConfiguredFrom(view);
@@ -93,6 +92,17 @@ public class ModelAndViewHelper {
                 paths.add(EPageFolder.PRODUCT);
                 break;
 
+            case STOCK_ADMIN:
+                paths.add(EPageFolder.ADMIN);
+                paths.add(EPageFolder.STOCK);
+                break;
+
+            case STOCK_HISTORY_ADMIN:
+                paths.add(EPageFolder.ADMIN);
+                paths.add(EPageFolder.STOCK);
+                paths.add(EPageFolder.STOCK_HISTORY);
+                break;
+
             case CART_SHOP:
                 paths.add(EPageFolder.SHOP);
                 paths.add(EPageFolder.CART);
@@ -112,6 +122,19 @@ public class ModelAndViewHelper {
             case SALE_ADMIN:
                 paths.add(EPageFolder.ADMIN);
                 paths.add(EPageFolder.SALE);
+                break;
+
+            case REDIRECT_STOCKS_ADMIN:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.ADMIN);
+                paths.add(EEndpoint.STOCKS);
+                break;
+
+            case REDIRECT_NEW_STOCK_ADMIN:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.ADMIN);
+                paths.add(EEndpoint.STOCKS);
+                paths.add(EEndpoint.NEW);
                 break;
 
             case REDIRECT_SALES_ADMIN:

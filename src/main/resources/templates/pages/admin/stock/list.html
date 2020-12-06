@@ -7,16 +7,19 @@
 
 
 <th:block layout:fragment="pageContent">
-    <div th:if="${#bools.isFalse(edit)}"  class="card mb-4 mt-4">
+    <div class="card mb-4 mt-4">
         <div class="card-header">
             <i class="fas fa-table mr-1"></i>
             Estoque de produtos
         </div>
         <div class="card-body">
 
-            <th:block layout:insert="~{fragments/successMessage}" />
+            <th:block layout:insert="~{fragments/redirectMessage}" />
 
             <div class="table-responsive">
+
+                <!--/*@thymesVar id="stock" type="br.com.utily.ecommerce.entity.domain.stock.Stock"*/-->
+
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
@@ -40,14 +43,13 @@
                         <td th:text="${stock.amount}"></td>
                         <td>
                             <div class="d-flex justify-content-center">
-                                <a th:href="@{/admin/stock/list?operation=consult&id=} + ${stock.id}">
+                                <a th:href="@{/admin/stocks/} + ${stock.id}">
                                     <i class="fas fa-edit text-info text-lg"></i>
                                 </a>
                             </div>
                         </td>
                         <td class="d-flex justify-content-center">
                             <div class="d-flex justify-content-center">
-                                <!--/*@thymesVar id="stock" type="br.com.prism.utily.entity.domain.stock.Stock"*/-->
                                 <span th:if="${stock.amount > 0}" class="badge badge-success">
                                     Em estoque
                                 </span>
@@ -64,7 +66,7 @@
         </div>
     </div>
 
-    <div th:if="${edit}">
+    <div th:if="${false}">
 
         <div class="card mt-3 mb-3">
             <div class="card-header">

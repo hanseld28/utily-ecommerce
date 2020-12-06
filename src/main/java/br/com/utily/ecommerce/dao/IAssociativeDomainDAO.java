@@ -4,6 +4,6 @@ import br.com.utily.ecommerce.entity.Entity;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
-public interface IAlternativeDomainDAO<T extends Entity> extends IDAO<T> {
-
+public interface IAssociativeDomainDAO<T extends Entity> extends IDAO<T> {
+    
 }

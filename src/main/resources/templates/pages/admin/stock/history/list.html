@@ -9,13 +9,14 @@
     <div class="card mb-4 mt-4">
         <div class="card-header">
             <i class="fas fa-table mr-1"></i>
-            Histórico do Estoque
+            Histórico de operações no Estoque
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
+                        <th>#</th>
                         <th>Produto do Estoque</th>
                         <th>Quantidade da operação</th>
                         <th>Data do registro</th>
@@ -23,16 +24,19 @@
                     </thead>
                     <tfoot>
                     <tr>
+                        <th>#</th>
                         <th>Produto do Estoque</th>
                         <th>Quantidade da operação</th>
                         <th>Data do registro</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                        <tr th:each="stockHistory : ${stockHistories}">
-                            <td th:text="${stockHistory.stock.product.title}"></td>
-                            <td th:text="${stockHistory.amount}"></td>
-                            <td th:text="${#temporals.format(stockHistory.date, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                        <!--/*@thymesVar id="stockOperation" type="br.com.utily.ecommerce.entity.domain.stock.StockHistory"*/-->
+                        <tr th:each="stockOperation : ${stockHistory}">
+                            <td th:text="${stockOperationStat.index + 1}"></td>
+                            <td th:text="${stockOperation.stock.product.title}"></td>
+                            <td th:text="${stockOperation.amount}"></td>
+                            <td th:text="${#temporals.format(stockOperation.date, 'dd/MM/yyyy HH:mm:ss')}"></td>
                         </tr>
                     </tbody>
                 </table>

@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class Stock extends DomainEntity {
 
     @JoinColumn(name = "stc_prt_id", foreignKey = @ForeignKey(name = "stc_prt_fk"))
-    @OneToOne
+    @OneToOne(optional = false)
     private Product product;
 
     @Basic
@@ -26,6 +26,10 @@ public class Stock extends DomainEntity {
 
     @Transient
     private Integer lastOperationAmount;
+
+    public Integer getLastOperationAmount() {
+        return lastOperationAmount != null ? lastOperationAmount : amount;
+    }
 
     public void recalculateAmount(Integer amount) {
         if (amount != null) {

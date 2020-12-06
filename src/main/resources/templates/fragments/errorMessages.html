@@ -5,8 +5,8 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <th:block th:fragment="errorMessages">
-    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
-        <span th:each="error : ${#fields.errors('*')}" th:text="${error}"></span>
+    <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
+        <span th:each="error : ${#fields.errors()}" th:text="${error}"></span>
     </div>
 </th:block>
 

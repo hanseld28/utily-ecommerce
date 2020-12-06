@@ -1,9 +1,9 @@
-package br.com.utily.ecommerce.service.domain.impl;
+package br.com.utily.ecommerce.service.alternative.impl;
 
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.DomainEntity;
 import br.com.utily.ecommerce.facade.IFacade;
-import br.com.utily.ecommerce.service.domain.IDomainService;
+import br.com.utily.ecommerce.service.alternative.IAlternativeDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DomainService<T extends DomainEntity> implements IDomainService<T> {
+public class AlternativeDomainService<T extends DomainEntity> implements IAlternativeDomainService<T> {
 
     private IFacade<T> facade;
 
@@ -48,25 +48,4 @@ public class DomainService<T extends DomainEntity> implements IDomainService<T> 
     public Optional<T> findBy(Entity targetEntity, T mockBaseEntity) {
         return facade.findBy(targetEntity, mockBaseEntity);
     }
-
-    @Override
-    public Optional<T> findActivatedById(Long id, Entity entity) {
-        return facade.findActivatedById(id, entity);
-    }
-
-    @Override
-    public Optional<T> findInactivatedById(Long id, Entity entity) {
-        return facade.findInactivatedById(id, entity);
-    }
-
-    @Override
-    public List<T> findAllActivatedBy(T entity) {
-        return facade.findAllActivatedBy(entity);
-    }
-
-    @Override
-    public List<T> findAllInactivatedBy(T entity) {
-        return facade.findAllInactivatedBy(entity);
-    }
-
 }

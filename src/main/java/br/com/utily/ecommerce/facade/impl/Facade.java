@@ -1,6 +1,7 @@
 package br.com.utily.ecommerce.facade.impl;
 
 import br.com.utily.ecommerce.dao.IDAO;
+import br.com.utily.ecommerce.dao.IDomainDAO;
 import br.com.utily.ecommerce.dao.domain.product.IProductDAO;
 import br.com.utily.ecommerce.dao.domain.product.category.ICategoryDAO;
 import br.com.utily.ecommerce.dao.domain.product.provider.IProviderDAO;
@@ -8,6 +9,8 @@ import br.com.utily.ecommerce.dao.domain.sale.ISaleAddressDAO;
 import br.com.utily.ecommerce.dao.domain.sale.ISaleCreditCardDAO;
 import br.com.utily.ecommerce.dao.domain.sale.ISaleDAO;
 import br.com.utily.ecommerce.dao.domain.sale.ISaleItemDAO;
+import br.com.utily.ecommerce.dao.domain.stock.IStockDAO;
+import br.com.utily.ecommerce.dao.domain.stock.IStockHistoryDAO;
 import br.com.utily.ecommerce.dao.domain.user.customer.IAddressDAO;
 import br.com.utily.ecommerce.dao.domain.user.customer.ICreditCardDAO;
 import br.com.utily.ecommerce.dao.domain.user.customer.ICustomerDAO;
@@ -22,6 +25,8 @@ import br.com.utily.ecommerce.entity.domain.shop.sale.SaleAddress;
 import br.com.utily.ecommerce.entity.domain.shop.sale.SaleCreditCard;
 import br.com.utily.ecommerce.entity.domain.shop.sale.SaleItem;
 import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
+import br.com.utily.ecommerce.entity.domain.stock.Stock;
+import br.com.utily.ecommerce.entity.domain.stock.StockHistory;
 import br.com.utily.ecommerce.entity.domain.user.User;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
@@ -45,6 +50,9 @@ public class Facade<T extends Entity> implements IFacade<T> {
     private IProductDAO productDAO;
     private ICategoryDAO categoryDAO;
     private IProviderDAO providerDAO;
+
+    private IStockDAO stockDAO;
+    private IStockHistoryDAO stockHistoryDAO;
 
     private IVoucherDAO voucherDAO;
     private ICustomerVoucherDAO customerVoucherDAO;
@@ -81,6 +89,15 @@ public class Facade<T extends Entity> implements IFacade<T> {
     }
 
     @Autowired
+    private void setStockRelatedDAOS(IStockDAO stockDAO,
+                                     IStockHistoryDAO stockHistoryDAO) {
+        this.stockDAO = stockDAO;
+        this.stockHistoryDAO = stockHistoryDAO;
+
+        initStockRelatedDAOSMap();
+    }
+
+    @Autowired
     private void setSaleRelatedDAOS(ISaleDAO saleDAO,
                                     ISaleItemDAO saleItemDAO,
                                     ISaleAddressDAO saleAddressDAO,
@@ -112,6 +129,11 @@ public class Facade<T extends Entity> implements IFacade<T> {
         daosMap.put(Product.class.getName(), productDAO);
         daosMap.put(Category.class.getName(), categoryDAO);
         daosMap.put(Provider.class.getName(), providerDAO);
+    }
+
+    private void initStockRelatedDAOSMap() {
+        daosMap.put(Stock.class.getName(), stockDAO);
+        daosMap.put(StockHistory.class.getName(), stockHistoryDAO);
     }
 
     private void initSaleRelatedDAOSMap() {
@@ -206,6 +228,58 @@ public class Facade<T extends Entity> implements IFacade<T> {
         if (daosMap.containsKey(entityName)) {
             IDAO<T> selectedDAO = daosMap.get(entityName);
             entitiesCollection = executeFindAllBy(targetEntity, selectedDAO);
+        }
+
+        return entitiesCollection;
+    }
+
+    @Override
+    public Optional<T> findActivatedById(Long id, Entity entity) {
+        Optional<T> optionalEntity = Optional.empty();
+        String entityName = entity.getClass().getName();
+
+        if (daosMap.containsKey(entityName)) {
+            IDomainDAO<T> selectedDAO = (IDomainDAO<T>) daosMap.get(entityName);
+            optionalEntity = selectedDAO.findByIdAndInactivatedFalse(id);
+        }
+
+        return optionalEntity;
+    }
+
+    @Override
+    public Optional<T> findInactivatedById(Long id, Entity entity) {
+        Optional<T> optionalEntity = Optional.empty();
+        String entityName = entity.getClass().getName();
+
+        if (daosMap.containsKey(entityName)) {
+            IDomainDAO<T> selectedDAO = (IDomainDAO<T>) daosMap.get(entityName);
+            optionalEntity = selectedDAO.findByIdAndInactivatedTrue(id);
+        }
+
+        return optionalEntity;
+    }
+
+    @Override
+    public List<T> findAllActivatedBy(T entity) {
+        List<T> entitiesCollection = Collections.EMPTY_LIST;
+        String entityName = entity.getClass().getName();
+
+        if (daosMap.containsKey(entityName)) {
+            IDomainDAO<T> selectedDAO = (IDomainDAO<T>) daosMap.get(entityName);
+            entitiesCollection = selectedDAO.findAllByInactivatedFalse();
+        }
+
+        return entitiesCollection;
+    }
+
+    @Override
+    public List<T> findAllInactivatedBy(T entity) {
+        List<T> entitiesCollection = Collections.EMPTY_LIST;
+        String entityName = entity.getClass().getName();
+
+        if (daosMap.containsKey(entityName)) {
+            IDomainDAO<T> selectedDAO = (IDomainDAO<T>) daosMap.get(entityName);
+            entitiesCollection = selectedDAO.findAllByInactivatedTrue();
         }
 
         return entitiesCollection;
