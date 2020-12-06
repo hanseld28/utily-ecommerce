@@ -11,52 +11,47 @@
         <div class="card-header">
             <div class="d-flex flex-row justify-content-start">
                 <div class="mt-1">
-                    <h4 class="card-title">Novo Estoque</h4>
+                    <h4 class="card-title">Gerenciar Entrada/Saída no Estoque</h4>
                 </div>
             </div>
 
         </div>
         <div class="card-body">
 
-            <!--/*@thymesVar id="stock" type="br.com.utily.ecommerce.dto.domain.admin.stock.NewStockDTO"*/-->
+            <!--/*@thymesVar id="stockManage" type="br.com.utily.ecommerce.dto.domain.admin.stock.StockManageDTO"*/-->
 
-            <form id="saveStockForm" th:action="@{/admin/stocks}" method="POST" th:object="${stock}">
+            <form id="manageStockForm" th:action="@{/admin/stocks/} + ${stockManage.id + '/manage'}" method="POST" th:object="${stockManage}">
 
                 <th:block layout:insert="~{fragments/redirectMessage}" />
 
+                <input type="hidden" th:field="*{id}">
+
                 <div class="row">
                     <div class="col-6 d-flex justify-content-center">
-                        <img th:src="@{/assets/icons/stock-512.webp}" class="img-fluid" style="width: 256px; height: 256px;">
+                        <img th:src="${stockManage.product.imageUrl}" class="img-fluid" style="width: 256px; height: 256px;">
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6">
                         <div class="row">
                             <div class="form-group col">
-
-                                <!--/*@thymesVar id="product" type="br.com.utily.ecommerce.entity.domain.product.Product"*/-->
-
                                 <label>
-                                    Produto
-                                    <span class="text-danger text-bold">&nbsp;*</span>
+                                    Quantidade em estoque
                                 </label>
-                                <select class="form-control" th:field="*{product.id}">
-                                    <option value="" selected disabled>Selecione um produto...</option>
-                                    <option th:each="product : ${products}"
-                                            th:value="${product.id}"
-                                            th:text="${product.title}"
-                                    ></option>
-                                </select>
-
+                                <input type="number"
+                                       class="form-control"
+                                       th:field="*{amount}"
+                                       aria-describedby="titleHelp"
+                                       readonly>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col">
                                 <label>
-                                    Quantidade
+                                    Quantidade da operação
                                     <span class="text-danger text-bold">&nbsp;*</span>
                                 </label>
                                 <input type="number"
                                        class="form-control"
-                                       th:field="*{amount}"
+                                       th:field="*{operationAmount}"
                                        aria-describedby="titleHelp">
                             </div>
                         </div>
@@ -64,7 +59,7 @@
                             <div class="col mt-4">
                                 <button type="submit"
                                         class="btn btn-success btn-md btn-block"
-                                >Criar estoque do produto</button>
+                                >Confirmar operação</button>
                             </div>
                         </div>
                     </div>

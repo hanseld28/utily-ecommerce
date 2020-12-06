@@ -46,7 +46,7 @@
                                     <span th:text="${sale.identifyNumber}"></span>
                                 </a>
                             </td>
-                            <td th:text="${#temporals.format(sale.purchaseDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                            <td th:text="${#temporals.format(sale.date, 'dd/MM/yyyy HH:mm:ss')}"></td>
                             <td th:text="${sale.customer.name}"></td>
                             <td>
                                 <span class="badge badge-pill"

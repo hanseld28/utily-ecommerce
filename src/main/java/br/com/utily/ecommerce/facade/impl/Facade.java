@@ -2,6 +2,7 @@ package br.com.utily.ecommerce.facade.impl;
 
 import br.com.utily.ecommerce.dao.IDAO;
 import br.com.utily.ecommerce.dao.IDomainDAO;
+import br.com.utily.ecommerce.dao.domain.IDateFilter;
 import br.com.utily.ecommerce.dao.domain.product.IProductDAO;
 import br.com.utily.ecommerce.dao.domain.product.category.ICategoryDAO;
 import br.com.utily.ecommerce.dao.domain.product.provider.IProviderDAO;
@@ -214,7 +215,13 @@ public class Facade<T extends Entity> implements IFacade<T> {
         String entityName = entity.getClass().getName();
 
         if (daosMap.containsKey(entityName)) {
-            entitiesCollection = daosMap.get(entityName).findAll();
+            IDAO<T> selectedDAO = daosMap.get(entityName);
+
+            if (selectedDAO instanceof IDateFilter) {
+                entitiesCollection = (List<T>) ((IDateFilter) selectedDAO).findAllByOrderByDateDesc();
+            } else {
+                entitiesCollection = selectedDAO.findAll();
+            }
         }
 
         return entitiesCollection;

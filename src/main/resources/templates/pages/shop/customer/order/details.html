@@ -39,7 +39,7 @@
                             <div class="col-6 d-flex justify-content-end">
                                 <span class="text-muted">Realizado em: </span>
                                 &nbsp;
-                                <span th:text="${#strings.replace(#temporals.format(order.purchaseDate, 'dd/MM/yyyy HH:mm'), ' ', ' às ')}"></span>
+                                <span th:text="${#strings.replace(#temporals.format(order.date, 'dd/MM/yyyy HH:mm'), ' ', ' às ')}"></span>
                             </div>
                         </div>
                     </div>

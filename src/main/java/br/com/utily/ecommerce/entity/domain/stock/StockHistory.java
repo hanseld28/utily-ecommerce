@@ -37,5 +37,21 @@ public class StockHistory extends DomainEntity {
         this.amount = stock.getLastOperationAmount();
         this.date = LocalDateTime.now();
     }
+
+    public Integer calculateCurrentStockAmount() {
+        return stock.getAmount();
+    }
+
+    public Integer calculateOldStockAmount() {
+        return stock.getAmount() - amount;
+    }
+
+    public Boolean isFirstStockAmount() {
+        return calculateOldStockAmount() == 0;
+    }
+
+    public Boolean isUpLastOperation() {
+        return getAmount() > 0;
+    }
 }
 

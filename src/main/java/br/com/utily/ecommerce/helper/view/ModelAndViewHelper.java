@@ -21,6 +21,15 @@ public class ModelAndViewHelper {
         return extractConfiguredFrom(view);
     }
 
+    public static ModelAndView configure(final EViewType eViewType, Long pathVariable) {
+        String view = computeViewByEntityType(eViewType);
+        String pathVariableToReplace = "/".concat(pathVariable.toString());
+
+        view = view.replace(EEndpoint.PATH_VARIABLE.getPath(), pathVariableToReplace);
+
+        return extractConfiguredFrom(view);
+    }
+
     public static ModelAndView configure(final EViewType eViewType, final Enum<?> eView) {
         String view = computeViewByEntityType(eViewType, eView);
         return extractConfiguredFrom(view);
@@ -135,6 +144,14 @@ public class ModelAndViewHelper {
                 paths.add(EEndpoint.ADMIN);
                 paths.add(EEndpoint.STOCKS);
                 paths.add(EEndpoint.NEW);
+                break;
+
+            case REDIRECT_MANAGE_STOCK_ADMIN:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.ADMIN);
+                paths.add(EEndpoint.STOCKS);
+                paths.add(EEndpoint.PATH_VARIABLE);
+                paths.add(EEndpoint.MANAGE);
                 break;
 
             case REDIRECT_SALES_ADMIN:

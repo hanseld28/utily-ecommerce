@@ -31,7 +31,6 @@ public class SaleAdminController {
     private final IDomainService<Sale> saleDomainService;
     private final Sale mockSale;
 
-
     @Autowired
     public SaleAdminController(@Qualifier("domainService")
                                IDomainService<Sale> saleDomainService,

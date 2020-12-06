@@ -13,6 +13,7 @@ public enum EModelAttribute {
 
     STOCKS("stocks"),
     STOCK("stock"),
+    STOCK_MANAGE("stockManage"),
 
     STOCK_HISTORY("stockHistory"),
 

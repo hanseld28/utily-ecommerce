@@ -7,6 +7,8 @@ public enum EEndpoint {
 
     NEW("/new"),
     EDIT("/edit"),
+    MANAGE("/manage"),
+    PATH_VARIABLE("/{pathVariable}"),
 
     ADMIN("/admin"),
     AUTH("/auth"),

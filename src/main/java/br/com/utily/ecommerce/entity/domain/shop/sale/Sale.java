@@ -31,7 +31,7 @@ public class Sale extends DomainEntity {
 
     @CreationTimestamp
     @Column(name = "sls_purchase_date")
-    private LocalDateTime purchaseDate;
+    private LocalDateTime date;
 
     @Basic
     @Enumerated(EnumType.STRING)

@@ -5,6 +5,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.stream.Collectors;
+
 public class ViewMessageHelper {
 
     public static void configureRedirectMessageWith(Errors errors,
@@ -12,7 +14,7 @@ public class ViewMessageHelper {
                                                     RedirectAttributes redirectAttributes) {
         String message = errors.getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
-                .reduce("", (s, s2) -> s.concat("\n").concat(s2));
+                    .collect(Collectors.joining(";"));
 
         addMessageAndFlagTo(redirectAttributes, message, isSuccess);
     }

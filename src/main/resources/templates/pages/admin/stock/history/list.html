@@ -18,7 +18,9 @@
                     <tr>
                         <th>#</th>
                         <th>Produto do Estoque</th>
+                        <th>Quantidade antiga</th>
                         <th>Quantidade da operação</th>
+                        <th>Quantidade atual</th>
                         <th>Data do registro</th>
                     </tr>
                     </thead>
@@ -26,7 +28,9 @@
                     <tr>
                         <th>#</th>
                         <th>Produto do Estoque</th>
+                        <th>Quantidade antiga</th>
                         <th>Quantidade da operação</th>
+                        <th>Quantidade atual</th>
                         <th>Data do registro</th>
                     </tr>
                     </tfoot>
@@ -35,7 +39,22 @@
                         <tr th:each="stockOperation : ${stockHistory}">
                             <td th:text="${stockOperationStat.index + 1}"></td>
                             <td th:text="${stockOperation.stock.product.title}"></td>
-                            <td th:text="${stockOperation.amount}"></td>
+                            <td class="text-center text-secondary font-weight-bold">
+                                <span th:if="${stockOperation.isFirstStockAmount()}" class="badge badge-info">
+                                    Primeiro carga
+                                </span>
+                                <span th:unless="${stockOperation.isFirstStockAmount()}"
+                                      th:text="${stockOperation.calculateOldStockAmount()}"
+                                ></span>
+                            </td>
+                            <td class="text-center font-weight-bold">
+                                <span th:if="${stockOperation.isUpLastOperation()}" class="text-success">+</span>
+                                <span th:text="${stockOperation.amount}"
+                                    th:classappend="${stockOperation.isUpLastOperation() ? 'text-success' : 'text-danger'}">
+                                </span>
+                            </td>
+                            <td class="text-center text-info font-weight-bold"
+                                th:text="${stockOperation.calculateCurrentStockAmount()}"></td>
                             <td th:text="${#temporals.format(stockOperation.date, 'dd/MM/yyyy HH:mm:ss')}"></td>
                         </tr>
                     </tbody>

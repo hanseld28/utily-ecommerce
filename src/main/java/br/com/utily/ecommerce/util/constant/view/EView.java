@@ -11,6 +11,8 @@ public enum EView {
     LIST("list"),
     DETAILS("details"),
     NEW("new"),
+    EDIT("edit"),
+    MANAGE("manage"),
 
     ADMIN_DASHBOARD("dashboard"),
 

@@ -4,9 +4,12 @@ import br.com.utily.ecommerce.entity.domain.DomainEntity;
 import br.com.utily.ecommerce.entity.domain.product.Product;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+
+@ToString
 
 @Getter
 @Setter
@@ -31,11 +34,11 @@ public class Stock extends DomainEntity {
         return lastOperationAmount != null ? lastOperationAmount : amount;
     }
 
-    public void recalculateAmount(Integer amount) {
-        if (amount != null) {
-            this.lastOperationAmount = amount;
-            Integer existingAmount = this.amount;
-            this.amount = existingAmount + amount;
+    public void recalculateAmount() {
+        if (amount != null && lastOperationAmount != null) {
+            int updatedAmount = lastOperationAmount + amount;
+            lastOperationAmount = amount;
+            amount = updatedAmount;
         }
     }
 }

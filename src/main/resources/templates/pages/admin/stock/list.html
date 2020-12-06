@@ -43,8 +43,8 @@
                         <td th:text="${stock.amount}"></td>
                         <td>
                             <div class="d-flex justify-content-center">
-                                <a th:href="@{/admin/stocks/} + ${stock.id}">
-                                    <i class="fas fa-edit text-info text-lg"></i>
+                                <a th:href="@{/admin/stocks/} + ${stock.id + '/manage'}">
+                                    <i class="fas fa-balance-scale text-info text-lg"></i>
                                 </a>
                             </div>
                         </td>

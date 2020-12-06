@@ -1,7 +1,8 @@
 package br.com.utily.ecommerce.controller.domain.admin.stock;
 
 import br.com.utily.ecommerce.controller.handler.exception.NotFoundException;
-import br.com.utily.ecommerce.dto.domain.admin.stock.StockDTO;
+import br.com.utily.ecommerce.dto.domain.admin.stock.NewStockDTO;
+import br.com.utily.ecommerce.dto.domain.admin.stock.StockManageDTO;
 import br.com.utily.ecommerce.entity.domain.product.Product;
 import br.com.utily.ecommerce.entity.domain.stock.Stock;
 import br.com.utily.ecommerce.helper.stock.StockHistoryHelper;
@@ -13,6 +14,7 @@ import br.com.utily.ecommerce.service.domain.IDomainService;
 import br.com.utily.ecommerce.util.constant.attribute.EModelAttribute;
 import br.com.utily.ecommerce.util.constant.entity.EViewType;
 import br.com.utily.ecommerce.util.constant.view.EView;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -35,6 +37,10 @@ public class StockAdminController {
     public static final String BASE_STOCKS_ADMIN_URL = "/admin/stocks";
     private static final String STOCK_ID_PATH_URL = "/{id}";
     private static final String NEW_STOCK_URL = "/new";
+    private static final String MANAGE_STOCK_URL = "/{stockId}/manage";
+
+    public static final String STOCK_MODEL_ATTRIBUTE = "stock";
+    public static final String PRODUCTS_MODEL_ATTRIBUTE = "products";
 
     private final IAlternativeDomainService<Stock> stockDomainService;
     private final IDomainService<Product> productDomainService;
@@ -42,7 +48,8 @@ public class StockAdminController {
     private Stock stockMock;
     private Product productMock;
 
-    private StockDTO stockDTOmock;
+    private NewStockDTO newStockDTOmock;
+    private StockManageDTO stockManageDTOmock;
 
     private StockHistoryHelper stockHistoryHelper;
 
@@ -63,8 +70,10 @@ public class StockAdminController {
     }
 
     @Autowired
-    private void setDependencyDTOs(StockDTO stockDTOmock) {
-        this.stockDTOmock = stockDTOmock;
+    private void setDependencyDTOs(NewStockDTO newStockDTOmock,
+                                   StockManageDTO stockManageDTOmock) {
+        this.newStockDTOmock = newStockDTOmock;
+        this.stockManageDTOmock = stockManageDTOmock;
     }
 
     @Autowired
@@ -99,11 +108,13 @@ public class StockAdminController {
     public ModelAndView newStock() {
         return ModelAndViewHelper.configure(
                 EViewType.STOCK_ADMIN,
-                EView.NEW);
+                EView.NEW,
+                newStockDTOmock,
+                EModelAttribute.STOCK);
     }
 
     @PostMapping
-    public ModelAndView save(@Valid StockDTO stockDTO,
+    public ModelAndView save(@Valid NewStockDTO newStockDTO,
                              Errors errors,
                              RedirectAttributes redirectAttributes) {
 
@@ -113,7 +124,7 @@ public class StockAdminController {
             return ModelAndViewHelper.configure(EViewType.REDIRECT_NEW_STOCK_ADMIN);
         }
 
-        Stock stock = ModelMapperHelper.fromDTOToEntity(stockDTO, Stock.class);
+        Stock stock = ModelMapperHelper.fromDTOToEntity(newStockDTO, Stock.class);
 
         Product foundProduct = productDomainService.findById(stock.getProduct().getId(), productMock)
                 .orElseThrow(NotFoundException::new);
@@ -136,12 +147,77 @@ public class StockAdminController {
         return ModelAndViewHelper.configure(EViewType.REDIRECT_STOCKS_ADMIN);
     }
 
-    @ModelAttribute("stock")
-    public StockDTO stockDTO() {
-        return stockDTOmock;
+    @GetMapping(path = MANAGE_STOCK_URL)
+    public ModelAndView manageStock(@PathVariable Long stockId) {
+        Optional<Stock> stockOptional = stockDomainService.findById(stockId, stockMock);
+        Stock foundStock = stockOptional.orElseThrow(NotFoundException::new);
+
+        PropertyMap<Stock, StockManageDTO> skipDTOFieldsMap = new PropertyMap<Stock, StockManageDTO>() {
+            @Override
+            protected void configure() {
+                skip().setOperationAmount(null);
+            }
+        };
+
+        ModelMapperHelper.addDTOFieldsToSkip(skipDTOFieldsMap);
+
+        StockManageDTO stockManageDTO = ModelMapperHelper
+                .fromEntityToDTO(foundStock, StockManageDTO.class);
+
+        return ModelAndViewHelper.configure(
+                EViewType.STOCK_ADMIN,
+                EView.MANAGE,
+                stockManageDTO,
+                EModelAttribute.STOCK_MANAGE);
     }
 
-    @ModelAttribute("products")
+    @PostMapping(path = MANAGE_STOCK_URL)
+    public ModelAndView handlerManageStock(@PathVariable Long stockId,
+                                           @Valid StockManageDTO stockManageDTOmock,
+                                           Errors errors,
+                                           RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
+            ViewMessageHelper.configureRedirectMessageWith(errors,false, redirectAttributes);
+
+            return ModelAndViewHelper.configure(EViewType.REDIRECT_MANAGE_STOCK_ADMIN, stockId);
+        }
+
+        Optional<Stock> stockOptional = stockDomainService.findById(stockId, stockMock);
+        Stock foundStock = stockOptional.orElseThrow(NotFoundException::new);
+
+        Stock stockToUpdate = ModelMapperHelper
+                .configureTypeMapWithDTOSource(StockManageDTO.class, Stock.class)
+                .addMappings(mapper -> mapper.map(StockManageDTO::getAmount, Stock::setLastOperationAmount))
+                .addMappings(mapper -> mapper.map(StockManageDTO::getOperationAmount, Stock::setAmount))
+                .map(stockManageDTOmock);
+
+        stockToUpdate.setProduct(foundStock.getProduct());
+        stockToUpdate.recalculateAmount();
+
+        String upOrDownOperation = stockToUpdate.getLastOperationAmount() > 0 ? "ENTRADA" : "SAÍDA";
+        Integer lastOperationAmount = stockToUpdate.getLastOperationAmount();
+
+        Stock updatedStock = stockDomainService.save(stockToUpdate);
+        updatedStock.setLastOperationAmount(lastOperationAmount);
+
+        stockHistoryHelper.registerStockOperationOnHistory(updatedStock);
+
+        String message = "Operação de " + upOrDownOperation
+                + " no estoque com a quantidade de " + lastOperationAmount
+                + " unidades do produto \""
+                + updatedStock.getProduct().getTitle()
+                + "\" registrada.";
+
+        ViewMessageHelper.configureRedirectMessageWith(
+                message,
+                true,
+                redirectAttributes
+        );
+
+        return ModelAndViewHelper.configure(EViewType.REDIRECT_STOCKS_ADMIN);
+    }
+
+    @ModelAttribute(PRODUCTS_MODEL_ATTRIBUTE)
     public List<Product> products() {
         return productDomainService.findAllActivatedBy(productMock)
                 .stream()

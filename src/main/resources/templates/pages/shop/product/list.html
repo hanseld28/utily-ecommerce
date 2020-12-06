@@ -20,6 +20,8 @@
 
         <div class="row">
 
+          <!--/*@thymesVar id="product" type="br.com.utily.ecommerce.entity.domain.product.Product"*/-->
+
           <div th:each="product : ${products}" class="col-sm-6 col-md-4 col-xl-3 mb-3">
 
             <div class="card text-center">
@@ -34,12 +36,21 @@
                 </div>
 
               </a>
-
               <div class="card-footer text-muted">
 
-                <span th:unless="${product.hasOnStock()}">Produto indisponível</span>
+                <span th:unless="${product.hasOnStock()}">
+                  <i class="fa fa-exclamation-circle fa-1x text-danger"></i>
+                  &nbsp;Produto indisponível
+                </span>
 
-                <form th:if="${product.hasOnStock()}" th:action="@{/shop/cart/items} " method="post">
+                <span th:if="${product.hasOnStock() && #authentication.getAuthorities()[0].getAuthority().equals('ADMIN')}">
+                  <i class="fa fa-check-circle fa-1x text-success"></i>
+                  &nbsp;Produto disponível
+                </span>
+
+                <form th:unless="${#authentication.getAuthorities()[0].getAuthority().equals('ADMIN')}"
+                      th:if="${product.hasOnStock()}"
+                      th:action="@{/shop/cart/items} " method="post">
                   <input type="hidden" name="productId" th:value="${product.id}">
                   <div class="form-row">
                     <div class="col-5">

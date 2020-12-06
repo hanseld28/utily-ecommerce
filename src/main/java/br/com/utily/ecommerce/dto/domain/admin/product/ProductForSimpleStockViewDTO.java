@@ -5,14 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
 
 @Component
-public class ProductIdDAO extends DTOEntity {
+public class ProductForSimpleStockViewDTO extends DTOEntity {
 
-    @NotNull
     private Long id;
+
+    private String title;
+
+    private String imageUrl;
 }
