@@ -5,6 +5,8 @@ import br.com.utily.ecommerce.dto.domain.admin.stock.NewStockDTO;
 import br.com.utily.ecommerce.dto.domain.admin.stock.StockManageDTO;
 import br.com.utily.ecommerce.entity.domain.product.Product;
 import br.com.utily.ecommerce.entity.domain.stock.Stock;
+import br.com.utily.ecommerce.entity.domain.stock.StockHistory;
+import br.com.utily.ecommerce.helper.stock.StockHelper;
 import br.com.utily.ecommerce.helper.stock.StockHistoryHelper;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
 import br.com.utily.ecommerce.helper.view.ModelMapperHelper;
@@ -51,6 +53,7 @@ public class StockAdminController {
     private NewStockDTO newStockDTOmock;
     private StockManageDTO stockManageDTOmock;
 
+    private StockHelper stockHelper;
     private StockHistoryHelper stockHistoryHelper;
 
     @Autowired
@@ -77,7 +80,9 @@ public class StockAdminController {
     }
 
     @Autowired
-    private void setDependencyHelpers(StockHistoryHelper stockHistoryHelper) {
+    private void setDependencyHelpers(StockHelper stockHelper,
+                                      StockHistoryHelper stockHistoryHelper) {
+        this.stockHelper = stockHelper;
         this.stockHistoryHelper = stockHistoryHelper;
     }
 
@@ -182,30 +187,18 @@ public class StockAdminController {
             return ModelAndViewHelper.configure(EViewType.REDIRECT_MANAGE_STOCK_ADMIN, stockId);
         }
 
-        Optional<Stock> stockOptional = stockDomainService.findById(stockId, stockMock);
-        Stock foundStock = stockOptional.orElseThrow(NotFoundException::new);
+        boolean isEntering =  stockManageDTOmock.getOperationAmount() > 0;
 
-        Stock stockToUpdate = ModelMapperHelper
-                .configureTypeMapWithDTOSource(StockManageDTO.class, Stock.class)
-                .addMappings(mapper -> mapper.map(StockManageDTO::getAmount, Stock::setLastOperationAmount))
-                .addMappings(mapper -> mapper.map(StockManageDTO::getOperationAmount, Stock::setAmount))
-                .map(stockManageDTOmock);
+        String operation = isEntering ? "ENTRADA" : "SAÍDA";
 
-        stockToUpdate.setProduct(foundStock.getProduct());
-        stockToUpdate.recalculateAmount();
+        StockHistory registeredStockHistory = isEntering
+                ? stockHelper.up(stockManageDTOmock)
+                : stockHelper.down(stockManageDTOmock);
 
-        String upOrDownOperation = stockToUpdate.getLastOperationAmount() > 0 ? "ENTRADA" : "SAÍDA";
-        Integer lastOperationAmount = stockToUpdate.getLastOperationAmount();
-
-        Stock updatedStock = stockDomainService.save(stockToUpdate);
-        updatedStock.setLastOperationAmount(lastOperationAmount);
-
-        stockHistoryHelper.registerStockOperationOnHistory(updatedStock);
-
-        String message = "Operação de " + upOrDownOperation
-                + " no estoque com a quantidade de " + lastOperationAmount
+        String message = "Operação de " + operation
+                + " no estoque com a quantidade de " + registeredStockHistory.getAmount()
                 + " unidades do produto \""
-                + updatedStock.getProduct().getTitle()
+                + registeredStockHistory.getStock().getProduct().getTitle()
                 + "\" registrada.";
 
         ViewMessageHelper.configureRedirectMessageWith(

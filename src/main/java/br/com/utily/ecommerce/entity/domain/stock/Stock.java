@@ -5,9 +5,9 @@ import br.com.utily.ecommerce.entity.domain.product.Product;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.util.List;
 
 @ToString
 
@@ -15,7 +15,6 @@ import javax.persistence.*;
 @Setter
 
 @Entity
-@Component
 @Table(name = "stock")
 public class Stock extends DomainEntity {
 
@@ -26,6 +25,9 @@ public class Stock extends DomainEntity {
     @Basic
     @Column(name = "stc_quantity")
     private Integer amount;
+
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.DETACH)
+    private List<StockHistory> histories;
 
     @Transient
     private Integer lastOperationAmount;

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @Setter
 
 @Entity
-@Component
 @Table(name = "stock_history")
 public class StockHistory extends DomainEntity {
 
@@ -25,17 +24,17 @@ public class StockHistory extends DomainEntity {
     @Column(name = "sth_quantity")
     private Integer amount;
 
+    @CreationTimestamp
     @Column(name = "sth_date")
     private LocalDateTime date;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "sth_stc_id", referencedColumnName = "id", unique = true)
+    @ManyToOne(optional = false, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "sth_stc_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "sth_stc_fk"))
     private Stock stock;
 
     public void fillFieldsWith(Stock stock) {
         this.stock = stock;
         this.amount = stock.getLastOperationAmount();
-        this.date = LocalDateTime.now();
     }
 
     public Integer calculateCurrentStockAmount() {

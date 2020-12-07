@@ -5,6 +5,7 @@ import br.com.utily.ecommerce.dto.domain.shop.sale.creditCard.CreditCardIdAndVal
 import br.com.utily.ecommerce.dto.domain.shop.voucher.VoucherIdDTO;
 import br.com.utily.ecommerce.entity.domain.shop.cart.ShopCart;
 import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
+import br.com.utily.ecommerce.entity.domain.shop.sale.SaleItem;
 import br.com.utily.ecommerce.entity.domain.shop.sale.progress.CreditCardValue;
 import br.com.utily.ecommerce.entity.domain.shop.sale.progress.SaleInProgress;
 import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
@@ -18,6 +19,7 @@ import br.com.utily.ecommerce.helper.checkout.CustomerVoucherHelper;
 import br.com.utily.ecommerce.helper.proxy.ProxyHelper;
 import br.com.utily.ecommerce.helper.security.LoggedUserHelper;
 import br.com.utily.ecommerce.helper.session.SessionHelper;
+import br.com.utily.ecommerce.helper.stock.StockHelper;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
 import br.com.utily.ecommerce.helper.view.ModelMapperHelper;
 import br.com.utily.ecommerce.service.associative.IAssociativeDomainService;
@@ -75,7 +77,7 @@ public class CheckoutShopController {
     private LoggedUserHelper loggedUserHelper;
     private CheckoutHelper checkoutHelper;
     private CustomerVoucherHelper customerVoucherHelper;
-    private ModelAndViewHelper modelAndViewHelper;
+    private StockHelper stockHelper;
 
     private final UUID hash;
 
@@ -118,11 +120,11 @@ public class CheckoutShopController {
     private void setDependencyHelpers(final LoggedUserHelper loggedUserHelper,
                                       final CheckoutHelper checkoutHelper,
                                       final CustomerVoucherHelper customerVoucherHelper,
-                                      final ModelAndViewHelper modelAndViewHelper) {
+                                      final StockHelper stockHelper) {
         this.loggedUserHelper = loggedUserHelper;
         this.checkoutHelper = checkoutHelper;
         this.customerVoucherHelper = customerVoucherHelper;
-        this.modelAndViewHelper = modelAndViewHelper;
+        this.stockHelper = stockHelper;
     }
 
     @GetMapping(path = CHECKOUT_STEP_ONE_URL)
@@ -306,11 +308,25 @@ public class CheckoutShopController {
             );
             Sale savedSale = saleDomainService.save(sale);
 
+            // TODO: inspect the following block and this processing
+            //       - voucher is not marked with "used", but it is
+            //       - returning to customer as valid.
             CustomerVoucher savedCustomerVoucher = customerVoucherHelper.adapt(
                     savedSale.getVoucher(),
                     savedSale.getCustomer()
             );
             customerVoucherAlternativeDomainService.save(savedCustomerVoucher);
+
+            Map<Long, Integer> productsAndOperationAmounts = new HashMap<>();
+
+            for (SaleItem saleItem : savedSale.getItems()) {
+                Long productStockId = saleItem.getProduct().getStock().getId();
+                Integer itemOperationAmount = saleItem.getQuantity();
+
+                productsAndOperationAmounts.put(productStockId, itemOperationAmount);
+            }
+
+            stockHelper.down(productsAndOperationAmounts);
 
             if (savedSale.getId() != null) {
                 SessionHelper.removeAttributesForSaleFinished(

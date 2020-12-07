@@ -1,6 +1,8 @@
 package br.com.utily.ecommerce.config.bean;
 
 import br.com.utily.ecommerce.entity.domain.shop.sale.*;
+import br.com.utily.ecommerce.entity.domain.stock.Stock;
+import br.com.utily.ecommerce.entity.domain.stock.StockHistory;
 import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucher;
 import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucherId;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -57,6 +59,18 @@ public class PrototypeBeansConfiguration {
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     public CustomerVoucherId createPrototypeForCustomerVoucherId() {
         return new CustomerVoucherId();
+    }
+
+    @Bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public Stock createPrototypeForStock() {
+        return new Stock();
+    }
+
+    @Bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public StockHistory createPrototypeForStockHistory() {
+        return new StockHistory();
     }
 
 }
