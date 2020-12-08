@@ -21,6 +21,5 @@ public class TradeRequestItemDTO extends DTOEntity {
 
     private String reason;
 
-    @NotNull
-    private Boolean include;
+    private boolean include;
 }

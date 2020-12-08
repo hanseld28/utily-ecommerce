@@ -143,6 +143,7 @@ public class ModelAndViewHelper {
                 paths.add(EView.REDIRECT);
                 paths.add(EEndpoint.ORDER);
                 paths.add(EEndpoint.TRADE);
+                paths.add(EEndpoint.REQUEST);
                 paths.add(EEndpoint.IN_PROGRESS);
                 paths.add(EEndpoint.ITEMS);
                 break;

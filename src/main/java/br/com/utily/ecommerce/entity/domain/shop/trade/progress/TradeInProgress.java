@@ -2,7 +2,6 @@ package br.com.utily.ecommerce.entity.domain.shop.trade.progress;
 
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
-import br.com.utily.ecommerce.entity.domain.shop.trade.ETradeStatus;
 import br.com.utily.ecommerce.entity.domain.shop.trade.ETradeType;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,15 +24,14 @@ import java.util.stream.Collectors;
 public class TradeInProgress extends Entity {
 
     private ETradeType type;
-    private ETradeStatus status;
-    private Sale sale;
+    private Sale order;
     private List<ItemInProgress> items;
 
     public void updateItem(ItemInProgress itemInProgress) {
         Long itemId = itemInProgress.getProduct().getId();
         Integer tradeAmount = itemInProgress.getAmount();
         String reason = itemInProgress.getReason();
-        Boolean include = itemInProgress.getInclude();
+        boolean include = itemInProgress.isInclude();
 
         ItemInProgress existingItem = findItemById(itemId);
 
@@ -47,6 +45,12 @@ public class TradeInProgress extends Entity {
         }
     }
 
+    public void removeItem(ItemInProgress existingItem) {
+        if (existingItem != null) {
+            items.remove(existingItem);
+        }
+    }
+
     private ItemInProgress findItemById(Long itemId) {
         return items.stream()
                 .filter(item -> item.getProduct().getId().equals(itemId))
@@ -55,4 +59,12 @@ public class TradeInProgress extends Entity {
                 .get(0);
     }
 
+    public Boolean isAlreadyAddedItem(ItemInProgress itemInProgress) {
+        return items.stream()
+                .anyMatch(existingItem -> existingItem.equals(itemInProgress));
+    }
+
+    public Boolean isOk() {
+        return items.stream().anyMatch(ItemInProgress::isInclude);
+    }
 }

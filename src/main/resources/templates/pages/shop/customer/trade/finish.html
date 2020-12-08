@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Solicitação de troca enviada | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container-fluid">
+        <!--/*@thymesVar id="trade" type="br.com.utily.ecommerce.entity.domain.shop.trade.Trade"*/-->
+        <div class="row">
+            <div class="col-2">
+                <th:block layout:insert="~{fragments/customer/verticalMenu}"></th:block>
+            </div>
+            <div class="col-10 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row flex-row">
+                            <div class="col-6 d-flex ">
+                                <h4 class="justify-content-center">
+                                    <th:block th:text="${trade.type.displayName}" />
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body register-card-body text-center">
+                        <h4 th:text="${message}"></h4>
+                        <h4 class="mb-4">
+                            <small>Número da solicitação: </small>
+                            <span class="font-weight-bold" th:text="${trade.number}"></span>
+                        </h4>
+                        <div>
+                            <span style="font-size: 17px">Acompanhe a <span th:text="${trade.type.displayName.toLowerCase()}"></span> em </span><a th:href="@{/trades/} + ${trade.id}" class="btn btn-warning btn-md font-weight-bold text-dark">Trocas</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

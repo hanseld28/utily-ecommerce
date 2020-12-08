@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,13 +21,12 @@ import java.util.UUID;
 @Setter
 
 @Entity
-@Component
 @Table(name = "trades")
 public class Trade extends DomainEntity {
 
     @Basic
     @Column(name = "trd_tracking_number", unique = true)
-    private String trackingNumber;
+    private String number;
 
     @CreationTimestamp
     @Column(name = "trd_request_date")
@@ -42,51 +40,56 @@ public class Trade extends DomainEntity {
     @Column(name = "trd_status")
     private ETradeStatus status;
 
-    @OneToOne(optional = false)
-    private Sale sale;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "trd_sls_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "trd_sls_fk"))
+    private Sale order;
 
     @OneToMany(mappedBy = "trade", cascade = CascadeType.ALL)
     private List<TradeItem> items;
 
-    public void generateTrackingNumber() {
+    private void generateNumber() {
         String uuid = String.valueOf(UUID.randomUUID());
         StringBuilder modifiedUUID  = new StringBuilder(uuid);
 
-        String uniqueCode = (sale != null && sale.getId() != null)
-                ? sale.getId().toString()
+        String uniqueCode = (order != null && order.getId() != null)
+                ? order.getId().toString()
                 : String.valueOf(this.hashCode());
 
         modifiedUUID.append(uniqueCode);
 
-        trackingNumber = modifiedUUID.toString();
+        number = modifiedUUID.toString();
+    }
+
+    public void request() {
+        changeStatusToAwaitingAuthorization();
+        generateNumber();
     }
 
     public void authorize() {
-        generateTrackingNumber();
-        putStatusToAuthorized();
+        changeStatusToAuthorized();
     }
 
-    public void putStatusToAwaitingAuthorization() {
-        this.status = ETradeStatus.AWAITING_AUTHORIZATION;
-    }
-
-    public void putStatusToAuthorized() {
-        this.status = ETradeStatus.AUTHORIZED;
-    }
-
-    public void putStatusToDenied() {
+    public void deny() {
         this.status = ETradeStatus.DENIED;
     }
 
-    public void putStatusToReceivedItems() {
+    public void changeStatusToAwaitingAuthorization() {
+        this.status = ETradeStatus.AWAITING_AUTHORIZATION;
+    }
+
+    public void changeStatusToAuthorized() {
+        this.status = ETradeStatus.AUTHORIZED;
+    }
+
+    public void changeStatusToReceivedItems() {
         this.status = ETradeStatus.RECEIVED_ITEMS;
     }
 
-    public void putStatusToReplacementOnDelivery() {
+    public void changeStatusToReplacementOnDelivery() {
         this.status = ETradeStatus.REPLACEMENT_ON_DELIVERY;
     }
 
-    public void putStatusReplacementDelivered() {
+    public void changeStatusReplacementDelivered() {
         this.status = ETradeStatus.REPLACEMENT_DELIVERED;
     }
 

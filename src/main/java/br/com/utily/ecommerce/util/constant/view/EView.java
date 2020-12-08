@@ -19,7 +19,7 @@ public enum EView {
     CHECKOUT_STEP_ONE("one"),
     CHECKOUT_STEP_TWO("two"),
     CHECKOUT_STEP_THREE("three"),
-    CHECKOUT_FINISH("finish"),
+    FINISH("finish"),
 
     CHANGE_PASSWORD("change-password"),
 

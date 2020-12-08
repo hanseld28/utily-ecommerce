@@ -43,6 +43,7 @@ public enum EModelAttribute {
     NOT_ENOUGH_ADDRESS("notEnoughAddress"),
     ENABLE_NEXT_STEP("enableNextStep"),
     HASH("hash"),
+    HASH_OPERATION("hashOperation"),
     THERE_ARE_ORDERS("thereAreOrders");
 
     private final String name;

@@ -1,6 +1,7 @@
 package br.com.utily.ecommerce.entity.domain.shop.sale;
 
 import br.com.utily.ecommerce.entity.domain.DomainEntity;
+import br.com.utily.ecommerce.entity.domain.shop.trade.Trade;
 import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import lombok.AllArgsConstructor;
@@ -54,6 +55,9 @@ public class Sale extends DomainEntity {
     @ManyToOne
     @JoinColumn(name = "sls_vch_id", foreignKey = @ForeignKey(name = "sls_vch_id"))
     private Voucher voucher;
+
+    @OneToMany(mappedBy = "order")
+    private List<Trade> trades;
 
     @Transient
     private final Double freightValue = 10.0;

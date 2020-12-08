@@ -1,5 +1,6 @@
 package br.com.utily.ecommerce.controller.domain.shop.customer.trade;
 
+import br.com.utily.ecommerce.controller.handler.exception.InternalServerErrorException;
 import br.com.utily.ecommerce.controller.handler.exception.NotFoundException;
 import br.com.utily.ecommerce.dto.domain.shop.trade.TradeRequestItemDTO;
 import br.com.utily.ecommerce.entity.domain.product.Product;
@@ -9,8 +10,10 @@ import br.com.utily.ecommerce.entity.domain.shop.trade.ETradeType;
 import br.com.utily.ecommerce.entity.domain.shop.trade.Trade;
 import br.com.utily.ecommerce.entity.domain.shop.trade.progress.ItemInProgress;
 import br.com.utily.ecommerce.entity.domain.shop.trade.progress.TradeInProgress;
-import br.com.utily.ecommerce.helper.stock.StockHelper;
+import br.com.utily.ecommerce.helper.proxy.ProxyHelper;
+import br.com.utily.ecommerce.helper.trade.TradeHelper;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
+import br.com.utily.ecommerce.helper.view.ViewMessageHelper;
 import br.com.utily.ecommerce.service.domain.IDomainService;
 import br.com.utily.ecommerce.util.constant.attribute.EModelAttribute;
 import br.com.utily.ecommerce.util.constant.entity.EViewType;
@@ -18,22 +21,26 @@ import br.com.utily.ecommerce.util.constant.view.EView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
 public class TradeShopController {
 
     public static final String TRADE_ORDER_URL = "/orders/{orderId}/trade";
-    public static final String TRADE_ITEMS_IN_PROGRESS_URL = "/order/trade/in-progress/items";
+    public static final String TRADE_REQUEST_ITEMS_IN_PROGRESS_URL = "/order/trade/request/in-progress/items";
+    public static final String TRADE_REQUEST_FINISH_URL = "/order/trade/request/finish";
 
     private final IDomainService<Trade> tradeDomainService;
     private final IDomainService<Sale> orderDomainService;
@@ -45,9 +52,13 @@ public class TradeShopController {
     private Sale orderMock;
     private Product productMock;
 
+    private static Sale currentOrder;
+
+    private static UUID hashOperation;
+
     private TradeRequestItemDTO tradeRequestItemDTOmock;
 
-    private StockHelper stockHelper;
+    private TradeHelper tradeHelper;
 
 
     @Autowired
@@ -79,8 +90,8 @@ public class TradeShopController {
     }
 
     @Autowired
-    private void setDependencyHelpers(final StockHelper stockHelper) {
-        this.stockHelper = stockHelper;
+    private void setDependencyHelpers(final TradeHelper tradeHelper) {
+        this.tradeHelper = tradeHelper;
     }
 
     @PostMapping(path = TRADE_ORDER_URL)
@@ -92,26 +103,36 @@ public class TradeShopController {
                 .map(saleItem -> ItemInProgress.build(saleItem.getProduct(), saleItem.getQuantity()))
                 .collect(Collectors.toList());
 
-        tradeInProgress.setSale(foundOrder);
+        tradeInProgress.setOrder(foundOrder);
         tradeInProgress.setType(type);
         tradeInProgress.setItems(previousItems);
 
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put(EModelAttribute.ORDER.getName(), foundOrder);
-        modelMap.put(EModelAttribute.TRADE.getName(), tradeInProgress);
+        currentOrder = foundOrder;
 
-        ModelAndView modelAndView = ModelAndViewHelper.configure(EViewType.TRADE_SHOP, EView.NEW);
-        ModelAndViewHelper.addModelMapTo(modelAndView, modelMap);
-
-        return modelAndView;
+        return ModelAndViewHelper.configure(EViewType.REDIRECT_TRADE_IN_PROGRESS);
     }
 
-    @PostMapping(path = TRADE_ITEMS_IN_PROGRESS_URL)
-    public ModelAndView addItemToRequest(TradeRequestItemDTO tradeRequestItemDTO) {
+    @GetMapping(path = TRADE_REQUEST_ITEMS_IN_PROGRESS_URL)
+    public ModelAndView showPageRequestItems() {
+        hashOperation = UUID.randomUUID();
+
+        return ModelAndViewHelper.configure(EViewType.TRADE_SHOP, EView.NEW, hashOperation.toString(), EModelAttribute.HASH_OPERATION);
+    }
+
+    @PostMapping(path = TRADE_REQUEST_ITEMS_IN_PROGRESS_URL)
+    public ModelAndView addItemToRequest(@Valid TradeRequestItemDTO tradeRequestItemDTO,
+                                         Errors errors,
+                                         RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
+            ViewMessageHelper.configureRedirectMessageWith(errors, false, redirectAttributes);
+
+            return ModelAndViewHelper.configure(EViewType.REDIRECT_TRADE_IN_PROGRESS);
+        }
+
         Long itemId = tradeRequestItemDTO.getId();
         Integer amount = tradeRequestItemDTO.getAmount();
         String reason = tradeRequestItemDTO.getReason();
-        Boolean include = tradeRequestItemDTO.getInclude();
+        Boolean include = tradeRequestItemDTO.isInclude();
 
         Optional<Product> foundProductOptional = productDomainService.findById(itemId, productMock);
         Product foundProduct = foundProductOptional.orElseThrow(NotFoundException::new);
@@ -120,12 +141,71 @@ public class TradeShopController {
 
         tradeInProgress.updateItem(itemInProgress);
 
+        if (!itemInProgress.isInclude() && tradeInProgress.isAlreadyAddedItem(itemInProgress)) {
+            String message = "Item de troca removido da solicitação.";
+
+            ViewMessageHelper.configureRedirectMessageWith(message, true, redirectAttributes);
+
+            return ModelAndViewHelper.configure(EViewType.REDIRECT_TRADE_IN_PROGRESS);
+        }
+
+        tradeInProgress.updateItem(itemInProgress);
+
+        String message = "Item para troca adicionado a solicitação. " +
+                "Você ainda pode adicionar mais itens ou finalizar a solicitação clicando no botão correspondente.";
+
+        ViewMessageHelper.configureRedirectMessageWith(message, true, redirectAttributes);
+
         return ModelAndViewHelper.configure(EViewType.REDIRECT_TRADE_IN_PROGRESS);
+    }
+
+    @PostMapping(path = TRADE_REQUEST_FINISH_URL)
+    public ModelAndView finishAndSendRequest(String hashOperation, RedirectAttributes redirectAttributes) {
+        try {
+            if (!TradeShopController.hashOperation.equals(UUID.fromString(hashOperation))) {
+                String message = "Ocorreu um erro ao processar a solicitação. Por favor, tente mais tarde.";
+
+                ViewMessageHelper.configureRedirectMessageWith(message, false, redirectAttributes);
+
+                return ModelAndViewHelper.configure(EViewType.REDIRECT_TRADE_IN_PROGRESS);
+            }
+
+            Optional<TradeInProgress> tradeInProgressOptional = ProxyHelper.recoveryEntityFromProxy(tradeInProgress);
+            Trade newTrade = tradeHelper.adapt(
+                    tradeInProgressOptional.orElseThrow(InternalError::new)
+            );
+
+            newTrade.request();
+            Trade requestedTrade = tradeDomainService.save(newTrade);
+
+            String message = "Solicitação de "
+                    + requestedTrade.getType().getDisplayName().toLowerCase()
+                    + " enviada. " + requestedTrade.getStatus().getDisplayName()
+                    + ".";
+
+            ModelAndView modelAndView = ModelAndViewHelper.configure(
+                    EViewType.TRADE_SHOP,
+                    EView.FINISH,
+                    requestedTrade,
+                    EModelAttribute.TRADE);
+
+            ModelAndViewHelper.addObjectTo(modelAndView, message, EModelAttribute.MESSAGE);
+
+            return modelAndView;
+
+        } catch (Exception exception) {
+            throw new InternalServerErrorException();
+        }
     }
 
     @ModelAttribute("shopCart")
     public ShopCart shopCart() {
         return shopCart;
+    }
+
+    @ModelAttribute("order")
+    public Sale currentOrder() {
+        return currentOrder;
     }
 
     @ModelAttribute("tradeInProgress")
@@ -137,5 +217,4 @@ public class TradeShopController {
     public TradeRequestItemDTO tradeRequestItemDTO() {
         return tradeRequestItemDTOmock;
     }
-
 }

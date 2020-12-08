@@ -336,7 +336,7 @@ public class CheckoutShopController {
 
                 return ModelAndViewHelper.configure(
                         EViewType.CHECKOUT_FINISH_SHOP,
-                        EView.CHECKOUT_FINISH,
+                        EView.FINISH,
                         savedSale,
                         EModelAttribute.SALE);
             }

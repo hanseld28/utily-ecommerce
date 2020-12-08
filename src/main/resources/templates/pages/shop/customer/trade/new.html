@@ -43,6 +43,11 @@
                         <div class="row flex-row mt-4 ml-4 mr-4 pb-4">
                             <div class="col-12">
                                 <div class="row flex-row">
+                                    <div class="col">
+                                        <th:block layout:insert="~{fragments/redirectMessage}" />
+                                    </div>
+                                </div>
+                                <div class="row flex-row">
                                     <div class="col-6 d-flex justify-content-start">
                                         <h4>Itens do pedido para <span class="badge badge-success"  th:text="${tradeInProgress.type.displayName.toLowerCase()}"></span></h4>
                                     </div>
@@ -63,14 +68,17 @@
                                                 <tbody>
                                                     <tr th:each="itemInProgress : ${tradeInProgress.items}">
                                                         <!--/*@thymesVar id="tradeRequestItem" type="br.com.utily.ecommerce.dto.domain.shop.trade.TradeRequestItemDTO"*/-->
-                                                        <form th:action="@{/order/trade/in-progress/items}" method="POST">
+                                                        <form th:action="@{/order/trade/request/in-progress/items}" method="POST">
                                                             <td>
                                                                 <div class="form-group">
                                                                     <input type="checkbox"
                                                                            class="form-check ml-3 mt-3"
                                                                            name="include"
-                                                                           th:value="${itemInProgress.include}"
                                                                            th:id="${#ids.seq('include')}"
+                                                                           th:value="${itemInProgress.include}"
+                                                                           th:checked="${itemInProgress.include}"
+                                                                           onclick="this.value = this.checked"
+                                                                           th:required="${!itemInProgress.include}"
                                                                     >
                                                                 </div>
                                                             </td>
@@ -109,15 +117,31 @@
                                                                 </div>
                                                             </td>
                                                             <td class="text-center">
-                                                                <button type="submit" class="btn btn-success sm">
-                                                                    <i class="fa fa-exchange-alt text-white"></i>
-                                                                </button>
+                                                                <form th:action="@{/order/trade/finish}" method="POST">
+
+                                                                    <button type="submit" class="btn btn-primary sm">
+                                                                        <i class="fa fa-exchange-alt text-white"></i>
+                                                                    </button>
+                                                                </form>
                                                             </td>
                                                         </form>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row flex-row">
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <form th:action="@{/order/trade/request/finish}" method="POST">
+                                            <input type="hidden" name="hashOperation" th:value="${hashOperation}">
+                                            <button type="submit"
+                                                    class="btn btn-success sm"
+                                                    th:disabled="${!tradeInProgress.isOk()}"
+                                            >
+                                                Finalizar solicitação e enviar <i class="fa fa-check-circle text-white"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
