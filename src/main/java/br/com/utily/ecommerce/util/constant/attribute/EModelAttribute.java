@@ -35,6 +35,9 @@ public enum EModelAttribute {
     VOUCHERS("vouchers"),
     VOUCHER("voucher"),
 
+    TRADE("trade"),
+    TRADES("trades"),
+
     MESSAGE("message"),
     IS_SUCCESS_MESSAGE("isSuccess"),
     NOT_ENOUGH_ADDRESS("notEnoughAddress"),

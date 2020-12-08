@@ -138,7 +138,7 @@
                         <div class="row flex-row mt-4 ml-4 mr-4 pb-4">
                             <div class="col-12">
                                 <div class="row flex-row">
-                                    <div class="col-12 d-flex justify-content-start">
+                                    <div class="col-6 d-flex justify-content-start">
                                         <h4>Itens da compra & Valores</h4>
                                     </div>
                                 </div>
@@ -222,7 +222,7 @@
                         <div class="row flex-row mt-4 ml-4 mr-4 pb-4">
                             <div class="col-12">
                                 <div class="row flex-row">
-                                    <div class="col-12 d-flex justify-content-start">
+                                    <div class="col-6 d-flex justify-content-start">
                                         <h4>Endereços de entrega/cobrança apontados da compra</h4>
                                     </div>
                                 </div>
@@ -259,7 +259,7 @@
                         <div class="row flex-row mt-4 ml-4 mr-4 pb-4">
                             <div class="col-12">
                                 <div class="row flex-row">
-                                    <div class="col-12 d-flex justify-content-start">
+                                    <div class="col-6 d-flex justify-content-start">
                                         <h4>Formas de pagamento selecionadas nessa compra</h4>
                                     </div>
                                 </div>
@@ -289,51 +289,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row flex-row text-center">
-                            <div class="col-10 offset-1">
-                                <div class="row flex-row">
-                                    <div class="col-12 d-flex justify-content-start text-info">
-                                        <span class="alert alert-info">Notou algo de errado com o(s) produto(s)? Solicite uma
-                                            <span class="badge badge-pill badge-primary">troca</span>
-                                            ou
-                                            <span class="badge badge-pill badge-secondary">devolução</span>
-                                            do(s) mesmo(s) pelo formulário abaixo.</span>
-                                    </div>
-                                </div>
-                                <div class="row flex-row">
-                                    <div class="col-6 offset-3 form-group">
-                                        <form class="form-inline" th:action="@{/orders/} + ${order.id} + @{/trade}" method="post">
-                                            <h6 class="mr-3 mt-2">Selecione<span class="text-danger text-bold"> *</span></h6>
-
-                                            <div th:each="tradeType : ${T(br.com.utily.ecommerce.entity.domain.shop.trade.ETradeType).values()}">
-
-                                                <div class="form-check form-check-inline">
-
-                                                    <input class="form-check-input" type="radio"
-                                                           name="type" th:id="${#ids.next(tradeType)}"
-                                                           th:value="${tradeType}"
-                                                           required>
-                                                    <span class="badge badge-pill" th:classappend="${tradeType.name() == 'EXCHANGE' ? 'badge-primary' : 'badge-secondary' }">
-                                                        <label class="form-check-label"
-                                                               th:for="${#ids.next(tradeType)}"
-                                                               th:text="${tradeType.displayName}"
-                                                        ></label>
-                                                    </span>
-                                                </div>
-
-                                            </div>
-
-                                            <div>
-                                                <button type="submit"
-                                                        class="btn btn-success sm">
-                                                    <i class="fa fa-exchange-alt text-white"></i>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
                         </div>
 
                     </div>

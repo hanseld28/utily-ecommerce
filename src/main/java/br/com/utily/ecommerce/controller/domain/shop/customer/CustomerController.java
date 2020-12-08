@@ -53,9 +53,9 @@ public class CustomerController {
 
     @Autowired
     public CustomerController(@Qualifier("domainService")
-                                          IDomainService<Customer> customerDomainService,
+                              IDomainService<Customer> customerDomainService,
                               @Qualifier("domainService")
-                                          IDomainService<Sale> saleDomainService,
+                              IDomainService<Sale> saleDomainService,
                               ShopCart shopCart,
                               Customer mockCustomer,
                               Sale mockSale, CustomerUpdateDTO mockCustomerUpdateDTO,

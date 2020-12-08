@@ -128,9 +128,23 @@ public class ModelAndViewHelper {
                 paths.add(EPageFolder.CHECKOUT);
                 break;
 
+            case TRADE_SHOP:
+                paths.add(EPageFolder.SHOP);
+                paths.add(EPageFolder.CUSTOMER);
+                paths.add(EPageFolder.TRADE);
+                break;
+
             case SALE_ADMIN:
                 paths.add(EPageFolder.ADMIN);
                 paths.add(EPageFolder.SALE);
+                break;
+
+            case REDIRECT_TRADE_IN_PROGRESS:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.ORDER);
+                paths.add(EEndpoint.TRADE);
+                paths.add(EEndpoint.IN_PROGRESS);
+                paths.add(EEndpoint.ITEMS);
                 break;
 
             case REDIRECT_STOCKS_ADMIN:

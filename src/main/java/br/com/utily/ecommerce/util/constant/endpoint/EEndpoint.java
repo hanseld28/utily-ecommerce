@@ -9,6 +9,7 @@ public enum EEndpoint {
     EDIT("/edit"),
     MANAGE("/manage"),
     PATH_VARIABLE("/{pathVariable}"),
+    IN_PROGRESS("/in-progress"),
 
     ADMIN("/admin"),
     AUTH("/auth"),
@@ -27,6 +28,9 @@ public enum EEndpoint {
     ADRESSES("/adresses"),
     CREDIT_CARDS("/credit-cards"),
     ORDERS("/orders"),
+    ORDER("/order"),
+    TRADES("/trades"),
+    TRADE("/trade"),
 
     SHOP("/shop"),
     CART("/cart"),

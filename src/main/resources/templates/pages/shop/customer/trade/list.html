@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Meus pedidos | Loja de Utilidades Domésticas</title>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2">
+                <th:block layout:insert="~{fragments/customer/verticalMenu}"></th:block>
+            </div>
+            <div class="col-10 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Meus pedidos</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <th:block th:if="${!thereAreOrders}">
+
+                            <div class="alert alert-info">
+                                Você ainda não fez nenhum pedido. Vá até a
+                                <a th:href="@{/shop/products}" class="btn btn-outline-secondary btn-sm">
+                                    loja
+                                </a>
+                                para comprar itens.
+                            </div>
+
+                        </th:block>
+
+                        <th:block th:if="${thereAreOrders}">
+
+                            <table id="products-table" class="table table-borderless table-striped">
+                            <thead>
+                            <tr>
+                                <th>Número do Pedido</th>
+                                <th>Data da compra</th>
+<!--                                <th>Total</th>-->
+                                <th>Status</th>
+                                <th>Detalhes</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <!--/*@thymesVar id="order" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
+                                <tr th:each="order : ${orders}">
+                                    <td>
+                                        <a href="#" th:text="${order.identifyNumber}"></a>
+                                    <td>
+                                        <span th:text="${#temporals.format(order.date, 'dd/MM/yyyy HH:mm:ss')}"></span>
+<!--                                    <td>-->
+<!--                                        <span th:text="${#strings.replace(#numbers.formatCurrency(), '$', 'R$')}">R$ 192,00</span>-->
+<!--                                    </td>-->
+                                    <td>
+                                        <span class="badge badge-pill" th:text="${order.status.getDisplayName()}" th:classappend="${order.computeStatusColorClass('badge')}"></span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/orders/} + ${order.id}" class="btn btn-secondary btn-sm">Ver mais detalhes</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        </th:block>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

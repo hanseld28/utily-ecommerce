@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html th:with="language=${#locale.language}" th:lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Nova troca | Loja de Utilidades Domésticas</title>
+    <style>
+        textarea {
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+
+<th:block layout:fragment="pageContent">
+
+    <div class="container-fluid">
+        <!--/*@thymesVar id="order" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
+        <!--/*@thymesVar id="tradeInProgress" type="br.com.utily.ecommerce.entity.domain.shop.trade.progress.TradeInProgress"*/-->
+        <div class="row">
+            <div class="col-2">
+                <th:block layout:insert="~{fragments/customer/verticalMenu}"></th:block>
+            </div>
+            <div class="col-10 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row flex-row">
+                            <div class="col-6 d-flex justify-content-start">
+                                <h4>
+                                    <th:block th:text="${tradeInProgress.type.displayName}" /> para o pedido nº <th:block th:text="${order.identifyNumber}" />
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row flex-row mt-4 ml-4 mr-4 pb-4">
+                            <div class="col-12">
+                                <div class="row flex-row">
+                                    <div class="col-6 d-flex justify-content-start">
+                                        <h4>Itens do pedido para <span class="badge badge-success"  th:text="${tradeInProgress.type.displayName.toLowerCase()}"></span></h4>
+                                    </div>
+                                </div>
+                                <div class="row flex-row">
+                                    <div class="col-12">
+                                        <div class="row flex-row">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Incluir</th>
+                                                    <th>Produto</th>
+                                                    <th class="text-center">Quantidade <span class="text-danger text-bold">&nbsp;*</span></th>
+                                                    <th>Motivo da troca <span class="text-muted">&nbsp;(opcional)</span></th>
+                                                    <th>Confirmar</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="itemInProgress : ${tradeInProgress.items}">
+                                                        <!--/*@thymesVar id="tradeRequestItem" type="br.com.utily.ecommerce.dto.domain.shop.trade.TradeRequestItemDTO"*/-->
+                                                        <form th:action="@{/order/trade/in-progress/items}" method="POST">
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input type="checkbox"
+                                                                           class="form-check ml-3 mt-3"
+                                                                           name="include"
+                                                                           th:value="${itemInProgress.include}"
+                                                                           th:id="${#ids.seq('include')}"
+                                                                    >
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input type="hidden" name="id" th:value="${itemInProgress.product.id}">
+                                                                    <a th:href="@{/shop/products/} + ${itemInProgress.product.id}"
+                                                                          target="_blank"
+                                                                          class="btn btn-link text-uppercase"
+                                                                    >
+                                                                        <h6 class="mt-2" th:text="${itemInProgress.product.title}"></h6>
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <div class="form-group">
+                                                                    <input type="number"
+                                                                           class="form-control"
+                                                                           min="1"
+                                                                           th:max="${itemInProgress.orderAmount}"
+                                                                           th:value="${itemInProgress.amount}"
+                                                                           name="amount"
+                                                                           required
+                                                                    >
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <textarea
+                                                                           class="form-control"
+                                                                           maxlength="75"
+                                                                           rows="2"
+                                                                           th:text="${itemInProgress.reason}"
+                                                                           name="reason"
+                                                                    ></textarea>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button type="submit" class="btn btn-success sm">
+                                                                    <i class="fa fa-exchange-alt text-white"></i>
+                                                                </button>
+                                                            </td>
+                                                        </form>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

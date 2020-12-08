@@ -12,6 +12,8 @@ import br.com.utily.ecommerce.dao.domain.sale.ISaleDAO;
 import br.com.utily.ecommerce.dao.domain.sale.ISaleItemDAO;
 import br.com.utily.ecommerce.dao.domain.stock.IStockDAO;
 import br.com.utily.ecommerce.dao.domain.stock.IStockHistoryDAO;
+import br.com.utily.ecommerce.dao.domain.trade.ITradeDAO;
+import br.com.utily.ecommerce.dao.domain.trade.ITradeItemDAO;
 import br.com.utily.ecommerce.dao.domain.user.customer.IAddressDAO;
 import br.com.utily.ecommerce.dao.domain.user.customer.ICreditCardDAO;
 import br.com.utily.ecommerce.dao.domain.user.customer.ICustomerDAO;
@@ -25,6 +27,8 @@ import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
 import br.com.utily.ecommerce.entity.domain.shop.sale.SaleAddress;
 import br.com.utily.ecommerce.entity.domain.shop.sale.SaleCreditCard;
 import br.com.utily.ecommerce.entity.domain.shop.sale.SaleItem;
+import br.com.utily.ecommerce.entity.domain.shop.trade.Trade;
+import br.com.utily.ecommerce.entity.domain.shop.trade.item.TradeItem;
 import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
 import br.com.utily.ecommerce.entity.domain.stock.Stock;
 import br.com.utily.ecommerce.entity.domain.stock.StockHistory;
@@ -62,6 +66,9 @@ public class Facade<T extends Entity> implements IFacade<T> {
     private ISaleItemDAO saleItemDAO;
     private ISaleAddressDAO saleAddressDAO;
     private ISaleCreditCardDAO saleCreditCardDAO;
+
+    private ITradeDAO tradeDAO;
+    private ITradeItemDAO tradeItemDAO;
 
     public Facade() {
         daosMap = new HashMap<>();
@@ -120,6 +127,15 @@ public class Facade<T extends Entity> implements IFacade<T> {
         initVoucherRelatedDAOSMap();
     }
 
+    @Autowired
+    private void setTradeRelatedDAOS(ITradeDAO tradeDAO,
+                                     ITradeItemDAO tradeItemDAO) {
+        this.tradeDAO = tradeDAO;
+        this.tradeItemDAO = tradeItemDAO;
+
+        initTradeRelatedDAOSMap();
+    }
+
     private void initCustomerRelatedDAOSMap() {
         daosMap.put(Customer.class.getName(), customerDAO);
         daosMap.put(Address.class.getName(), addressDAO);
@@ -147,6 +163,11 @@ public class Facade<T extends Entity> implements IFacade<T> {
     private void initVoucherRelatedDAOSMap() {
         daosMap.put(Voucher.class.getName(), voucherDAO);
         daosMap.put(CustomerVoucher.class.getName(), customerVoucherDAO);
+    }
+
+    private void initTradeRelatedDAOSMap() {
+        daosMap.put(Trade.class.getName(), tradeDAO);
+        daosMap.put(TradeItem.class.getName(), tradeItemDAO);
     }
 
     @Override
@@ -317,13 +338,17 @@ public class Facade<T extends Entity> implements IFacade<T> {
                 ICreditCardDAO creditCardDAO = (ICreditCardDAO) dao;
                 entities = (List<T>) creditCardDAO.findAllByCustomer(customer);
             }
+            if (dao instanceof ICustomerVoucherDAO) {
+                ICustomerVoucherDAO customerVoucherDAO = (ICustomerVoucherDAO) dao;
+                entities = (List<T>) customerVoucherDAO.findCustomerVoucherByCustomer(customer);
+            }
             if (dao instanceof ISaleDAO) {
                 ISaleDAO saleDAO = (ISaleDAO) dao;
                 entities = (List<T>) saleDAO.findAllByCustomer(customer);
             }
-            if (dao instanceof ICustomerVoucherDAO) {
-                ICustomerVoucherDAO customerVoucherDAO = (ICustomerVoucherDAO) dao;
-                entities = (List<T>) customerVoucherDAO.findCustomerVoucherByCustomer(customer);
+            if (dao instanceof ITradeDAO) {
+                ITradeDAO tradeDAO = (ITradeDAO) dao;
+                entities = (List<T>) tradeDAO.findAllByCustomer(customer);
             }
         }
 
