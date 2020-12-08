@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Meus pedidos | Loja de Utilidades Domésticas</title>
+    <title>Minhas trocas | Loja de Utilidades Domésticas</title>
 </head>
 <body>
 
@@ -28,45 +28,45 @@
                     </div>
                     <div class="card-body">
 
-                        <th:block th:if="${!thereAreOrders}">
+                        <th:block th:if="${!thereAreTrades}">
 
                             <div class="alert alert-info">
-                                Você ainda não fez nenhum pedido. Vá até a
-                                <a th:href="@{/shop/products}" class="btn btn-outline-secondary btn-sm">
-                                    loja
+                                Você ainda não realizou nenhuma troca ou devolução. Caso precise, vá até
+                                <a th:href="@{/orders}" class="btn btn-outline-secondary btn-sm">
+                                    Pedidos
                                 </a>
-                                para comprar itens.
+                                , selecione o pedido desejado, role até o final da página de visualização e
+                                utilize o formulário para iniciar uma troca/devolução.
                             </div>
 
                         </th:block>
 
-                        <th:block th:if="${thereAreOrders}">
+                        <th:block th:if="${thereAreTrades}">
 
                             <table id="products-table" class="table table-borderless table-striped">
                             <thead>
                             <tr>
-                                <th>Número do Pedido</th>
-                                <th>Data da compra</th>
-<!--                                <th>Total</th>-->
+                                <th>Número</th>
+                                <th>Tipo</th>
+                                <th>Data da solicitação</th>
                                 <th>Status</th>
-                                <th>Detalhes</th>
                             </tr>
                             </thead>
                             <tbody>
-                                <!--/*@thymesVar id="order" type="br.com.utily.ecommerce.entity.domain.shop.sale.Sale"*/-->
-                                <tr th:each="order : ${orders}">
+                                <!--/*@thymesVar id="trade" type="br.com.utily.ecommerce.entity.domain.shop.trade.Trade"*/-->
+                                <tr th:each="trade : ${trades}">
                                     <td>
-                                        <a href="#" th:text="${order.identifyNumber}"></a>
+                                        <a href="#" th:text="${trade.number}"></a>
                                     <td>
-                                        <span th:text="${#temporals.format(order.date, 'dd/MM/yyyy HH:mm:ss')}"></span>
+                                        <span th:text="${#temporals.format(trade.date, 'dd/MM/yyyy HH:mm:ss')}"></span>
 <!--                                    <td>-->
 <!--                                        <span th:text="${#strings.replace(#numbers.formatCurrency(), '$', 'R$')}">R$ 192,00</span>-->
 <!--                                    </td>-->
                                     <td>
-                                        <span class="badge badge-pill" th:text="${order.status.getDisplayName()}" th:classappend="${order.computeStatusColorClass('badge')}"></span>
+                                        <span class="badge badge-pill badge-primary" th:text="${trade.status.getDisplayName()}"></span>
                                     </td>
                                     <td>
-                                        <a th:href="@{/orders/} + ${order.id}" class="btn btn-secondary btn-sm">Ver mais detalhes</a>
+                                        <a th:href="@{/trades/} + ${trade.id}" class="btn btn-secondary btn-sm">Ver mais detalhes</a>
                                     </td>
                                 </tr>
                             </tbody>

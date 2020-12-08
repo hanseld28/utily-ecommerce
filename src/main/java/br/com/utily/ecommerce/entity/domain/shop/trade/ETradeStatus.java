@@ -8,6 +8,7 @@ public enum ETradeStatus {
     DENIED("Negada"),
     AUTHORIZED("Autorizada"),
     RECEIVED_ITEMS("Itens recebidos"),
+    GENERATED_VOUCHER("Cupom gerado"),
     REPLACEMENT_ON_DELIVERY("Subistituição na entrega"),
     REPLACEMENT_DELIVERED("Substituição entregue");
 

@@ -4,6 +4,7 @@ import br.com.utily.ecommerce.entity.domain.shop.sale.*;
 import br.com.utily.ecommerce.entity.domain.shop.trade.Trade;
 import br.com.utily.ecommerce.entity.domain.shop.trade.item.TradeItem;
 import br.com.utily.ecommerce.entity.domain.shop.trade.item.TradeItemId;
+import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
 import br.com.utily.ecommerce.entity.domain.stock.Stock;
 import br.com.utily.ecommerce.entity.domain.stock.StockHistory;
 import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucher;
@@ -54,6 +55,12 @@ public class PrototypeBeansConfiguration {
 
     @Bean
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public Voucher createPrototypeForVoucher() {
+        return new Voucher();
+    }
+
+    @Bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     public CustomerVoucher createPrototypeForCustomerVoucher() {
         return new CustomerVoucher();
     }
@@ -93,4 +100,5 @@ public class PrototypeBeansConfiguration {
     public TradeItemId createPrototypeForTradeItemId() {
         return new TradeItemId();
     }
+
 }

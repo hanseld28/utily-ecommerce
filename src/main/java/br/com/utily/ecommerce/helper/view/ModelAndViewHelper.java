@@ -91,6 +91,12 @@ public class ModelAndViewHelper {
                 paths.add(EPageFolder.ORDER);
                 break;
 
+            case CUSTOMER_TRADE_SHOP:
+                paths.add(EPageFolder.SHOP);
+                paths.add(EPageFolder.CUSTOMER);
+                paths.add(EPageFolder.TRADE);
+                break;
+
             case PRODUCT_SHOP:
                 paths.add(EPageFolder.SHOP);
                 paths.add(EPageFolder.PRODUCT);
@@ -128,15 +134,14 @@ public class ModelAndViewHelper {
                 paths.add(EPageFolder.CHECKOUT);
                 break;
 
-            case TRADE_SHOP:
-                paths.add(EPageFolder.SHOP);
-                paths.add(EPageFolder.CUSTOMER);
-                paths.add(EPageFolder.TRADE);
-                break;
-
             case SALE_ADMIN:
                 paths.add(EPageFolder.ADMIN);
                 paths.add(EPageFolder.SALE);
+                break;
+
+            case TRADE_ADMIN:
+                paths.add(EPageFolder.ADMIN);
+                paths.add(EPageFolder.TRADE);
                 break;
 
             case REDIRECT_TRADE_IN_PROGRESS:
@@ -146,6 +151,14 @@ public class ModelAndViewHelper {
                 paths.add(EEndpoint.REQUEST);
                 paths.add(EEndpoint.IN_PROGRESS);
                 paths.add(EEndpoint.ITEMS);
+                break;
+
+            case REDIRECT_TRADE_SHOP_FINISH:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.ORDER);
+                paths.add(EEndpoint.TRADE);
+                paths.add(EEndpoint.REQUEST);
+                paths.add(EEndpoint.FINISH);
                 break;
 
             case REDIRECT_STOCKS_ADMIN:
@@ -173,6 +186,11 @@ public class ModelAndViewHelper {
                 paths.add(EView.REDIRECT);
                 paths.add(EEndpoint.ADMIN);
                 paths.add(EEndpoint.SALES);
+                break;
+
+            case REDIRECT_TRADES_ADMIN:
+                paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.TRADES);
                 break;
 
             case REDIRECT_PRODUCT_SHOP:

@@ -44,7 +44,8 @@ public enum EModelAttribute {
     ENABLE_NEXT_STEP("enableNextStep"),
     HASH("hash"),
     HASH_OPERATION("hashOperation"),
-    THERE_ARE_ORDERS("thereAreOrders");
+    THERE_ARE_ORDERS("thereAreOrders"),
+    THERE_ARE_TRADES("thereAreTrades");
 
     private final String name;
 

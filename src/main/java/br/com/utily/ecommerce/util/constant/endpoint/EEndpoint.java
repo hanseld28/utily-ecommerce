@@ -11,6 +11,7 @@ public enum EEndpoint {
     PATH_VARIABLE("/{pathVariable}"),
     IN_PROGRESS("/in-progress"),
     REQUEST("/request"),
+    FINISH("/finish"),
 
     ADMIN("/admin"),
     AUTH("/auth"),

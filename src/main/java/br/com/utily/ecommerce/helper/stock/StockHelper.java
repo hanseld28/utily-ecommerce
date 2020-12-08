@@ -2,6 +2,7 @@ package br.com.utily.ecommerce.helper.stock;
 
 import br.com.utily.ecommerce.controller.handler.exception.InternalServerErrorException;
 import br.com.utily.ecommerce.dto.domain.admin.stock.StockManageDTO;
+import br.com.utily.ecommerce.entity.domain.shop.trade.item.TradeItem;
 import br.com.utily.ecommerce.entity.domain.stock.Stock;
 import br.com.utily.ecommerce.entity.domain.stock.StockHistory;
 import br.com.utily.ecommerce.helper.view.ModelMapperHelper;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,6 +46,18 @@ public class StockHelper {
     public StockHistory up(Long stockId, Integer operationAmount) {
         Stock stock = prepare(stockId, operationAmount);
         return executeAndRegisterOperation(stock);
+    }
+
+    public List<StockHistory> up(List<TradeItem> tradeItems) {
+        List<StockHistory> stockHistoriesOperation = new ArrayList<>();
+
+        tradeItems.forEach(tradeItem -> {
+            Stock stock = prepare(tradeItem);
+            StockHistory stockHistory = executeAndRegisterOperation(stock);
+            stockHistoriesOperation.add(stockHistory);
+        });
+
+        return  stockHistoriesOperation;
     }
 
     public StockHistory down(StockManageDTO stockManageDTO) {
@@ -85,6 +100,24 @@ public class StockHelper {
         Integer existingAmount = foundStock.getAmount();
         foundStock.setLastOperationAmount(existingAmount);
         foundStock.setAmount(operationAmount);
+
+        foundStock.recalculateAmount();
+
+        return foundStock;
+    }
+
+    private Stock prepare(TradeItem tradeItem) {
+        Stock stock = stockObjectProvider.getObject();
+
+        Long stockId = tradeItem.getProduct().getStock().getId();
+        Integer returningAmount = tradeItem.getQuantity();
+
+        Optional<Stock> stockOptional = stockAlternativeDomainService.findById(stockId, stock);
+        Stock foundStock = stockOptional.orElseThrow(InternalServerErrorException::new);
+
+        Integer existingAmount = foundStock.getAmount();
+        foundStock.setLastOperationAmount(existingAmount);
+        foundStock.setAmount(returningAmount);
 
         foundStock.recalculateAmount();
 

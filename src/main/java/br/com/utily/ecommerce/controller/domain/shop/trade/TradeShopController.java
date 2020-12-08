@@ -1,4 +1,4 @@
-package br.com.utily.ecommerce.controller.domain.shop.customer.trade;
+package br.com.utily.ecommerce.controller.domain.shop.trade;
 
 import br.com.utily.ecommerce.controller.handler.exception.InternalServerErrorException;
 import br.com.utily.ecommerce.controller.handler.exception.NotFoundException;
@@ -183,19 +183,25 @@ public class TradeShopController {
                     + " enviada. " + requestedTrade.getStatus().getDisplayName()
                     + ".";
 
-            ModelAndView modelAndView = ModelAndViewHelper.configure(
-                    EViewType.TRADE_SHOP,
-                    EView.FINISH,
-                    requestedTrade,
-                    EModelAttribute.TRADE);
+            ViewMessageHelper.configureRedirectMessageWith(
+                    message, true,
+                    redirectAttributes);
 
-            ModelAndViewHelper.addObjectTo(modelAndView, message, EModelAttribute.MESSAGE);
+            ViewMessageHelper.addFlashAttributeTo(
+                    redirectAttributes,
+                    EModelAttribute.TRADE.getName(),
+                    requestedTrade);
 
-            return modelAndView;
+            return ModelAndViewHelper.configure(EViewType.REDIRECT_TRADE_SHOP_FINISH);
 
         } catch (Exception exception) {
             throw new InternalServerErrorException();
         }
+    }
+
+    @GetMapping(path = TRADE_REQUEST_FINISH_URL)
+    public ModelAndView finish() {
+        return ModelAndViewHelper.configure(EViewType.TRADE_SHOP, EView.FINISH);
     }
 
     @ModelAttribute("shopCart")

@@ -5,6 +5,7 @@ import br.com.utily.ecommerce.dto.domain.user.UserUpdateDTO;
 import br.com.utily.ecommerce.dto.domain.user.customer.CustomerUpdateDTO;
 import br.com.utily.ecommerce.entity.domain.shop.cart.ShopCart;
 import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
+import br.com.utily.ecommerce.entity.domain.shop.trade.Trade;
 import br.com.utily.ecommerce.entity.domain.user.EUserRole;
 import br.com.utily.ecommerce.entity.domain.user.User;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,10 +43,12 @@ public class CustomerController {
 
     private final IDomainService<Customer> customerDomainService;
     private final IDomainService<Sale> saleDomainService;
+    private final IDomainService<Trade> tradeDomainService;
 
     private final ShopCart shopCart;
     private final Customer mockCustomer;
     private final Sale mockSale;
+    private final Trade mockTrade;
     private final CustomerUpdateDTO mockCustomerUpdateDTO;
 
     private final ModelAndViewHelper modelAndViewHelper;
@@ -56,16 +60,20 @@ public class CustomerController {
                               IDomainService<Customer> customerDomainService,
                               @Qualifier("domainService")
                               IDomainService<Sale> saleDomainService,
+                              @Qualifier("domainService")
+                              IDomainService<Trade> tradeDomainService,
                               ShopCart shopCart,
                               Customer mockCustomer,
-                              Sale mockSale, CustomerUpdateDTO mockCustomerUpdateDTO,
+                              Sale mockSale, Trade mockTrade, CustomerUpdateDTO mockCustomerUpdateDTO,
                               ModelAndViewHelper modelAndViewHelper,
                               LoggedUserHelper loggedUserHelper) {
         this.customerDomainService = customerDomainService;
         this.saleDomainService = saleDomainService;
+        this.tradeDomainService = tradeDomainService;
         this.shopCart = shopCart;
         this.mockCustomer = mockCustomer;
         this.mockSale = mockSale;
+        this.mockTrade = mockTrade;
         this.mockCustomerUpdateDTO = mockCustomerUpdateDTO;
         this.modelAndViewHelper = modelAndViewHelper;
         this.loggedUserHelper = loggedUserHelper;
@@ -74,11 +82,7 @@ public class CustomerController {
     @GetMapping(path = ACCOUNT_URI)
     public ModelAndView showAccount() {
         ModelAndView modelAndView = ModelAndViewHelper
-                .configure(
-                        EViewType.CUSTOMER_ACCOUNT_SHOP,
-                        EView.DETAILS,
-                        shopCart,
-                        EModelAttribute.SHOP_CART);
+                .configure(EViewType.CUSTOMER_ACCOUNT_SHOP, EView.DETAILS);
 
         Customer customer = loggedUserHelper.getLoggedCustomerUser();
         CustomerUpdateDTO customerUpdateDTO = ModelMapperHelper.fromEntityToDTO(customer, CustomerUpdateDTO.class);
@@ -92,10 +96,7 @@ public class CustomerController {
                                     Errors errors,
                                     RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return ModelAndViewHelper.configure(EViewType.CUSTOMER_ACCOUNT_SHOP,
-                            EView.DETAILS,
-                            shopCart,
-                            EModelAttribute.SHOP_CART);
+            return ModelAndViewHelper.configure(EViewType.CUSTOMER_ACCOUNT_SHOP, EView.DETAILS);
         }
         try {
             User loggedUserUpdated = LoggedUserHelper.getLoggedUser();
@@ -129,21 +130,14 @@ public class CustomerController {
             System.out.println(exception.getMessage());
             exception.printStackTrace();
 
-            return ModelAndViewHelper.configure(EViewType.CUSTOMER_ACCOUNT_SHOP,
-                            EView.DETAILS,
-                            shopCart,
-                            EModelAttribute.SHOP_CART);
+            return ModelAndViewHelper.configure(EViewType.CUSTOMER_ACCOUNT_SHOP, EView.DETAILS);
         }
     }
 
     @GetMapping(path = ORDERS_URI)
     public ModelAndView showOrders() {
         ModelAndView modelAndView = ModelAndViewHelper
-                .configure(
-                        EViewType.CUSTOMER_ORDER_SHOP,
-                        EView.LIST,
-                        shopCart,
-                        EModelAttribute.SHOP_CART);
+                .configure(EViewType.CUSTOMER_ORDER_SHOP, EView.LIST);
 
         Customer loggedCustomerUser = loggedUserHelper.getLoggedCustomerUser();
 
@@ -160,11 +154,7 @@ public class CustomerController {
     @GetMapping(path = ORDERS_URI + "/{id}")
     public ModelAndView viewOrderDetails(@PathVariable Long id) {
         ModelAndView modelAndView = ModelAndViewHelper
-                .configure(
-                        EViewType.CUSTOMER_ORDER_SHOP,
-                        EView.DETAILS,
-                        shopCart,
-                        EModelAttribute.SHOP_CART);
+                .configure(EViewType.CUSTOMER_ORDER_SHOP, EView.DETAILS);
 
         Optional<Sale> orderOptional = saleDomainService.findById(id, mockSale);
 
@@ -173,5 +163,41 @@ public class CustomerController {
         ModelAndViewHelper.addObjectTo(modelAndView, foundOrder, EModelAttribute.ORDER);
 
         return modelAndView;
+    }
+
+    @GetMapping(path = TRADES_URI)
+    public ModelAndView showTrades() {
+        ModelAndView modelAndView = ModelAndViewHelper
+                .configure(EViewType.CUSTOMER_TRADE_SHOP, EView.LIST);
+
+        Customer loggedCustomerUser = loggedUserHelper.getLoggedCustomerUser();
+
+        List<Trade> customerTrades = tradeDomainService.findAllBy(loggedCustomerUser, mockTrade);
+
+        Boolean thereAreTrades = !customerTrades.isEmpty();
+
+        ModelAndViewHelper.addObjectTo(modelAndView, customerTrades, EModelAttribute.TRADES);
+        ModelAndViewHelper.addObjectTo(modelAndView, thereAreTrades, EModelAttribute.THERE_ARE_TRADES);
+
+        return modelAndView;
+    }
+
+    @GetMapping(path = TRADES_URI + "/{id}")
+    public ModelAndView viewTradeDetails(@PathVariable Long id) {
+        ModelAndView modelAndView = ModelAndViewHelper
+                .configure(EViewType.CUSTOMER_TRADE_SHOP, EView.DETAILS);
+
+        Optional<Trade> tradeOptional = tradeDomainService.findById(id, mockTrade);
+
+        Trade foundTrade = tradeOptional.orElseThrow(NotFoundException::new);
+
+        ModelAndViewHelper.addObjectTo(modelAndView, foundTrade, EModelAttribute.TRADE);
+
+        return modelAndView;
+    }
+
+    @ModelAttribute("shopCart")
+    public ShopCart shopCart() {
+        return shopCart;
     }
 }

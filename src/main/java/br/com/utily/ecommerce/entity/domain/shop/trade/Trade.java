@@ -65,6 +65,10 @@ public class Trade extends DomainEntity {
         generateNumber();
     }
 
+    public Boolean isReceivedItems() {
+        return status.equals(ETradeStatus.RECEIVED_ITEMS);
+    }
+
     public void authorize() {
         changeStatusToAuthorized();
     }
@@ -85,6 +89,10 @@ public class Trade extends DomainEntity {
         this.status = ETradeStatus.RECEIVED_ITEMS;
     }
 
+    public void changeStatusGeneratedVoucher() {
+        this.status = ETradeStatus.GENERATED_VOUCHER;
+    }
+
     public void changeStatusToReplacementOnDelivery() {
         this.status = ETradeStatus.REPLACEMENT_ON_DELIVERY;
     }
@@ -93,4 +101,13 @@ public class Trade extends DomainEntity {
         this.status = ETradeStatus.REPLACEMENT_DELIVERED;
     }
 
+    public Double calculateTotalBalanceOfItems() {
+        return items.stream()
+                .map(tradeItem -> tradeItem.getProduct().getPrice() * tradeItem.getQuantity())
+                .reduce(0d, Double::sum);
+    }
+
+    public Boolean isGeneratedVoucher() {
+        return status.equals(ETradeStatus.GENERATED_VOUCHER);
+    }
 }
