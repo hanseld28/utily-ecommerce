@@ -116,7 +116,7 @@ public class TradeShopController {
     public ModelAndView showPageRequestItems() {
         hashOperation = UUID.randomUUID();
 
-        return ModelAndViewHelper.configure(EViewType.TRADE_SHOP, EView.NEW, hashOperation.toString(), EModelAttribute.HASH_OPERATION);
+        return ModelAndViewHelper.configure(EViewType.CUSTOMER_TRADE_SHOP, EView.NEW, hashOperation.toString(), EModelAttribute.HASH_OPERATION);
     }
 
     @PostMapping(path = TRADE_REQUEST_ITEMS_IN_PROGRESS_URL)
@@ -201,7 +201,7 @@ public class TradeShopController {
 
     @GetMapping(path = TRADE_REQUEST_FINISH_URL)
     public ModelAndView finish() {
-        return ModelAndViewHelper.configure(EViewType.TRADE_SHOP, EView.FINISH);
+        return ModelAndViewHelper.configure(EViewType.CUSTOMER_TRADE_SHOP, EView.FINISH);
     }
 
     @ModelAttribute("shopCart")

@@ -22,7 +22,6 @@ import java.util.List;
 @Setter
 
 @Entity
-@Component
 @Table(name = "sales")
 public class Sale extends DomainEntity {
 

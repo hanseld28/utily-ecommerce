@@ -8,7 +8,6 @@ import br.com.utily.ecommerce.entity.domain.shop.voucher.EVoucherType;
 import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
 import br.com.utily.ecommerce.entity.domain.stock.StockHistory;
 import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucher;
-import br.com.utily.ecommerce.helper.security.LoggedUserHelper;
 import br.com.utily.ecommerce.helper.stock.StockHelper;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
 import br.com.utily.ecommerce.helper.view.ViewMessageHelper;
@@ -43,7 +42,6 @@ public class TradeAdminController {
 
     private final Trade mockTrade;
 
-    private LoggedUserHelper loggedUserHelper;
     private StockHelper stockHelper;
     private VoucherHelper voucherHelper;
 
@@ -54,14 +52,12 @@ public class TradeAdminController {
                                 IDomainService<Voucher> voucherDomainService,
                                 Trade mockTrade,
                                 StockHelper stockHelper,
-                                VoucherHelper voucherHelper,
-                                LoggedUserHelper loggedUserHelper) {
+                                VoucherHelper voucherHelper) {
         this.tradeDomainService = tradeDomainService;
         this.voucherDomainService = voucherDomainService;
         this.mockTrade = mockTrade;
         this.stockHelper = stockHelper;
         this.voucherHelper = voucherHelper;
-        this.loggedUserHelper = loggedUserHelper;
     }
 
     @GetMapping
@@ -133,13 +129,13 @@ public class TradeAdminController {
                 .adaptAndSave(voucherValue, EVoucherType.TRADE);
 
         CustomerVoucher savedCustomerVoucher = voucherHelper
-                .adaptAndSave(loggedUserHelper.getLoggedCustomerUser(), savedVoucher);
+                .adaptAndSave(foundTrade.getOrder().getCustomer(), savedVoucher);
 
         foundTrade.changeStatusGeneratedVoucher();
         tradeDomainService.save(foundTrade);
 
         String message = savedCustomerVoucher.getVoucher().formatToText()
-                + " gerado com sucesso para o cliente \"."
+                + " gerado com sucesso para o cliente \""
                 + savedCustomerVoucher.getCustomer().getName() + "\".";
 
         ViewMessageHelper.configureRedirectMessageWith(message, true, redirectAttributes);

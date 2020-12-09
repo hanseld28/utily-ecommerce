@@ -308,15 +308,16 @@ public class CheckoutShopController {
             );
             Sale savedSale = saleDomainService.save(sale);
 
-            // TODO: inspect the following block and this processing
-            //       - voucher is not marked with "used", but it is
-            //       - returning to customer as valid.
-            CustomerVoucher savedCustomerVoucher = customerVoucherHelper.adapt(
-                    savedSale.getVoucher(),
-                    savedSale.getCustomer()
-            );
-            customerVoucherAlternativeDomainService.save(savedCustomerVoucher);
-
+            if (savedSale.getVoucher() != null) {
+                // TODO: inspect the following block and this processing
+                //       - voucher is not marked with "used", but it is
+                //       - returning to customer as valid.
+                CustomerVoucher savedCustomerVoucher = customerVoucherHelper.adapt(
+                        savedSale.getVoucher(),
+                        savedSale.getCustomer()
+                );
+                customerVoucherAlternativeDomainService.save(savedCustomerVoucher);
+            }
             Map<Long, Integer> productsAndOperationAmounts = new HashMap<>();
 
             for (SaleItem saleItem : savedSale.getItems()) {

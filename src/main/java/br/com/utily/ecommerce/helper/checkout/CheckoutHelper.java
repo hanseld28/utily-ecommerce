@@ -7,6 +7,7 @@ import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.Address;
 import br.com.utily.ecommerce.entity.domain.user.customer.adresses.AddressType;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,24 +17,26 @@ import java.util.stream.Collectors;
 @Component
 public class CheckoutHelper {
 
-    private final Sale mockSale;
+    private ObjectProvider<Sale> saleProvider;
 
     private final SaleItemHelper saleItemHelper;
     private final SaleAddressHelper saleAddressHelper;
     private final SaleCreditCardHelper saleCreditCardHelper;
 
     @Autowired
-    public CheckoutHelper(Sale mockSale,
+    public CheckoutHelper(ObjectProvider<Sale> saleProvider,
                           SaleItemHelper saleItemHelper,
                           SaleAddressHelper saleAddressHelper,
                           SaleCreditCardHelper saleCreditCardHelper) {
-        this.mockSale = mockSale;
+        this.saleProvider = saleProvider;
         this.saleItemHelper = saleItemHelper;
         this.saleAddressHelper = saleAddressHelper;
         this.saleCreditCardHelper = saleCreditCardHelper;
     }
 
     public Sale adapt(SaleInProgress saleInProgress) {
+        Sale newSale = saleProvider.getObject();
+
         String identifyNumber = saleInProgress.getIdentifyNumber();
         ESaleStatus status = saleInProgress.getStatus();
         Customer customer = saleInProgress.getCustomer();
@@ -41,26 +44,26 @@ public class CheckoutHelper {
         Voucher voucher = saleInProgress.getVoucher();
 
         List<SaleItem> saleItems = cartItems.stream()
-                .map(cartItem -> saleItemHelper.adapt(cartItem, mockSale))
+                .map(cartItem -> saleItemHelper.adapt(cartItem, newSale))
                 .collect(Collectors.toList());
 
         List<SaleAddress> saleAdresses = saleInProgress.getAdresses().stream()
-                .map(address -> saleAddressHelper.adapt(address, mockSale))
+                .map(address -> saleAddressHelper.adapt(address, newSale))
                 .collect(Collectors.toList());
 
         List<SaleCreditCard> saleCreditCards = saleInProgress.getUsedCreditCards().stream()
-                .map(creditCardValue -> saleCreditCardHelper.adapt(creditCardValue, mockSale))
+                .map(creditCardValue -> saleCreditCardHelper.adapt(creditCardValue, newSale))
                 .collect(Collectors.toList());
 
-        mockSale.setIdentifyNumber(identifyNumber);
-        mockSale.setStatus(status);
-        mockSale.setCustomer(customer);
-        mockSale.setItems(saleItems);
-        mockSale.setAdresses(saleAdresses);
-        mockSale.setUsedCreditCards(saleCreditCards);
-        mockSale.setVoucher(voucher);
+        newSale.setIdentifyNumber(identifyNumber);
+        newSale.setStatus(status);
+        newSale.setCustomer(customer);
+        newSale.setItems(saleItems);
+        newSale.setAdresses(saleAdresses);
+        newSale.setUsedCreditCards(saleCreditCards);
+        newSale.setVoucher(voucher);
 
-        return mockSale;
+        return newSale;
     }
 
     public List<Address> filterAdressesByType(List<Address> adresses, AddressType filterType) {

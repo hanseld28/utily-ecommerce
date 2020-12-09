@@ -34,9 +34,15 @@ public class SaleInProgress extends Entity {
     private List<CartItem> cartItems = new ArrayList<>();
     private List<CreditCardValue> usedCreditCards = new ArrayList<>();
     private Voucher voucher;
+    private Double subtotal;
     private Double total;
     private final Double freightValue = 10.0;
     private Boolean voucherAlreadyApplied = false;
+
+    public void setTotal(Double total) {
+        this.total = total;
+        this.subtotal = total; // TODO: fix difference operation on total and subtotal
+    }
 
     public void addAddress(Address address) {
         adresses.add(address);
@@ -104,13 +110,24 @@ public class SaleInProgress extends Entity {
     }
 
     public Double calculateTotalWithFreightBeforeVoucherApplied() {
-        return (total / (1 - voucher.getMultiplicationFactor())) + freightValue;
+        return (subtotal / (1 - voucher.getMultiplicationFactor())) + freightValue;
     }
 
     public void applyVoucher(Voucher voucher) {
         if (!voucherAlreadyApplied) {
             this.voucher = voucher;
-            total -= (total * voucher.getMultiplicationFactor());
+            double subtracting = .0;
+            switch (voucher.getType()) {
+                case DISCOUNT:
+                    double multiplicationFactor = voucher.getMultiplicationFactor();
+                    subtracting = (total * multiplicationFactor);
+                    break;
+                case TRADE:
+                    double value = voucher.getValue();
+                    subtracting = value > total ? total : value;
+                    break;
+            }
+            total -= subtracting;
             voucherAlreadyApplied = true;
         }
     }

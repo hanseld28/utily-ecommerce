@@ -190,6 +190,7 @@ public class ModelAndViewHelper {
 
             case REDIRECT_TRADES_ADMIN:
                 paths.add(EView.REDIRECT);
+                paths.add(EEndpoint.ADMIN);
                 paths.add(EEndpoint.TRADES);
                 break;
 

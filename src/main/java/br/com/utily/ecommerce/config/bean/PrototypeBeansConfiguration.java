@@ -19,6 +19,13 @@ public class PrototypeBeansConfiguration {
 
     @Bean
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public Sale createPrototypeForSale() {
+        return new Sale();
+    }
+
+
+    @Bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     public SaleItem createPrototypeForSaleItem() {
         return new SaleItem();
     }
