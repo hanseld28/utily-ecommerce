@@ -25,7 +25,7 @@ import java.util.UUID;
 public class Trade extends DomainEntity {
 
     @Basic
-    @Column(name = "trd_tracking_number", unique = true)
+    @Column(name = "trd_number", unique = true)
     private String number;
 
     @CreationTimestamp

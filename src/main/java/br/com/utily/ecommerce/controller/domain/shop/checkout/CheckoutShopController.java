@@ -4,6 +4,7 @@ import br.com.utily.ecommerce.controller.handler.exception.NotFoundException;
 import br.com.utily.ecommerce.dto.domain.shop.sale.creditCard.CreditCardIdAndValueDTO;
 import br.com.utily.ecommerce.dto.domain.shop.voucher.VoucherIdDTO;
 import br.com.utily.ecommerce.entity.domain.shop.cart.ShopCart;
+import br.com.utily.ecommerce.entity.domain.shop.freight.Freight;
 import br.com.utily.ecommerce.entity.domain.shop.sale.Sale;
 import br.com.utily.ecommerce.entity.domain.shop.sale.SaleItem;
 import br.com.utily.ecommerce.entity.domain.shop.sale.progress.CreditCardValue;
@@ -16,6 +17,7 @@ import br.com.utily.ecommerce.entity.domain.user.customer.creditCard.CreditCard;
 import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucher;
 import br.com.utily.ecommerce.helper.checkout.CheckoutHelper;
 import br.com.utily.ecommerce.helper.checkout.CustomerVoucherHelper;
+import br.com.utily.ecommerce.helper.freight.FreightHelper;
 import br.com.utily.ecommerce.helper.proxy.ProxyHelper;
 import br.com.utily.ecommerce.helper.security.LoggedUserHelper;
 import br.com.utily.ecommerce.helper.session.SessionHelper;
@@ -78,6 +80,7 @@ public class CheckoutShopController {
     private CheckoutHelper checkoutHelper;
     private CustomerVoucherHelper customerVoucherHelper;
     private StockHelper stockHelper;
+    private FreightHelper freightHelper;
 
     private final UUID hash;
 
@@ -120,11 +123,13 @@ public class CheckoutShopController {
     private void setDependencyHelpers(final LoggedUserHelper loggedUserHelper,
                                       final CheckoutHelper checkoutHelper,
                                       final CustomerVoucherHelper customerVoucherHelper,
-                                      final StockHelper stockHelper) {
+                                      final StockHelper stockHelper,
+                                      final FreightHelper freightHelper) {
         this.loggedUserHelper = loggedUserHelper;
         this.checkoutHelper = checkoutHelper;
         this.customerVoucherHelper = customerVoucherHelper;
         this.stockHelper = stockHelper;
+        this.freightHelper = freightHelper;
     }
 
     @GetMapping(path = CHECKOUT_STEP_ONE_URL)
@@ -137,7 +142,7 @@ public class CheckoutShopController {
         Optional<ShopCart> shopCartOptional = ProxyHelper.recoveryEntityFromProxy(shopCart);
         ShopCart shopCartFromProxy = shopCartOptional.orElseThrow(NotFoundException::new);
         saleInProgress.setCartItems(shopCartFromProxy.getItems());
-        saleInProgress.setTotal(shopCart.getTotal());
+        saleInProgress.setSubtotal(shopCart.getTotal());
 
         ModelAndView modelAndView = ModelAndViewHelper.configure(
                 EViewType.CHECKOUT_STEP_SHOP,
@@ -195,6 +200,10 @@ public class CheckoutShopController {
             }
 
             saleInProgress.addAddress(addressToAdd);
+
+            Freight freight = freightHelper.build();
+            saleInProgress.setFreight(freight);
+            saleInProgress.calculateFreight();
 
             modelAndView = ModelAndViewHelper.configure(EViewType.REDIRECT_CHECKOUT_STEP_TWO);
         }

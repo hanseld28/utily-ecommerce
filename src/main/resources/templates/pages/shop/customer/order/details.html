@@ -102,7 +102,7 @@
                                                  style="width: 100%;"
                                                  aria-valuenow="100"
                                                  aria-valuemin="100"
-                                                 ria-valuemax="100"></div>
+                                                 aria-valuemax="100"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -181,12 +181,13 @@
                                             </div>
                                             <div class="col-6 d-flex justify-content-end text-secondary" style="font-size: 20px">
                                                 <span th:classappend="${order.hasAnyVoucherApplied() ? 'text-scratched' : ''}"
-                                                      th:text="${#strings.replace(#numbers.formatCurrency(order.calculateTotal()), '$', 'R$')}"></span>
+                                                      th:text="${#strings.replace(#numbers.formatCurrency(order.calculateTotalWithoutVoucher()), '$', 'R$')}"></span>
                                             </div>
                                         </div>
                                         <div class="row flex-row border-top bg-light font-weight-bold">
                                             <div class="col-6 d-flex justify-content-start pt-2 pb-2">
-                                                &nbsp;&nbsp;<h6 class="badge badge-info badge-pill ml-3">com frete</h6>
+                                                &nbsp;&nbsp;<h6 th:classappend="${order.freight.isFree() ? 'text-scratched' : ''}" class="badge badge-info badge-pill ml-3">com frete</h6>
+                                                &nbsp;&nbsp;<h6 th:if="${order.freight.isFree()}" class="badge badge-success badge-pill ml-3">frete grátis</h6>
                                             </div>
                                             <div class="col-6 d-flex justify-content-end text-info"
                                                  style="font-size: 20px">
@@ -211,7 +212,7 @@
                                                 </h6>
                                             </div>
                                             <div class="col-6 d-flex justify-content-end text-success" style="font-size: 20px">
-                                                <h3 th:text="${#strings.replace(#numbers.formatCurrency(order.calculateTotalWithAppliedVoucher()), '$', 'R$')}"></h3>
+                                                <h3 th:text="${#strings.replace(#numbers.formatCurrency(order.calculateTotal()), '$', 'R$')}"></h3>
                                             </div>
                                         </div>
                                     </div>

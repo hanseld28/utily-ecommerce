@@ -1,6 +1,7 @@
 package br.com.utily.ecommerce.helper.checkout;
 
 import br.com.utily.ecommerce.entity.domain.shop.cart.CartItem;
+import br.com.utily.ecommerce.entity.domain.shop.freight.Freight;
 import br.com.utily.ecommerce.entity.domain.shop.sale.*;
 import br.com.utily.ecommerce.entity.domain.shop.sale.progress.SaleInProgress;
 import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
@@ -41,6 +42,7 @@ public class CheckoutHelper {
         ESaleStatus status = saleInProgress.getStatus();
         Customer customer = saleInProgress.getCustomer();
         List<CartItem> cartItems = saleInProgress.getCartItems();
+        Freight freight = saleInProgress.getFreight();
         Voucher voucher = saleInProgress.getVoucher();
 
         List<SaleItem> saleItems = cartItems.stream()
@@ -55,12 +57,15 @@ public class CheckoutHelper {
                 .map(creditCardValue -> saleCreditCardHelper.adapt(creditCardValue, newSale))
                 .collect(Collectors.toList());
 
+        freight.setSale(newSale);
+
         newSale.setIdentifyNumber(identifyNumber);
         newSale.setStatus(status);
         newSale.setCustomer(customer);
         newSale.setItems(saleItems);
         newSale.setAdresses(saleAdresses);
         newSale.setUsedCreditCards(saleCreditCards);
+        newSale.setFreight(freight);
         newSale.setVoucher(voucher);
 
         return newSale;

@@ -1,7 +1,9 @@
 package br.com.utily.ecommerce.entity.domain.shop.sale;
 
 import br.com.utily.ecommerce.entity.domain.DomainEntity;
+import br.com.utily.ecommerce.entity.domain.shop.freight.Freight;
 import br.com.utily.ecommerce.entity.domain.shop.trade.Trade;
+import br.com.utily.ecommerce.entity.domain.shop.voucher.EVoucherType;
 import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import lombok.AllArgsConstructor;
@@ -9,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -58,8 +59,8 @@ public class Sale extends DomainEntity {
     @OneToMany(mappedBy = "order")
     private List<Trade> trades;
 
-    @Transient
-    private final Double freightValue = 10.0;
+    @OneToOne(mappedBy = "sale", cascade = CascadeType.ALL, optional = false)
+    private Freight freight;
 
     public void putStatusToProcessing() {
         this.status = ESaleStatus.PROCESSING;
@@ -110,25 +111,43 @@ public class Sale extends DomainEntity {
         return inTransit() || delivered();
     }
 
-    public Double calculateTotal() {
-        return items.stream()
-                .map(SaleItem::getSubtotal)
-                .reduce(.0, Double::sum);
-
-    }
-
     public Boolean hasAnyVoucherApplied() {
         return voucher != null && voucher.getId() != null
                 && (voucher.getMultiplicationFactor() != null || voucher.getValue() != null);
     }
 
-    public Double calculateTotalWithFreight() {
-        return calculateTotal() + freightValue;
+    public Double calculateTotal() {
+        Double subtotal = items.stream()
+                .map(SaleItem::getSubtotal)
+                .reduce(.0, Double::sum);
+
+        return hasAnyVoucherApplied()
+                ? subtotal - calculateDifferenceWithVoucher(subtotal)
+                : subtotal;
     }
 
-    public Double calculateTotalWithAppliedVoucher() {
-        return hasAnyVoucherApplied()
-                ? calculateTotal() - (calculateTotal() * voucher.getMultiplicationFactor())
-                : calculateTotal();
+    private Double calculateDifferenceWithVoucher(Double subtotal) {
+        Double coefficient = isDiscountVoucher()
+                ? voucher.getMultiplicationFactor()
+                : voucher.getValue();
+
+        return (isDiscountVoucher()
+                ? subtotal * coefficient
+                : Math.min(coefficient, subtotal));
     }
+
+    public Double calculateTotalWithFreight() {
+        return calculateTotalWithoutVoucher() + freight.getValue();
+    }
+
+    public Double calculateTotalWithoutVoucher() {
+        return isDiscountVoucher()
+                ? calculateTotal() / (1 - voucher.getMultiplicationFactor())
+                : calculateTotal() - voucher.getValue();
+    }
+
+    public Boolean isDiscountVoucher() {
+        return voucher.getType().equals(EVoucherType.DISCOUNT);
+    }
+
 }

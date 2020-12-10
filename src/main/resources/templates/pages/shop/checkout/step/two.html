@@ -56,13 +56,10 @@
                                 <h5>Valor da compra </h5>
                             </div>
                             <div class="col-3">
-                                <th:block th:unless="${sale.voucherAlreadyApplied}">
-                                    <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.total), '$', 'R$')}"></h6>
-                                </th:block>
-
-                                <th:block th:if="${sale.voucherAlreadyApplied}">
-                                    <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.calculateTotalWithoutVoucher()), '$', 'R$')}"></h6>
-                                </th:block>
+                                <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.subtotal), '$', 'R$')}"></h6>
+<!--                                <th:block th:if="${sale.voucherAlreadyApplied}">-->
+<!--                                    <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.calculateTotalWithoutVoucher()), '$', 'R$')}"></h6>-->
+<!--                                </th:block>-->
                             </div>
                         </div>
                         <div class="row">
@@ -75,7 +72,8 @@
                                 <h5>Frete</h5>
                             </div>
                             <div class="col-3">
-                                <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.freightValue), '$', 'R$')}"></h6>
+                                <h6 th:text="${#strings.replace(#numbers.formatCurrency(sale.freight.value), '$', 'R$')}"></h6>
+                                <span th:if="${sale.freight.isFree()}" class="badge badge-success">frete grátis</span>
                             </div>
                         </div>
                     </div>
@@ -99,7 +97,7 @@
                                         </th:block>
                                         <div class="row">
                                             <div class="col">
-                                                <span th:text="${#strings.replace(#numbers.formatCurrency(sale.recalculateTotalWithFreight()), '$', 'R$')}"
+                                                <span th:text="${#strings.replace(#numbers.formatCurrency(sale.total), '$', 'R$')}"
                                                       class="ml-1 font-weight-bold text-success"
                                                       style="font-size: large;"
                                                 ></span>
@@ -178,7 +176,7 @@
                                     <div class="form-group">
                                         <label for="valueInput" class="text-bold">Valor a ser utilizado</label>
                                         <input inputmode="numeric"
-                                               th:data-remainingamount="${sale.recalculateTotalWithFreight()}"
+                                               th:data-remainingamount="${sale.total}"
                                                class="form-control"
                                                id="valueInput"
                                                th:field="*{value}"

@@ -153,7 +153,7 @@
                                 <div class="row flex-row justify-content-center">
                                     <div class="col-2 justify-content-center" style="font-size: 25px">
                                         <span class="font-weight-bold"
-                                              th:text="${#strings.replace(#numbers.formatCurrency(sale.recalculateTotalWithFreight()), '$', 'R$')}"
+                                              th:text="${#strings.replace(#numbers.formatCurrency(sale.total), '$', 'R$')}"
                                         ></span>
                                     </div>
                                 </div>

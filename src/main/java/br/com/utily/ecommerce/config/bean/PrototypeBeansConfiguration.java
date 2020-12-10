@@ -1,5 +1,6 @@
 package br.com.utily.ecommerce.config.bean;
 
+import br.com.utily.ecommerce.entity.domain.shop.freight.Freight;
 import br.com.utily.ecommerce.entity.domain.shop.sale.*;
 import br.com.utily.ecommerce.entity.domain.shop.trade.Trade;
 import br.com.utily.ecommerce.entity.domain.shop.trade.item.TradeItem;
@@ -22,7 +23,6 @@ public class PrototypeBeansConfiguration {
     public Sale createPrototypeForSale() {
         return new Sale();
     }
-
 
     @Bean
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -58,6 +58,12 @@ public class PrototypeBeansConfiguration {
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     public SaleCreditCardId createPrototypeForSaleCreditCardId() {
         return new SaleCreditCardId();
+    }
+
+    @Bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public Freight createPrototypeForFreight() {
+        return new Freight();
     }
 
     @Bean
