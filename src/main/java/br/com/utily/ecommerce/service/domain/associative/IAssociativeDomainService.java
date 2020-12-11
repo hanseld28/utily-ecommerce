@@ -1,4 +1,4 @@
-package br.com.utily.ecommerce.service.associative;
+package br.com.utily.ecommerce.service.domain.associative;
 
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
@@ -18,8 +18,13 @@ public interface IAssociativeDomainService<T extends AssociativeDomainEntity>
 
     List<T> findAllBy(Entity targetEntity, T mockBaseEntity);
 
+    List<T> findAllValidBy(Entity targetEntity, T mockBaseEntity);
+
+    Optional<T> findValidByEmbeddedEntity(AssociativeDomainEntity associativeEntity, Entity entityOne, Entity entityTwo);
+
     Optional<T> findById(Long id, T mockEntity);
 
     Optional<T> findBy(Entity targetEntity, T mockBaseEntity);
+
 
 }

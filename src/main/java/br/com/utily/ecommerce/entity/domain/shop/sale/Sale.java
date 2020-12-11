@@ -2,6 +2,7 @@ package br.com.utily.ecommerce.entity.domain.shop.sale;
 
 import br.com.utily.ecommerce.entity.domain.DomainEntity;
 import br.com.utily.ecommerce.entity.domain.shop.freight.Freight;
+import br.com.utily.ecommerce.entity.domain.shop.trade.ETradeType;
 import br.com.utily.ecommerce.entity.domain.shop.trade.Trade;
 import br.com.utily.ecommerce.entity.domain.shop.voucher.EVoucherType;
 import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
@@ -141,13 +142,22 @@ public class Sale extends DomainEntity {
     }
 
     public Double calculateTotalWithoutVoucher() {
-        return isDiscountVoucher()
-                ? calculateTotal() / (1 - voucher.getMultiplicationFactor())
-                : calculateTotal() - voucher.getValue();
+        return hasAnyVoucherApplied()
+                ? (isDiscountVoucher()
+                    ? calculateTotal() / (1 - voucher.getMultiplicationFactor())
+                    : calculateTotal() - voucher.getValue())
+                : calculateTotal();
     }
 
     public Boolean isDiscountVoucher() {
         return voucher.getType().equals(EVoucherType.DISCOUNT);
     }
 
+    public ETradeType whichExchangeTypeIsEnabled() {
+       return isEnableToAnyExchange() && inProcessing() ? ETradeType.EXCHANGE : ETradeType.REFUND;
+    }
+
+    public Boolean isEnableToAnyExchange() {
+        return inProcessing() || delivered();
+    }
 }

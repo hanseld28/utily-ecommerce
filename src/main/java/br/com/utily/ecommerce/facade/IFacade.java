@@ -1,6 +1,7 @@
 package br.com.utily.ecommerce.facade;
 
 import br.com.utily.ecommerce.entity.Entity;
+import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,6 +23,10 @@ public interface IFacade<T> {
     List<T> findAll(T entity);
 
     List<T> findAllBy(Entity targetEntity, T baseEntity);
+
+    List<T> findAllValidBy(Entity targetEntity, T baseEntity);
+
+    Optional<T> findValidByEmbeddedEntity(AssociativeDomainEntity associativeEntity, Entity entityOne, Entity entityTwo);
 
     Optional<T> findActivatedById(Long id, Entity entity);
 

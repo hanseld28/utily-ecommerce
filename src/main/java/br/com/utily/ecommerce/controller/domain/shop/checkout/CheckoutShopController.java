@@ -24,7 +24,7 @@ import br.com.utily.ecommerce.helper.session.SessionHelper;
 import br.com.utily.ecommerce.helper.stock.StockHelper;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
 import br.com.utily.ecommerce.helper.view.ModelMapperHelper;
-import br.com.utily.ecommerce.service.associative.IAssociativeDomainService;
+import br.com.utily.ecommerce.service.domain.associative.IAssociativeDomainService;
 import br.com.utily.ecommerce.service.domain.IDomainService;
 import br.com.utily.ecommerce.util.constant.attribute.EModelAttribute;
 import br.com.utily.ecommerce.util.constant.entity.EViewType;
@@ -224,7 +224,7 @@ public class CheckoutShopController {
 
         List<CreditCard> customerCreditCards = creditCardDomainService.findAllBy(loggedCustomer, mockCreditCard);
         List<Voucher> customerVouchers = customerVoucherAlternativeDomainService
-                .findAllBy(loggedCustomer, mockCustomerVoucher)
+                .findAllValidBy(loggedCustomer, mockCustomerVoucher)
                 .stream()
                 .map(CustomerVoucher::getVoucher)
                 .collect(Collectors.toList());
@@ -318,15 +318,19 @@ public class CheckoutShopController {
             Sale savedSale = saleDomainService.save(sale);
 
             if (savedSale.getVoucher() != null) {
-                // TODO: inspect the following block and this processing
-                //       - voucher is not marked with "used", but it is
-                //       - returning to customer as valid.
-                CustomerVoucher savedCustomerVoucher = customerVoucherHelper.adapt(
-                        savedSale.getVoucher(),
-                        savedSale.getCustomer()
+                CustomerVoucher customerVoucherMock = customerVoucherHelper.provideNewObject();
+                Optional<CustomerVoucher> foundCustomerVoucherOptional = customerVoucherAlternativeDomainService.findValidByEmbeddedEntity(
+                        customerVoucherMock,
+                        savedSale.getCustomer(),
+                        savedSale.getVoucher()
                 );
-                customerVoucherAlternativeDomainService.save(savedCustomerVoucher);
+                CustomerVoucher foundCustomerVoucher = foundCustomerVoucherOptional
+                        .orElseThrow(NotFoundException::new);
+
+                foundCustomerVoucher.setUsed(true);
+                customerVoucherAlternativeDomainService.save(foundCustomerVoucher);
             }
+
             Map<Long, Integer> productsAndOperationAmounts = new HashMap<>();
 
             for (SaleItem saleItem : savedSale.getItems()) {

@@ -44,4 +44,8 @@ public class CustomerVoucherHelper {
 
         return customerVoucher.adapt(customerVoucherId, customer, voucherToSave);
     }
+
+    public CustomerVoucher provideNewObject() {
+        return customerVoucherObjectProvider.getObject();
+    }
 }

@@ -2,7 +2,7 @@ package br.com.utily.ecommerce.helper.stock;
 
 import br.com.utily.ecommerce.entity.domain.stock.Stock;
 import br.com.utily.ecommerce.entity.domain.stock.StockHistory;
-import br.com.utily.ecommerce.service.alternative.IAlternativeDomainService;
+import br.com.utily.ecommerce.service.domain.alternative.IAlternativeDomainService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

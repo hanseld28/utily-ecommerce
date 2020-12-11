@@ -1,9 +1,9 @@
-package br.com.utily.ecommerce.service.alternative.impl;
+package br.com.utily.ecommerce.service.domain.alternative.impl;
 
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.DomainEntity;
 import br.com.utily.ecommerce.facade.IFacade;
-import br.com.utily.ecommerce.service.alternative.IAlternativeDomainService;
+import br.com.utily.ecommerce.service.domain.alternative.IAlternativeDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

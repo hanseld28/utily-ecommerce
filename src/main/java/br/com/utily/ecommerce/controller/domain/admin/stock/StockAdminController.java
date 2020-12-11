@@ -11,7 +11,7 @@ import br.com.utily.ecommerce.helper.stock.StockHistoryHelper;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
 import br.com.utily.ecommerce.helper.view.ModelMapperHelper;
 import br.com.utily.ecommerce.helper.view.ViewMessageHelper;
-import br.com.utily.ecommerce.service.alternative.IAlternativeDomainService;
+import br.com.utily.ecommerce.service.domain.alternative.IAlternativeDomainService;
 import br.com.utily.ecommerce.service.domain.IDomainService;
 import br.com.utily.ecommerce.util.constant.attribute.EModelAttribute;
 import br.com.utily.ecommerce.util.constant.entity.EViewType;

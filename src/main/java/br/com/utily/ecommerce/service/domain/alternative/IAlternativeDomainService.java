@@ -1,4 +1,4 @@
-package br.com.utily.ecommerce.service.alternative;
+package br.com.utily.ecommerce.service.domain.alternative;
 
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.DomainEntity;

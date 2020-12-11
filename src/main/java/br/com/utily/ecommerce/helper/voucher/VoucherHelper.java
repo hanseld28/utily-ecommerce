@@ -5,12 +5,14 @@ import br.com.utily.ecommerce.entity.domain.shop.voucher.Voucher;
 import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucher;
 import br.com.utily.ecommerce.entity.domain.user.customer.voucher.CustomerVoucherId;
-import br.com.utily.ecommerce.service.associative.IAssociativeDomainService;
+import br.com.utily.ecommerce.service.domain.associative.IAssociativeDomainService;
 import br.com.utily.ecommerce.service.domain.IDomainService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class VoucherHelper {
@@ -60,9 +62,11 @@ public class VoucherHelper {
 
         newCustomerVoucherId.setCustomerId(customer.getId());
         newCustomerVoucherId.setVoucherId(voucher.getId());
-        newCustomerVoucherId.setUsed(false);
+        newCustomerVoucherId.setDate(LocalDateTime.now());
 
         newCustomerVoucher.setId(newCustomerVoucherId);
+
+        newCustomerVoucher.setUsed(false);
         newCustomerVoucher.setCustomer(customer);
         newCustomerVoucher.setVoucher(voucher);
 

@@ -23,8 +23,9 @@ public class SessionHelper {
     }
 
     public static void remove(String attributeName, Object object) {
-        httpSession.removeAttribute(attributeName);
-        object = null;
+        if (!httpSession.isNew())
+            httpSession.removeAttribute(attributeName);
+            object = null;
     }
 
     public static void removeAttributesForSaleFinished(ShopCart shopCart,

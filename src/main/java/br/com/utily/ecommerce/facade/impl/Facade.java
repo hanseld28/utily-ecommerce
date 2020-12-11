@@ -20,6 +20,7 @@ import br.com.utily.ecommerce.dao.domain.user.customer.ICustomerDAO;
 import br.com.utily.ecommerce.dao.domain.voucher.ICustomerVoucherDAO;
 import br.com.utily.ecommerce.dao.domain.voucher.IVoucherDAO;
 import br.com.utily.ecommerce.entity.Entity;
+import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
 import br.com.utily.ecommerce.entity.domain.product.Product;
 import br.com.utily.ecommerce.entity.domain.product.category.Category;
 import br.com.utily.ecommerce.entity.domain.product.provider.Provider;
@@ -262,6 +263,32 @@ public class Facade<T extends Entity> implements IFacade<T> {
     }
 
     @Override
+    public List<T> findAllValidBy(Entity targetEntity, T baseEntity) {
+        List<T> entitiesCollection = Collections.EMPTY_LIST;
+        String entityName = baseEntity.getClass().getName();
+
+        if (daosMap.containsKey(entityName)) {
+            IDAO<T> selectedDAO = daosMap.get(entityName);
+            entitiesCollection = executeFindAllValidBy(targetEntity, selectedDAO);
+        }
+
+        return entitiesCollection;
+    }
+
+    @Override
+    public Optional<T> findValidByEmbeddedEntity(AssociativeDomainEntity associativeEntity, Entity entityOne, Entity entityTwo) {
+        Optional<T> optional = Optional.empty();
+        String entityName = associativeEntity.getClass().getName();
+
+        if (daosMap.containsKey(entityName)) {
+            IDAO<T> selectedDAO = daosMap.get(entityName);
+            optional = executeFindValidByEntityOneAndEntityTwo(entityOne, entityTwo, selectedDAO);
+        }
+
+        return optional;
+    }
+
+    @Override
     public Optional<T> findActivatedById(Long id, Entity entity) {
         Optional<T> optionalEntity = Optional.empty();
         String entityName = entity.getClass().getName();
@@ -353,5 +380,36 @@ public class Facade<T extends Entity> implements IFacade<T> {
         }
 
         return entities;
+    }
+
+    private List<T> executeFindAllValidBy(Entity filterEntity, IDAO<T> dao) {
+        List<T> entities = Collections.EMPTY_LIST;
+
+        if (filterEntity instanceof Customer) {
+            Customer customer = (Customer) filterEntity;
+
+            if (dao instanceof ICustomerVoucherDAO) {
+                ICustomerVoucherDAO customerVoucherDAO = (ICustomerVoucherDAO) dao;
+                entities = (List<T>) customerVoucherDAO.findCustomerVoucherByUsedFalseAndCustomer(customer);
+            }
+        }
+
+        return entities;
+    }
+
+    private Optional<T> executeFindValidByEntityOneAndEntityTwo(Entity filterEntityOne, Entity filterEntityTwo, IDAO<T> dao) {
+        Optional<T> optional = Optional.empty();
+
+        if (filterEntityOne instanceof Customer && filterEntityTwo instanceof Voucher) {
+            Customer customer = (Customer) filterEntityOne;
+            Voucher voucher = (Voucher) filterEntityTwo;
+
+            if (dao instanceof ICustomerVoucherDAO) {
+                ICustomerVoucherDAO customerVoucherDAO = (ICustomerVoucherDAO) dao;
+                optional = (Optional<T>) customerVoucherDAO.findByUsedFalseAndCustomerAndVoucher(customer, voucher);
+            }
+        }
+
+        return optional;
     }
 }

@@ -6,6 +6,7 @@ import br.com.utily.ecommerce.entity.domain.user.customer.Customer;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @ToString
 
@@ -23,6 +24,9 @@ public class CustomerVoucher extends AssociativeDomainEntity {
 
     @EmbeddedId
     private CustomerVoucherId id;
+
+    @Column(name = "cvh_used", nullable = false)
+    protected Boolean used;
 
     @MapsId("voucherId")
     @ManyToOne(cascade = CascadeType.ALL)
@@ -42,9 +46,10 @@ public class CustomerVoucher extends AssociativeDomainEntity {
 
         customerVoucherId.setVoucherId(voucherId);
         customerVoucherId.setCustomerId(customerId);
-        customerVoucherId.setUsed(true);
-        
+        customerVoucherId.setDate(LocalDateTime.now());
+
         this.setId(customerVoucherId);
+        this.setUsed(false);
         this.setVoucher(voucher);
         this.setCustomer(customer);
 

@@ -151,8 +151,9 @@ public class TradeShopController {
 
         tradeInProgress.updateItem(itemInProgress);
 
-        String message = "Item para troca adicionado a solicitação. " +
-                "Você ainda pode adicionar mais itens ou finalizar a solicitação clicando no botão correspondente.";
+        String message = "Item para " + tradeInProgress.getType().getDisplayName().toLowerCase()
+                + " adicionado a solicitação. Você ainda pode adicionar mais itens ou " +
+                "finalizar a solicitação clicando no botão correspondente.";
 
         ViewMessageHelper.configureRedirectMessageWith(message, true, redirectAttributes);
 

@@ -2,7 +2,7 @@ package br.com.utily.ecommerce.controller.domain.admin.stock;
 
 import br.com.utily.ecommerce.entity.domain.stock.StockHistory;
 import br.com.utily.ecommerce.helper.view.ModelAndViewHelper;
-import br.com.utily.ecommerce.service.alternative.IAlternativeDomainService;
+import br.com.utily.ecommerce.service.domain.alternative.IAlternativeDomainService;
 import br.com.utily.ecommerce.util.constant.attribute.EModelAttribute;
 import br.com.utily.ecommerce.util.constant.entity.EViewType;
 import br.com.utily.ecommerce.util.constant.view.EView;

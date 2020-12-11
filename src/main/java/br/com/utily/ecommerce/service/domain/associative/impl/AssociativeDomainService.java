@@ -1,9 +1,9 @@
-package br.com.utily.ecommerce.service.associative.impl;
+package br.com.utily.ecommerce.service.domain.associative.impl;
 
 import br.com.utily.ecommerce.entity.Entity;
 import br.com.utily.ecommerce.entity.domain.AssociativeDomainEntity;
 import br.com.utily.ecommerce.facade.IFacade;
-import br.com.utily.ecommerce.service.associative.IAssociativeDomainService;
+import br.com.utily.ecommerce.service.domain.associative.IAssociativeDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +33,16 @@ public class AssociativeDomainService<T extends AssociativeDomainEntity> impleme
     @Override
     public List<T> findAllBy(Entity targetEntity, T mockBaseEntity) {
         return facade.findAllBy(targetEntity, mockBaseEntity);
+    }
+
+    @Override
+    public List<T> findAllValidBy(Entity targetEntity, T mockBaseEntity) {
+        return facade.findAllValidBy(targetEntity, mockBaseEntity);
+    }
+
+    @Override
+    public Optional<T> findValidByEmbeddedEntity(AssociativeDomainEntity associativeEntity, Entity entityOne, Entity entityTwo) {
+        return facade.findValidByEmbeddedEntity(associativeEntity, entityOne, entityTwo);
     }
 
     @Override
