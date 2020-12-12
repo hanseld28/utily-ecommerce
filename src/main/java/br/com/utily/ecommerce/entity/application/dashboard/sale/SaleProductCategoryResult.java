@@ -18,6 +18,5 @@ public class SaleProductCategoryResult extends Entity {
     private String category;
     private LocalDateTime date;
     private Long productAmount;
-    private Long salesQuantity;
 
 }

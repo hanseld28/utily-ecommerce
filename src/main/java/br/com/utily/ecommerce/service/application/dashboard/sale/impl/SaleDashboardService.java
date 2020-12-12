@@ -33,8 +33,7 @@ public class SaleDashboardService implements ISaleDashboardService {
                 .map(saleProductCategoryResult -> new SaleProductCategory(
                         saleProductCategoryResult.getCategory(),
                         saleProductCategoryResult.getDate().toLocalDate(),
-                        saleProductCategoryResult.getProductAmount(),
-                        saleProductCategoryResult.getSalesQuantity()
+                        saleProductCategoryResult.getProductAmount()
                 )).collect(Collectors.toList());
 
         List<SaleProductCategory> regrouped = new ArrayList<>();
@@ -57,7 +56,6 @@ public class SaleDashboardService implements ISaleDashboardService {
                 regrouped.remove(anyEqualObject);
 
                 anyEqualObject.addProductAmount(current.getProductAmount());
-                anyEqualObject.addSalesQuantity(current.getSalesQuantity());
 
                 regrouped.add(anyEqualObject);
             } else {

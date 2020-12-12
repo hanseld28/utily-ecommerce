@@ -1,6 +1,6 @@
-package br.com.utily.ecommerce.constraint.domain.admin.stock;
+package br.com.utily.ecommerce.validator.constraints.domain.admin.stock;
 
-import br.com.utily.ecommerce.validator.domain.admin.stock.AmountNotEqualToZeroValidator;
+import br.com.utily.ecommerce.validator.impl.domain.admin.stock.AmountNotEqualToZeroValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

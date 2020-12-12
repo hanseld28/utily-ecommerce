@@ -16,8 +16,7 @@ public interface ISaleDashboardDAO extends IDashboardDAO<Sale> {
     @Query(value = "SELECT new br.com.utily.ecommerce.entity.application.dashboard.sale.SaleProductCategoryResult(" +
             "ctg.name, " +
             "sls.date, " +
-            "SUM(slp.quantity), " +
-            "COUNT(sls.id) " +
+            "SUM(slp.quantity)" +
             ") FROM Sale AS sls " +
             "  INNER JOIN SaleItem AS slp ON slp.sale.id = sls.id" +
             "  INNER JOIN Product AS prt ON prt.id = slp.product.id" +

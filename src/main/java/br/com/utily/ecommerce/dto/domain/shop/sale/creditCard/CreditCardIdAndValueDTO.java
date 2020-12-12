@@ -1,6 +1,6 @@
 package br.com.utily.ecommerce.dto.domain.shop.sale.creditCard;
 
-import br.com.utily.ecommerce.constraint.domain.shop.sale.creditCard.MinimumPaymentValueConstraint;
+import br.com.utily.ecommerce.validator.constraints.domain.shop.sale.creditCard.MinimumPaymentValueConstraint;
 import br.com.utily.ecommerce.dto.DTOEntity;
 import lombok.Getter;
 import lombok.Setter;

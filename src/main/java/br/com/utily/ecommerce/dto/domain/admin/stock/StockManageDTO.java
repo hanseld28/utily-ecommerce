@@ -1,6 +1,6 @@
 package br.com.utily.ecommerce.dto.domain.admin.stock;
 
-import br.com.utily.ecommerce.constraint.domain.admin.stock.AmountNotEqualToZeroConstraint;
+import br.com.utily.ecommerce.validator.constraints.domain.admin.stock.AmountNotEqualToZeroConstraint;
 import br.com.utily.ecommerce.dto.DTOEntity;
 import br.com.utily.ecommerce.dto.domain.admin.product.ProductForSimpleStockViewDTO;
 import lombok.Getter;

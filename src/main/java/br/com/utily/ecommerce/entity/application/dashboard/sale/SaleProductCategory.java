@@ -18,13 +18,8 @@ public class SaleProductCategory extends Entity {
     private String category;
     private LocalDate date;
     private Long productAmount;
-    private Long salesQuantity;
 
     public void addProductAmount(Long productAmount) {
         this.productAmount += productAmount;
-    }
-
-    public void addSalesQuantity(Long salesQuantity) {
-        this.salesQuantity += salesQuantity;
     }
 }
