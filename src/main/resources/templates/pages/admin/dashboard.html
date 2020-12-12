@@ -11,25 +11,37 @@
         <li class="breadcrumb-item active">Dashboard</li>
     </ol>
     <div class="row">
-        <div class="col-xl-6">
+        <div class="col-xl-10 offset-1">
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-chart-area mr-1"></i>
-                    Area Chart Example
+                    Vendas de Produtos por Categoria
                 </div>
-                <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
-            </div>
-        </div>
-        <div class="col-xl-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-chart-bar mr-1"></i>
-                    Bar Chart Example
+                <div class="card-body">
+                    <div id="chart-box">
+                        <canvas id="sales-category-chart" width="100%" height="40"></canvas>
+                    </div>
                 </div>
-                <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+                <div class="card-footer">
+                    <div class="row flex-row justify-content-center">
+                        <div class="col-2">
+                            <input type="date" name="startDate" id="startDate">
+                        </div>
+                        <div class="col-2">
+                            <input type="date" name="endDate" id="endDate">
+                        </div>
+                        <button type="button" class="btn btn-success" name="intervalFilter" id="intervalFilter">Filtrar</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</th:block>
+
+<th:block layout:fragment="scripts">
+
+    <script th:src="@{/assets/custom/pages/admin/dashboard/dashboard.js}"></script>
+
 </th:block>
 
 </html>

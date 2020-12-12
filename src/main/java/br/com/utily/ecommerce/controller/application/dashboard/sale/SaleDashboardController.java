@@ -1,17 +1,17 @@
 package br.com.utily.ecommerce.controller.application.dashboard.sale;
 
-import br.com.utily.ecommerce.dto.application.dashboard.sale.SaleIntervalDTO;
 import br.com.utily.ecommerce.entity.application.dashboard.sale.SaleProductCategory;
 import br.com.utily.ecommerce.service.application.dashboard.sale.ISaleDashboardService;
 import br.com.utily.ecommerce.util.date.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class SaleDashboardController {
@@ -26,16 +26,12 @@ public class SaleDashboardController {
         this.saleDashboardService = saleDashboardService;
     }
 
-    @PostMapping(path = SALES_DASHBOARD_BASE_URL + SALES_PRODUCTS_BY_CATEGORY_BETWEEN_INTERNAL_URL)
-    public ResponseEntity<?> countSalesAndSumProductsByCategoryBetween(@RequestBody SaleIntervalDTO saleIntervalDTO) {
-        String plainStartDate = saleIntervalDTO.getStartDate();
-        String plainEndDate = saleIntervalDTO.getEndDate();
-
+    @GetMapping(path = SALES_DASHBOARD_BASE_URL + SALES_PRODUCTS_BY_CATEGORY_BETWEEN_INTERNAL_URL)
+    public ResponseEntity<?> countSalesAndSumProductsByCategoryBetween(@RequestParam("startDate") String plainStartDate, @RequestParam("endDate") String plainEndDate) {
         LocalDateTime startDate = DateUtil.from(plainStartDate);
         LocalDateTime endDate = DateUtil.from(plainEndDate);
 
-
-        List<SaleProductCategory> saleProductCategoryResultCasesByInterval = saleDashboardService
+        Map<String, List<SaleProductCategory>> saleProductCategoryResultCasesByInterval = saleDashboardService
                 .countSaleAndSumProductAmountByCategoriesBetweenInterval(
                         startDate,
                         endDate

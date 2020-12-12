@@ -6,6 +6,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
     "bootstrap": "^4.5.2",
+    "chart.js": "^2.9.4",
     "jquery": "^1.9.1",
     "jquery-validation": "^1.19.2",
     "material-icons": "^0.3.1",

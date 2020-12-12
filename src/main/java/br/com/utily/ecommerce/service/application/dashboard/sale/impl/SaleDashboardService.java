@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +22,7 @@ public class SaleDashboardService implements ISaleDashboardService {
     }
 
     @Override
-    public List<SaleProductCategory> countSaleAndSumProductAmountByCategoriesBetweenInterval(LocalDateTime startDate, LocalDateTime endDate) {
+    public Map<String, List<SaleProductCategory>> countSaleAndSumProductAmountByCategoriesBetweenInterval(LocalDateTime startDate, LocalDateTime endDate) {
         List<SaleProductCategoryResult> saleProductCategoriesResult = saleDashboardDAO.
                 _countSaleAndSumProductAmountByCategoriesBetweenInterval(
                         startDate,
@@ -45,6 +43,7 @@ public class SaleDashboardService implements ISaleDashboardService {
         int maxIndex = saleProductCategories.size() - 1;
 
         for (int i = 1; i < maxIndex; i++) {
+
             SaleProductCategory current = saleProductCategories.get(i);
 
             Optional<SaleProductCategory> anyEqualObjectOptional = regrouped.stream()
@@ -54,6 +53,7 @@ public class SaleDashboardService implements ISaleDashboardService {
 
             if (anyEqualObjectOptional.isPresent()) {
                 SaleProductCategory anyEqualObject = anyEqualObjectOptional.get();
+
                 regrouped.remove(anyEqualObject);
 
                 anyEqualObject.addProductAmount(current.getProductAmount());
@@ -65,6 +65,19 @@ public class SaleDashboardService implements ISaleDashboardService {
             }
         }
 
-        return regrouped;
+        Map<String, List<SaleProductCategory>> categorySalesProductGraph = new HashMap<>();
+
+        for (SaleProductCategory saleProductCategory : regrouped) {
+            String categoryName = saleProductCategory.getCategory();
+
+            if (!categorySalesProductGraph.containsKey(categoryName)) {
+                categorySalesProductGraph.put(categoryName, new ArrayList<>());
+            }
+
+            categorySalesProductGraph.get(categoryName)
+                    .add(saleProductCategory);
+        }
+
+        return categorySalesProductGraph;
     }
 }

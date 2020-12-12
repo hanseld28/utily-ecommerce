@@ -6,10 +6,11 @@ import br.com.utily.ecommerce.service.application.dashboard.IDashboardService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface ISaleDashboardService extends IDashboardService<Sale> {
 
-    List<SaleProductCategory> countSaleAndSumProductAmountByCategoriesBetweenInterval(
+    Map<String, List<SaleProductCategory>> countSaleAndSumProductAmountByCategoriesBetweenInterval(
             LocalDateTime startDate,
             LocalDateTime endDate
     );
