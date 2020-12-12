@@ -93,7 +93,7 @@
                                         </th:block>
                                         <th:block th:if="${trade.isReceivedItems()}">
                                             <form class="form-inline" th:action="@{/admin/trades/} + ${trade.id} + @{/generate-voucher}" method="post">
-                                                <div class="col">
+                                                <div class="col-6 offset-3">
                                                     <button type="submit"
                                                             class="btn btn-success sm"
                                                     >
